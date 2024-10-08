@@ -30,8 +30,8 @@
                         <div class="forget"> <label><input type="checkbox">Remember Me</label> <a href="#">Forgot
                                 Password</a> </div> <button>Register</button>
                         <div class="register">
-                            <p>You don't want to create an account? <a href="index">Home Page</a></p>
-                            <p>You already have an account? <a href="login">Login</a></p>
+                            <p>You don't want to create an account? <a href="{% url 'ProjectWebGame:index' %}">Home Page</a></p>
+                            <p>You already have an account? <a href="{% url 'ProjectWebGame:user_login' %}">Login</a></p>
                         </div>
                     </form>
                 </div>

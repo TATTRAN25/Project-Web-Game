@@ -24,18 +24,6 @@
 
 <body>
 
-  <!-- ***** Preloader Start ***** -->
-  <!-- <div id="js-preloader" class="js-preloader">
-    <div class="preloader-inner">
-      <span class="dot"></span>
-      <div class="dots">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-  </div> -->
-  <!-- ***** Preloader End ***** -->
 
   <!-- ***** Header Area Start ***** -->
   <header class="header-area header-sticky">
@@ -50,11 +38,11 @@
             <!-- ***** Logo End ***** -->
             <!-- ***** Menu Start ***** -->
             <ul class="nav">
-              <li><a href="index">Home</a></li>
-              <li><a href="shop" class="active">Our Shop</a></li>
-              <li><a href="productDetails">Product Details</a></li>
-              <li><a href="contact">Contact Us</a></li>
-              <li><a href="login">Sign In</a></li>
+              <li><a href="{% url 'ProjectWebGame:index' %}" >Home</a></li>
+              <li><a href="{% url 'ProjectWebGame:game' %}" class="active">Our Game</a></li>
+              <li><a href="{% url 'ProjectWebGame:productDetails' %}">Product Details</a></li>
+              <li><a href="{% url 'ProjectWebGame:contact' %}">Contact Us</a></li>
+              <li><a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a></li>
             </ul>
             <a class='menu-trigger'>
               <span>Menu</span>
@@ -82,7 +70,7 @@
     <div class="container">
       <ul class="trending-filter">
         <li>
-          <a class="is_active" href="#!" data-filter="*">Show All</a>
+          <a class="is_active" href="{% url 'ProjectWebGame:game' %}" data-filter="*">Show All</a>
         </li>
         <li>
           <a href="#!" data-filter=".adv">Adventure</a>
