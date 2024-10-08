@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from .form import UserForm, UserProfileForm
+from .form import UserForm, UserProfileForm, GameForm
 from django.contrib import messages
 from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponseRedirect,HttpResponse
@@ -89,7 +89,12 @@ def game(request):
     return render(request, 'game.html')
 
 def create_game_form(request):
-    return render(request, 'create_game_form.html')
+    form = GameForm()
+    if request.method == 'POST':
+        form = GameForm(request.POST)
+    else:
+        form = GameForm()
+    return render(request, 'create_game_form.html', {'form': form})
 
 def create_game(request):
     if request.method == 'POST':
