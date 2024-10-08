@@ -88,7 +88,9 @@ def productDetails(request):
 def game(request):
     return render(request, 'game.html')
 
-@login_required
+def create_game_form(request):
+    return render(request, 'create_game_form.html')
+
 def create_game(request):
     if request.method == 'POST':
         game = Game(
@@ -99,7 +101,7 @@ def create_game(request):
         )
         game.save()
         messages.success(request, 'Game đã được lưu vào bản nháp!')
-        return redirect('game_list')
+        return redirect(request,'game_list')
 
 @login_required
 def add_review(request, game_id):
