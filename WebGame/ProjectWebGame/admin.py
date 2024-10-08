@@ -4,11 +4,9 @@ from ProjectWebGame.models import UserProfileInfo
 
 # Đăng ký model với admin
 class UserProfileInfoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'username', 'portfolio_site', 'profile_pic_display')
-    ordering = ['id']  # Sắp xếp theo ID
-    search_fields = ['user__username', 'portfolio_site']  
-    list_filter = ('portfolio_site',) 
-    list_editable = ('portfolio_site',)  
+    list_display = ('id', 'username')  
+    ordering = ['id'] 
+    search_fields = ['user__username']  
     list_per_page = 20  
 
     def username(self, obj):
@@ -20,7 +18,7 @@ class UserProfileInfoAdmin(admin.ModelAdmin):
         return "No Image"
 
     username.short_description = 'Username'  
-    profile_pic_display.short_description = 'Profile Picture'  
+    profile_pic_display.short_description = 'Profile Picture'
 
 # Đăng ký model với admin
 admin.site.register(UserProfileInfo, UserProfileInfoAdmin)

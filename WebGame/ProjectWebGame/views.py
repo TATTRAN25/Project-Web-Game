@@ -5,6 +5,7 @@ from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponseRedirect,HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from .models import Game, Review
 
 def index(request):
     return render(request, 'registration/index.html')
@@ -16,13 +17,13 @@ def register(request):
 
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save(commit=False)
-            user.set_password(user_form.cleaned_data['password'])  # Sửa ở đây
+            user.set_password(user_form.cleaned_data['password']) 
             user.save()
 
             profile = profile_form.save(commit=False)
             profile.user = user 
-            if 'profile_pic' in request.FILES:
-                profile.profile_pic = request.FILES['profile_pic']
+            if 'user_pic' in request.FILES:
+                profile.user_pic = request.FILES['user_pic']
             profile.save() 
 
             messages.success(request, 'Đăng ký thành công!') 
@@ -39,7 +40,7 @@ def register(request):
         user_form = UserForm()
         profile_form = UserProfileForm()
 
-    return render(request, 'registration/registration.html', {
+    return render(request, 'ProjectWebGame/registration.html', {
         'user_form': user_form,
         'profile_form': profile_form,
     })
@@ -54,6 +55,10 @@ def user_logout(request):
     return HttpResponseRedirect(reverse('RegistrationLogin:index'))
 
 def user_login(request):
+    if request.user.is_authenticated:
+        messages.info(request, 'Bạn đã đăng nhập rồi!')
+        return HttpResponseRedirect(reverse('RegistrationLogin:index'))
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -82,3 +87,46 @@ def productDetails(request):
 
 def shop(request):
     return render(request, 'shop.html')
+
+@login_required
+def create_game(request):
+    if request.method == 'POST':
+        # Logic để tạo game
+        game = Game(
+            name=request.POST['name'],
+            description=request.POST['description'],
+            developer=request.user, 
+            is_published=False
+        )
+        game.save()
+        messages.success(request, 'Game đã được lưu vào bản nháp!')
+        return redirect('game_list')
+
+@login_required
+def add_review(request, game_id):
+    game = Game.objects.get(id=game_id)
+    if request.method == 'POST':
+        review = Review(
+            user=request.user,
+            game=game,
+            content=request.POST['content'],
+            rating=request.POST['rating'],
+            is_published=False 
+        )
+        review.save()
+        messages.success(request, 'Bình luận đã được lưu vào bản nháp!')
+        return redirect('game_detail', game_id=game.id)
+
+@login_required
+def publish_draft(request, draft_id, is_game=True):
+    if is_game:
+        game = Game.objects.get(id=draft_id)
+        game.is_published = True
+        game.save()
+        messages.success(request, 'Game đã được công khai!')
+    else:
+        review = Review.objects.get(id=draft_id)
+        review.is_published = True
+        review.save()
+        messages.success(request, 'Bình luận đã được công khai!')
+    return redirect('dashboard') 
