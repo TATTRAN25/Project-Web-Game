@@ -30,17 +30,17 @@
         <div class="col-12">
           <nav class="main-nav">
             <!-- ***** Logo Start ***** -->
-            <a href="index.html" class="logo">
+            <a href="{% url 'ProjectWebGame:index' %}" class="logo">
               <img src="{% static 'images/logo.png' %}" alt="" style="width: 158px;">
             </a>
             <!-- ***** Logo End ***** -->
             <!-- ***** Menu Start ***** -->
             <ul class="nav">
-              <li><a href="index" class="active">Home</a></li>
-              <li><a href="shop">Our Shop</a></li>
-              <li><a href="productDetails">Product Details</a></li>
-              <li><a href="contact">Contact Us</a></li>
-              <li><a href="login">Sign In</a></li>
+              <li><a href="{% url 'ProjectWebGame:index' %}" class="active">Home</a></li>
+              <li><a href="{% url 'ProjectWebGame:game' %}">Our Game</a></li>
+              <li><a href="{% url 'ProjectWebGame:productDetails' %}">Product Details</a></li>
+              <li><a href="{% url 'ProjectWebGame:contact' %}">Contact Us</a></li>
+              <li><a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a></li>
             </ul>
             <a class='menu-trigger'>
               <span>Menu</span>
@@ -74,8 +74,6 @@
         <div class="col-lg-4 offset-lg-2">
           <div class="right-image">
             <img src="{% static 'images/banner-image.jpg' %}" alt="">
-            <span class="price">$22</span>
-            <span class="offer">-40%</span>
           </div>
         </div>
       </div>
