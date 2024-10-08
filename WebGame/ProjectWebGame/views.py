@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Game, Review
 
 def index(request):
-    return render(request, 'registration/index.html')
+    return render(request, 'index.html')
 
 def register(request):
     if request.method == 'POST':

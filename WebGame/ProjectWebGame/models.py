@@ -13,6 +13,7 @@ class UserProfileInfo(models.Model):
 
 class Developer(models.Model):
     name = models.CharField(max_length=255)
+
     description = models.TextField(blank=True)
     website = models.URLField(blank=True)
     logo = models.ImageField(upload_to='studio_pic', blank=True)
