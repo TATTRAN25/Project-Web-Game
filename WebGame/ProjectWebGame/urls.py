@@ -10,4 +10,5 @@ urlpatterns = [
     path('shop',views.shop,name='shop'),
     path('login',views.login,name='login'),
     path('register',views.register,name='register'),
+    path('create_game',views.create_game,name='create_game'),
 ]
