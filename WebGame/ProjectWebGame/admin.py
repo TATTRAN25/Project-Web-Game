@@ -1,26 +1,29 @@
 from django.contrib import admin
-from django.utils.html import format_html
-from ProjectWebGame.models import UserProfileInfo
+from .models import UserProfileInfo, Developer, Category, Game, Review
 
-# Đăng ký model với admin
+@admin.register(UserProfileInfo)
 class UserProfileInfoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'username', 'portfolio_site', 'profile_pic_display')
-    ordering = ['id']  # Sắp xếp theo ID
-    search_fields = ['user__username', 'portfolio_site']  
-    list_filter = ('portfolio_site',) 
-    list_editable = ('portfolio_site',)  
-    list_per_page = 20  
+    list_display = ('user', 'address', 'bio', 'avatar')
+    search_fields = ('user__username', 'address')
 
-    def username(self, obj):
-        return obj.user.username 
+@admin.register(Developer)
+class DeveloperAdmin(admin.ModelAdmin):
+    list_display = ('name', 'website')
+    search_fields = ('name',)
 
-    def profile_pic_display(self, obj):
-        if obj.profile_pic:
-            return format_html('<img src="{}" style="width: 50px; height: 50px; border-radius: 50%;" />', obj.profile_pic.url)
-        return "No Image"
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ('name',)
+    search_fields = ('name',)
 
-    username.short_description = 'Username'  
-    profile_pic_display.short_description = 'Profile Picture'  
+@admin.register(Game)
+class GameAdmin(admin.ModelAdmin):
+    list_display = ('name', 'developer', 'category', 'release_date', 'is_published')
+    list_filter = ('developer', 'category', 'is_published')
+    search_fields = ('name', 'description')
 
-# Đăng ký model với admin
-admin.site.register(UserProfileInfo, UserProfileInfoAdmin)
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('user', 'game', 'rating', 'is_published', 'created_at')
+    list_filter = ('game', 'is_published')
+    search_fields = ('content',)
