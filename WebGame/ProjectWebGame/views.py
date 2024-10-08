@@ -27,7 +27,7 @@ def register(request):
             profile.save() 
 
             messages.success(request, 'Đăng ký thành công!') 
-            return redirect('RegistrationLogin:index') 
+            return redirect('ProjectWebGame:index') 
 
         else:
             for error in user_form.non_field_errors():
@@ -40,7 +40,7 @@ def register(request):
         user_form = UserForm()
         profile_form = UserProfileForm()
 
-    return render(request, 'ProjectWebGame/registration.html', {
+    return render(request, 'register.html', {
         'user_form': user_form,
         'profile_form': profile_form,
     })
@@ -52,12 +52,12 @@ def special(request):
 def user_logout(request):
     logout(request)
     messages.success(request, 'Bạn đã đăng xuất thành công!')
-    return HttpResponseRedirect(reverse('RegistrationLogin:index'))
+    return HttpResponseRedirect(reverse('ProjectWebGame:index'))
 
 def user_login(request):
     if request.user.is_authenticated:
         messages.info(request, 'Bạn đã đăng nhập rồi!')
-        return HttpResponseRedirect(reverse('RegistrationLogin:index'))
+        # return HttpResponseRedirect(reverse('ProjectWebGame:index'))
 
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -69,7 +69,7 @@ def user_login(request):
             if user.is_active:
                 login(request, user)
                 messages.success(request, 'Đăng nhập thành công!')
-                return HttpResponseRedirect(reverse('RegistrationLogin:index'))
+                return HttpResponseRedirect(reverse('ProjectWebGame:index'))
             else:
                 messages.error(request, 'Tài khoản của bạn đã bị vô hiệu hóa.')
                 return HttpResponse('Account not activated')
@@ -77,7 +77,7 @@ def user_login(request):
             messages.error(request, 'Tên đăng nhập hoặc mật khẩu không chính xác.')
             return HttpResponse('Invalid login details supplied!')
 
-    return render(request, 'registration/login.html')
+    return render(request, 'login.html')
 
 def contact(request):
     return render(request, 'contact.html')
@@ -85,15 +85,14 @@ def contact(request):
 def productDetails(request):
     return render(request, 'productDetails.html')
 
-def shop(request):
-    return render(request, 'shop.html')
+def game(request):
+    return render(request, 'game.html')
 
 def create_game_form(request):
     return render(request, 'create_game_form.html')
 
 def create_game(request):
     if request.method == 'POST':
-        # Logic để tạo game
         game = Game(
             name=request.POST['name'],
             description=request.POST['description'],

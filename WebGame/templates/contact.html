@@ -25,19 +25,6 @@
 
 <body>
 
-  <!-- ***** Preloader Start ***** -->
-  <!-- <div id="js-preloader" class="js-preloader">
-    <div class="preloader-inner">
-      <span class="dot"></span>
-      <div class="dots">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-  </div> -->
-  <!-- ***** Preloader End ***** -->
-
   <!-- ***** Header Area Start ***** -->
   <header class="header-area header-sticky">
     <div class="container">
@@ -51,11 +38,11 @@
                     <!-- ***** Logo End ***** -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
-                      <li><a href="index">Home</a></li>
-                      <li><a href="shop">Our Shop</a></li>
-                      <li><a href="productDetails">Product Details</a></li>
-                      <li><a href="contact" class="active">Contact Us</a></li>
-                      <li><a href="login">Sign In</a></li>
+                      <li><a href="{% url 'ProjectWebGame:index' %}" >Home</a></li>
+                      <li><a href="{% url 'ProjectWebGame:game' %}">Our Game</a></li>
+                      <li><a href="{% url 'ProjectWebGame:productDetails' %}">Product Details</a></li>
+                      <li><a href="{% url 'ProjectWebGame:contact' %}" class="active">Contact Us</a></li>
+                      <li><a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a></li>
                   </ul>   
                     <a class='menu-trigger'>
                         <span>Menu</span>
