@@ -93,6 +93,11 @@ def game_form(request):
     form = GameForm()
     if request.method == 'POST':
         form = GameForm(request.POST)
+        if form.is_valid():
+            game = form.save(commit=False)
+            game.save()
+            messages.success(request, 'Game đã được lưu!')
+            return redirect('ProjectWebGame:game_list')
     else:
         form = GameForm()
     return render(request, 'game_form.html', {'form': form})
@@ -113,8 +118,11 @@ def create_game(request):
     if request.method == 'POST':
         game = Game(
             name=request.POST['name'],
-            description=request.POST['description'],
             developer=request.user,
+            category=request.POST['category'],
+            description=request.POST['description'],
+            image=request.FILES['image'],
+            link_dowload=request.POST['link_dowload'],
             is_published=False  # Đặt chế độ nháp
         )
         game.save()
