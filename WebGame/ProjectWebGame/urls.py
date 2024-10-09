@@ -15,6 +15,6 @@ urlpatterns = [
     path('create_game/', views.create_game, name='create_game'),  
     path('add_review/<int:game_id>/', views.add_review, name='add_review'),  
     path('publish_draft/<int:draft_id>/', views.publish_draft, name='publish_draft'),   
-    path('gamelist/', views.game, name='gamelist'),  
+    path('gameList/', views.gameList, name='gameList'),  
     path('dashboard/', views.dashboard, name='dashboard'), 
 ]
