@@ -115,6 +115,7 @@ def create_game(request):
             name=request.POST['name'],
             description=request.POST['description'],
             developer=request.user,
+            image = request.FILES['image'],
             is_published=False  # Đặt chế độ nháp
         )
         game.save()
@@ -132,7 +133,7 @@ def add_review(request, game_id):
             game=game,
             content=request.POST['content'],
             rating=request.POST['rating'],
-            is_published=False  
+            is_published=False
         )
         review.save()
         messages.success(request, 'Bình luận đã được lưu vào bản nháp!')
