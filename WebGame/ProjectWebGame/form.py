@@ -17,4 +17,4 @@ class UserProfileForm(forms.ModelForm):
 class GameForm(forms.ModelForm):
     class Meta:
         model = Game
-        fields = ['name', 'description']
+        fields = ['name', 'description', 'developer']
