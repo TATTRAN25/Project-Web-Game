@@ -16,5 +16,5 @@ urlpatterns = [
     path('add_review/<int:game_id>/', views.add_review, name='add_review'),  
     path('publish_draft/<int:draft_id>/', views.publish_draft, name='publish_draft'),   
     path('gamelist/', views.game, name='gamelist'),  
-    path('dashboard/', views.dashboard, name='dashboard'), 
+    path('dashboard/', views.dashboard, name='dashboard'),
 ]
