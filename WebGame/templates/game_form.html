@@ -1,3 +1,4 @@
+{% extends 'base.html' %} 
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -16,7 +17,8 @@
     <link rel="stylesheet" href="{% static 'css/login.css' %}" />
   </head>
   <body>
-    {% extends 'base.html' %} {% block body_block %} {% if messages %}
+    {% block body_block %} 
+    {% if messages %}
     <div class="alert alert-info" role="alert">
       {% for message in messages %} {{ message }}<br />
       {% endfor %}
