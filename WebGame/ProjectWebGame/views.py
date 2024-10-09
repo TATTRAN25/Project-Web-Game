@@ -115,7 +115,6 @@ def create_game(request):
             name=request.POST['name'],
             description=request.POST['description'],
             developer=request.user,
-            image = request.FILES['image'],
             is_published=False  # Đặt chế độ nháp
         )
         game.save()

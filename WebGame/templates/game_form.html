@@ -26,9 +26,9 @@
     {% endif %}
     <div class="container">
       <h1>Create a New Game</h1>
-      <form method="post">
+      <form method="post" action="{% url 'ProjectWebGame:gameList' %}" enctype="multipart/form-data">
         {% csrf_token %} {{ form.as_p }}
-        <button type="submit">Create</button>
+        <input type="submit" value="Create game" class="btn btn-success">
         {% if form.errors %}
         <div class="error">Please correct the errors above.</div>
         {% endif %}

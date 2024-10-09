@@ -17,4 +17,4 @@ class UserProfileForm(forms.ModelForm):
 class GameForm(forms.ModelForm):
     class Meta:
         model = Game
-        exclude = ['created_at', 'updated_at', 'is_published']
+        exclude = ['release_date','created_at', 'updated_at', 'is_published']
