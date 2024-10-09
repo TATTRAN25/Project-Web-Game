@@ -52,9 +52,6 @@ class Review(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=False)
     def __str__(self):
-<<<<<<< HEAD
-        return f"{self.user} đánh giá {self.game}"
-=======
         return f"{self.user} đánh giá {self.game}"
     
 class Draft(models.Model):
@@ -71,4 +68,3 @@ class Draft(models.Model):
 
 
 
->>>>>>> django/4-ShibaInu
