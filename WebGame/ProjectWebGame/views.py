@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 from .form import UserForm, UserProfileForm, GameForm
 from django.shortcuts import render, redirect,get_object_or_404
+=======
+from django.shortcuts import render, redirect,get_object_or_404
+from .form import UserForm, UserProfileForm, GameForm
+>>>>>>> django/2-Charizard
 from django.contrib import messages
 from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponseRedirect,HttpResponse
@@ -88,13 +93,14 @@ def productDetails(request):
 def game(request):
     return render(request, 'game.html')
 
-def create_game_form(request):
+@login_required
+def game_form(request):
     form = GameForm()
     if request.method == 'POST':
         form = GameForm(request.POST)
     else:
         form = GameForm()
-    return render(request, 'create_game_form.html', {'form': form})
+    return render(request, 'game_form.html', {'form': form})
 
 def gameList(request):
     games = Game.objects.all() 
