@@ -88,13 +88,13 @@ def productDetails(request):
 def game(request):
     return render(request, 'game.html')
 
-def create_game_form(request):
+def game_form(request):
     form = GameForm()
     if request.method == 'POST':
         form = GameForm(request.POST)
     else:
         form = GameForm()
-    return render(request, 'create_game_form.html', {'form': form})
+    return render(request, 'game_form.html', {'form': form})
 
 def create_game(request):
     if request.method == 'POST':
