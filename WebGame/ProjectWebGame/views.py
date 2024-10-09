@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Game, Review
 
 def index(request):
-    return render(request, 'index.html')
+    return render(request, 'Home/index.html')
 
 def register(request):
     if request.method == 'POST':
@@ -26,7 +26,7 @@ def register(request):
             profile.save()  
 
             messages.success(request, 'Đăng ký thành công!')  
-            return redirect('ProjectWebGame:index')  
+            return redirect('ProjectWebGame:login')  
 
         # Nếu có lỗi, hiển thị thông báo lỗi
         else:
@@ -43,7 +43,7 @@ def register(request):
         user_form = UserForm() 
         profile_form = UserProfileForm()
 
-    return render(request, 'register.html', {
+    return render(request, 'Home/register.html', {
         'user_form': user_form,
         'profile_form': profile_form,
     })
@@ -77,16 +77,16 @@ def user_login(request):
         else:
             messages.error(request, 'Tên đăng nhập hoặc mật khẩu không chính xác.')
     
-    return render(request, 'login.html')
+    return render(request, 'Home/login.html')
 
 def contact(request):
-    return render(request, 'contact.html')
+    return render(request, 'Home/contact.html')
 
 def productDetails(request):
-    return render(request, 'productDetails.html')
+    return render(request, 'Home/productDetails.html')
 
 def game(request):
-    return render(request, 'game.html')
+    return render(request, 'Home/game.html')
 
 @login_required
 def game_form(request):
@@ -95,14 +95,14 @@ def game_form(request):
         form = GameForm(request.POST)
     else:
         form = GameForm()
-    return render(request, 'game_form.html', {'form': form})
+    return render(request, 'Game/game_form.html', {'form': form})
 
 def gameList(request):
     games = Game.objects.all() 
-    return render(request, 'gameList.html', {'games': games})
+    return render(request, 'Game/gameList.html', {'games': games})
 
 def dashboard(request):
-    return render(request, 'dashboard.html')
+    return render(request, 'Game/dashboard.html')
 
 def is_admin(user):
     return user.is_superuser
@@ -121,7 +121,7 @@ def create_game(request):
         messages.success(request, 'Game đã được lưu vào bản nháp!')
         return redirect('ProjectWebGame:game_list') 
     else:
-        return render(request, 'create_game_form.html')
+        return render(request, 'Game/create_game_form.html')
 
 @login_required
 def add_review(request, game_id):
@@ -136,7 +136,7 @@ def add_review(request, game_id):
         )
         review.save()
         messages.success(request, 'Bình luận đã được lưu vào bản nháp!')
-        return redirect('game_detail', game_id=game.id)
+        return redirect('Game/game_detail', game_id=game.id)
 
 @login_required
 def publish_draft(request, draft_id, is_game=True):
