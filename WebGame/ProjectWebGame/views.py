@@ -102,18 +102,20 @@ def is_admin(user):
     return user.is_superuser
 
 @login_required
-@user_passes_test(is_admin)
+@user_passes_test(lambda u: u.is_superuser)
 def create_game(request):
     if request.method == 'POST':
         game = Game(
             name=request.POST['name'],
             description=request.POST['description'],
-            developer=request.user, 
-            is_published=False  
+            developer=request.user,
+            is_published=False  # Đặt chế độ nháp
         )
         game.save()
         messages.success(request, 'Game đã được lưu vào bản nháp!')
-        return redirect('game.html') 
+        return redirect('ProjectWebGame:game_list') 
+    else:
+        return render(request, 'create_game_form.html')
 
 @login_required
 def add_review(request, game_id):

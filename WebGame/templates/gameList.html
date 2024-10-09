@@ -1,46 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    {% load static %}
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>List Game</title>
-    <script
-      type="module"
-      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
-    ></script>
-    <script
-      nomodule
-      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
-    ></script>
-    <!-- <link rel="stylesheet" href="{% static '' %}" /> -->
-</head>
-<body>
-    {% extends 'base.html' %}
-    {% block body_block %}
-    {% if messages %}
-    <div class="alert alert-info" role="alert">
-        {% for message in messages %}
-        {{ message }}<br />
-        {% endfor %}
-    </div>
-    {% endif %}
-    <h1>Welcome to Game List View</h1>
-
-    <div>
-        <a href="{% url 'ProjectWebGame:create_game' %}">Thêm Game</a> 
-    </div>
-    
-    <ul>
-        {% for game in games %}
-        <li>
-            <a href="{% url 'ProjectWebGame:game_detail' game.id %}">{{ game.name }}</a>
-        </li>
-        {% empty %}
-        <li>Không có game nào trong danh sách.</li>
-        {% endfor %}
-    </ul>
-
-    {% endblock %}
-</body>
-</html>
+{% extends 'base.html' %} {% block body_block %} 
+<h1>Welcome to Game List View</h1>
+<ul>
+  {% for game in games %}
+  <li>
+    <a href="{% url 'ProjectWebGame:game_detail' game.id %}">{{ game.name }}</a>
+  </li>
+  {% empty %}
+  <li>Không có game nào trong danh sách.</li>
+  {% endfor %}
+</ul>
+<div>
+  <a href="{% url 'ProjectWebGame:create_game' %}">Thêm Game</a>
+</div>
+{% endblock %}
