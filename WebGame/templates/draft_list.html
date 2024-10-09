@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block body_block %}
+
+<h1>Drafts</h1>
+<ul>
+    {% for draft in drafts %}
+        <li>{{ draft.title }} - {{ draft.created_at }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

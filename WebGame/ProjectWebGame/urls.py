@@ -17,4 +17,5 @@ urlpatterns = [
     path('publish_draft/<int:draft_id>/', views.publish_draft, name='publish_draft'),   
     path('gamelist/', views.game, name='gameList'),  
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('draft_list/', views.DraftListView, name='draft_list'),
 ]
