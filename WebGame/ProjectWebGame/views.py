@@ -13,31 +13,34 @@ def index(request):
 def register(request):
     if request.method == 'POST':
         user_form = UserForm(data=request.POST)
-        profile_form = UserProfileForm(data=request.POST)
+        profile_form = UserProfileForm(data=request.POST, files=request.FILES)
 
+        # Kiểm tra tính hợp lệ của các biểu mẫu
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save(commit=False)
-            user.set_password(user_form.cleaned_data['password']) 
+            user.set_password(user_form.cleaned_data['password'])
             user.save()
 
             profile = profile_form.save(commit=False)
-            profile.user = user 
-            if 'user_pic' in request.FILES:
-                profile.user_pic = request.FILES['user_pic']
-            profile.save() 
+            profile.user = user  
+            profile.save()  
 
-            messages.success(request, 'Đăng ký thành công!') 
-            return redirect('ProjectWebGame:index') 
+            messages.success(request, 'Đăng ký thành công!')  
+            return redirect('ProjectWebGame:index')  
 
+        # Nếu có lỗi, hiển thị thông báo lỗi
         else:
             for error in user_form.non_field_errors():
                 messages.error(request, error)
             for field in user_form:
                 for error in field.errors:
                     messages.error(request, error)
+            for field in profile_form:
+                for error in field.errors:
+                    messages.error(request, error)
 
     else:
-        user_form = UserForm()
+        user_form = UserForm() 
         profile_form = UserProfileForm()
 
     return render(request, 'register.html', {
@@ -57,26 +60,23 @@ def user_logout(request):
 def user_login(request):
     if request.user.is_authenticated:
         messages.info(request, 'Bạn đã đăng nhập rồi!')
-        # return HttpResponseRedirect(reverse('ProjectWebGame:index'))
-
+        return redirect('ProjectWebGame:index')  
+    
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-
         user = authenticate(username=username, password=password)
 
         if user is not None:
             if user.is_active:
                 login(request, user)
                 messages.success(request, 'Đăng nhập thành công!')
-                return HttpResponseRedirect(reverse('ProjectWebGame:index'))
+                return redirect('ProjectWebGame:index') 
             else:
                 messages.error(request, 'Tài khoản của bạn đã bị vô hiệu hóa.')
-                return HttpResponse('Account not activated')
         else:
             messages.error(request, 'Tên đăng nhập hoặc mật khẩu không chính xác.')
-            return HttpResponse('Invalid login details supplied!')
-
+    
     return render(request, 'login.html')
 
 def contact(request):
