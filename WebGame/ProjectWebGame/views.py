@@ -5,7 +5,7 @@ from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponseRedirect,HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .models import Game, Review
+from .models import Game, Review, Draft
 
 def index(request):
     return render(request, 'index.html')
@@ -151,3 +151,7 @@ def publish_draft(request, draft_id, is_game=True):
         review.save()
         messages.success(request, 'Bình luận đã được công khai!')
     return redirect('dashboard')
+
+def DraftListView(request):
+    drafts = Draft.objects.all()
+    return render(request, 'draft_list.html', {'drafts': drafts})
