@@ -1,5 +1,5 @@
-from django.shortcuts import render, redirect,get_object_or_404
 from .form import UserForm, UserProfileForm, GameForm
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponseRedirect,HttpResponse
