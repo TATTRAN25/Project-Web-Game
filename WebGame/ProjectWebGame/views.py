@@ -88,6 +88,7 @@ def productDetails(request):
 def game(request):
     return render(request, 'game.html')
 
+@login_required
 def game_form(request):
     form = GameForm()
     if request.method == 'POST':
@@ -96,6 +97,7 @@ def game_form(request):
         form = GameForm()
     return render(request, 'game_form.html', {'form': form})
 
+@login_required
 def create_game(request):
     if request.method == 'POST':
         game = Game(
