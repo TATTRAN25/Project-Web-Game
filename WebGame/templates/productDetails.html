@@ -33,29 +33,35 @@ https://templatemo.com/tm-589-lugx-gaming
   <!-- ***** Header Area Start ***** -->
   <header class="header-area header-sticky">
     <div class="container">
-      <div class="row">
-        <div class="col-12">
-          <nav class="main-nav">
-            <!-- ***** Logo Start ***** -->
-            <a href="index.html" class="logo">
-              <img src="{% static 'images/logo.jpg' %}" alt="" style="width: 158px;">
-            </a>
-            <!-- ***** Logo End ***** -->
-            <!-- ***** Menu Start ***** -->
-            <ul class="nav">
-              <li><a href="{% url 'ProjectWebGame:index' %}" >Home</a></li>
-              <li><a href="{% url 'ProjectWebGame:game' %}">Our Game</a></li>
-              <li><a href="{% url 'ProjectWebGame:productDetails' %}" class="active">Product Details</a></li>
-              <li><a href="{% url 'ProjectWebGame:contact' %}">Contact Us</a></li>
-              <li><a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a></li>
-            </ul>
-            <a class='menu-trigger'>
-              <span>Menu</span>
-            </a>
-            <!-- ***** Menu End ***** -->
-          </nav>
+        <div class="row">
+            <div class="col-12">
+                <nav class="main-nav">
+                    <!-- ***** Logo Start ***** -->
+                    <a href="{% url 'ProjectWebGame:index' %}" class="logo">
+                        <img src="{% static 'images/logo.png' %}" alt="" style="width: 158px;">
+                    </a>
+                    <!-- ***** Logo End ***** -->
+                    <!-- ***** Menu Start ***** -->
+                    <ul class="nav">
+                        <li><a href="{% url 'ProjectWebGame:index' %}" class="active">Home</a></li>
+                        <li><a href="{% url 'ProjectWebGame:game' %}">Our Game</a></li>
+                        <li><a href="{% url 'ProjectWebGame:productDetails' %}">Product Details</a></li>
+                        <li><a href="{% url 'ProjectWebGame:contact' %}">Contact Us</a></li>
+                        {% if user.is_authenticated %}
+                            <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li>  <!-- In đậm và trắng -->
+                            <li><a href="{% url 'ProjectWebGame:logout' %}">Logout</a></li>
+                        {% else %}
+                            <li style="color: white; font-weight: bold;">Welcome User: None</li>  <!-- In đậm và trắng -->
+                            <li><a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a></li>
+                        {% endif %}
+                    </ul>
+                    <a class='menu-trigger'>
+                        <span>Menu</span>
+                    </a>
+                    <!-- ***** Menu End ***** -->
+                </nav>
+            </div>
         </div>
-      </div>
     </div>
   </header>
   <!-- ***** Header Area End ***** -->
