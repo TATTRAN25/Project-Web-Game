@@ -1,10 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from .form import UserForm, UserProfileForm
 from django.contrib import messages
 from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponseRedirect,HttpResponse
 from django.urls import reverse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Game, Review
 
 def index(request):
@@ -13,31 +13,34 @@ def index(request):
 def register(request):
     if request.method == 'POST':
         user_form = UserForm(data=request.POST)
-        profile_form = UserProfileForm(data=request.POST)
+        profile_form = UserProfileForm(data=request.POST, files=request.FILES)
 
+        # Kiểm tra tính hợp lệ của các biểu mẫu
         if user_form.is_valid() and profile_form.is_valid():
             user = user_form.save(commit=False)
-            user.set_password(user_form.cleaned_data['password']) 
+            user.set_password(user_form.cleaned_data['password'])
             user.save()
 
             profile = profile_form.save(commit=False)
-            profile.user = user 
-            if 'user_pic' in request.FILES:
-                profile.user_pic = request.FILES['user_pic']
-            profile.save() 
+            profile.user = user  
+            profile.save()  
 
-            messages.success(request, 'Đăng ký thành công!') 
-            return redirect('ProjectWebGame:index') 
+            messages.success(request, 'Đăng ký thành công!')  
+            return redirect('ProjectWebGame:index')  
 
+        # Nếu có lỗi, hiển thị thông báo lỗi
         else:
             for error in user_form.non_field_errors():
                 messages.error(request, error)
             for field in user_form:
                 for error in field.errors:
                     messages.error(request, error)
+            for field in profile_form:
+                for error in field.errors:
+                    messages.error(request, error)
 
     else:
-        user_form = UserForm()
+        user_form = UserForm() 
         profile_form = UserProfileForm()
 
     return render(request, 'register.html', {
@@ -57,26 +60,23 @@ def user_logout(request):
 def user_login(request):
     if request.user.is_authenticated:
         messages.info(request, 'Bạn đã đăng nhập rồi!')
-        # return HttpResponseRedirect(reverse('ProjectWebGame:index'))
-
+        return redirect('ProjectWebGame:index')  
+    
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-
         user = authenticate(username=username, password=password)
 
         if user is not None:
             if user.is_active:
                 login(request, user)
                 messages.success(request, 'Đăng nhập thành công!')
-                return HttpResponseRedirect(reverse('ProjectWebGame:index'))
+                return redirect('ProjectWebGame:index') 
             else:
                 messages.error(request, 'Tài khoản của bạn đã bị vô hiệu hóa.')
-                return HttpResponse('Account not activated')
         else:
             messages.error(request, 'Tên đăng nhập hoặc mật khẩu không chính xác.')
-            return HttpResponse('Invalid login details supplied!')
-
+    
     return render(request, 'login.html')
 
 def contact(request):
@@ -91,28 +91,33 @@ def game(request):
 def create_game_form(request):
     return render(request, 'create_game_form.html')
 
+def is_admin(user):
+    return user.is_superuser
+
+@login_required
+@user_passes_test(is_admin)
 def create_game(request):
     if request.method == 'POST':
         game = Game(
             name=request.POST['name'],
             description=request.POST['description'],
             developer=request.user, 
-            is_published=False
+            is_published=False  
         )
         game.save()
         messages.success(request, 'Game đã được lưu vào bản nháp!')
-        return redirect(request,'game_list')
+        return redirect('game.html') 
 
 @login_required
 def add_review(request, game_id):
-    game = Game.objects.get(id=game_id)
+    game = get_object_or_404(Game, id=game_id)
     if request.method == 'POST':
         review = Review(
             user=request.user,
             game=game,
             content=request.POST['content'],
             rating=request.POST['rating'],
-            is_published=False 
+            is_published=False  
         )
         review.save()
         messages.success(request, 'Bình luận đã được lưu vào bản nháp!')
@@ -121,13 +126,13 @@ def add_review(request, game_id):
 @login_required
 def publish_draft(request, draft_id, is_game=True):
     if is_game:
-        game = Game.objects.get(id=draft_id)
+        game = get_object_or_404(Game, id=draft_id)
         game.is_published = True
         game.save()
         messages.success(request, 'Game đã được công khai!')
     else:
-        review = Review.objects.get(id=draft_id)
+        review = get_object_or_404(Review, id=draft_id)
         review.is_published = True
         review.save()
         messages.success(request, 'Bình luận đã được công khai!')
-    return redirect('dashboard') 
+    return redirect('dashboard')
