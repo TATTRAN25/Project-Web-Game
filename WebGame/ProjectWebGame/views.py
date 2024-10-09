@@ -1,10 +1,15 @@
+<<<<<<< HEAD
 from django.shortcuts import render, redirect
 from .form import UserForm, UserProfileForm, GameForm
+=======
+from django.shortcuts import render, redirect,get_object_or_404
+from .form import UserForm, UserProfileForm
+>>>>>>> django/3-TAT
 from django.contrib import messages
 from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponseRedirect,HttpResponse
 from django.urls import reverse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Game, Review
 
 def index(request):
@@ -96,28 +101,33 @@ def create_game_form(request):
         form = GameForm()
     return render(request, 'create_game_form.html', {'form': form})
 
+def is_admin(user):
+    return user.is_superuser
+
+@login_required
+@user_passes_test(is_admin)
 def create_game(request):
     if request.method == 'POST':
         game = Game(
             name=request.POST['name'],
             description=request.POST['description'],
             developer=request.user, 
-            is_published=False
+            is_published=False  
         )
         game.save()
         messages.success(request, 'Game đã được lưu vào bản nháp!')
-        return redirect(request,'game_list')
+        return redirect('game.html') 
 
 @login_required
 def add_review(request, game_id):
-    game = Game.objects.get(id=game_id)
+    game = get_object_or_404(Game, id=game_id)
     if request.method == 'POST':
         review = Review(
             user=request.user,
             game=game,
             content=request.POST['content'],
             rating=request.POST['rating'],
-            is_published=False 
+            is_published=False  
         )
         review.save()
         messages.success(request, 'Bình luận đã được lưu vào bản nháp!')
@@ -126,13 +136,13 @@ def add_review(request, game_id):
 @login_required
 def publish_draft(request, draft_id, is_game=True):
     if is_game:
-        game = Game.objects.get(id=draft_id)
+        game = get_object_or_404(Game, id=draft_id)
         game.is_published = True
         game.save()
         messages.success(request, 'Game đã được công khai!')
     else:
-        review = Review.objects.get(id=draft_id)
+        review = get_object_or_404(Review, id=draft_id)
         review.is_published = True
         review.save()
         messages.success(request, 'Bình luận đã được công khai!')
-    return redirect('dashboard') 
+    return redirect('dashboard')
