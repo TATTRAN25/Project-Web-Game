@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
     rel="stylesheet">
 
-  <title>Lugx Gaming - Shop Page</title>
+  <title>Lugx Gaming - Game Page</title>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
@@ -38,8 +38,8 @@
                     <!-- ***** Logo End ***** -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
-                        <li><a href="{% url 'ProjectWebGame:index' %}" class="active">Home</a></li>
-                        <li><a href="{% url 'ProjectWebGame:game' %}">Our Game</a></li>
+                        <li><a href="{% url 'ProjectWebGame:index' %}" >Home</a></li>
+                        <li><a href="{% url 'ProjectWebGame:game' %}" class="active">Our Game</a></li>
                         <li><a href="{% url 'ProjectWebGame:productDetails' %}">Product Details</a></li>
                         <li><a href="{% url 'ProjectWebGame:contact' %}">Contact Us</a></li>
                         {% if user.is_authenticated %}
