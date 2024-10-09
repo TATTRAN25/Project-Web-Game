@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <<<<<<< HEAD
@@ -133,4 +134,18 @@
     {% endblock %}
   </body>
 </html>
+>>>>>>> django/3-TAT
+=======
+{% extends 'base.html' %} {% block body_block %}
+<div class="container">
+  <h1>Create a New Game</h1>
+  <form method="post">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit">Create</button>
+    {% if form.errors %}
+    <div class="error">Please correct the errors above.</div>
+    {% endif %}
+  </form>
+</div>
+{% endblock %}
 >>>>>>> django/3-TAT
