@@ -91,6 +91,13 @@ def game(request):
 def create_game_form(request):
     return render(request, 'create_game_form.html')
 
+def gameList(request):
+    games = Game.objects.all() 
+    return render(request, 'gameList.html', {'games': games})
+
+def dashboard(request):
+    return render(request, 'dashboard.html')
+
 def is_admin(user):
     return user.is_superuser
 
