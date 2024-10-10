@@ -88,20 +88,6 @@ def productDetails(request):
 def game(request):
     return render(request, 'Home/game.html')
 
-@login_required
-def game_form(request):
-    form = GameForm()
-    if request.method == 'POST':
-        form = GameForm(request.POST)
-        if form.is_valid():
-            game = form.save(commit=False)
-            game.save()
-            messages.success(request, 'Game đã được lưu!')
-            return redirect('ProjectWebGame:game_list')
-    else:
-        form = GameForm()
-    return render(request, 'Game/game_form.html', {'form': form})
-
 def gameList(request):
     games = Game.objects.all() 
     return render(request, 'Game/gameList.html', {'games': games})
@@ -114,22 +100,17 @@ def is_admin(user):
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
-def create_game(request):
+def game_form(request):
+    form = GameForm()
     if request.method == 'POST':
-        game = Game(
-            name=request.POST['name'],
-            developer=request.user,
-            category=request.POST['category'],
-            description=request.POST['description'],
-            image=request.FILES['image'],
-            link_dowload=request.POST['link_dowload'],
-            is_published=False  # Đặt chế độ nháp
-        )
-        game.save()
-        messages.success(request, 'Game đã được lưu vào bản nháp!')
-        return redirect('ProjectWebGame:game_list') 
+        form = GameForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Game đã được lưu vào bản nháp!')
+            return redirect('ProjectWebGame:game_list') 
     else:
-        return render(request, 'Game/create_game_form.html')
+        form = GameForm()
+        return render(request, 'Game/game_form.html', {'form': form})
 
 @login_required
 def add_review(request, game_id):

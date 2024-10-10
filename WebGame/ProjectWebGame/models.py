@@ -36,7 +36,7 @@ class Game(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to='game_pic', blank=True)
     link_dowload = models.URLField(blank=True)
-    release_date = models.DateField()
+    release_date = models.DateField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=False)
