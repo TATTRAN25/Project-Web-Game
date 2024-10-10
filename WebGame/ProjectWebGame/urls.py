@@ -1,5 +1,7 @@
 from django.urls import path
 from ProjectWebGame import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = "ProjectWebGame"
 
@@ -7,7 +9,7 @@ urlpatterns = [
     # url home page
     path('index/',views.index,name='index'),
     path('contact/',views.contact,name='contact'),
-    path('productDetails/',views.productDetails,name='productDetails'),
+    path('productDetails/<int:id>/', views.productDetails, name='productDetails'),
     path('game/',views.game,name='game'),
     # url user
     path('login/', views.special, name='login'),
@@ -29,3 +31,6 @@ urlpatterns = [
     path('category/edit/<int:category_id>/', views.edit_category, name='edit_category'),
     path('category/delete/<int:category_id>/', views.delete_category, name='delete_category'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

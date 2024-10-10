@@ -22,17 +22,6 @@
         <div class="form-value">
           <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-
-            <!-- Hiển thị thông báo lỗi -->
-            {% if messages %}
-              <div class="alert-container">
-                {% for message in messages %}
-                  <div class="alert" style="color: white">
-                    {{ message }}
-                  </div>
-                {% endfor %}
-              </div>
-            {% endif %}
             
             <h2>Register</h2>
             <!-- Trường Username -->

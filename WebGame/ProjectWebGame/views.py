@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect,HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Game, Review, Developer, Category
+from django.core.paginator import Paginator
 
 def index(request):
     return render(request, 'Home/index.html')
@@ -82,11 +83,44 @@ def user_login(request):
 def contact(request):
     return render(request, 'Home/contact.html')
 
-def productDetails(request):
-    return render(request, 'Home/productDetails.html')
+def productDetails(request, id):
+    game = get_object_or_404(Game, id=id)
+    
+    related_games = Game.objects.filter(category=game.category).exclude(id=game.id)[:3] 
+
+    # Kiểm tra nếu người dùng không đăng nhập và cố gắng tải game
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            messages.error(request, "You need to log in to download this game.")
+            return redirect('login')  # Thay 'login' bằng tên URL của trang đăng nhập nếu khác
+
+    return render(request, 'Home/productDetails.html', {
+        'game': game,
+        'related_games': related_games 
+    })
 
 def game(request):
-    return render(request, 'Home/game.html')
+    search_query = request.GET.get('search', '')  # Lấy tham số tìm kiếm
+    category_id = request.GET.get('category')  # Lấy tham số category
+
+    if search_query:
+        game_list = Game.objects.filter(name__icontains=search_query)
+    elif category_id:
+        game_list = Game.objects.filter(category_id=category_id)  # Lọc theo category
+    else:
+        game_list = Game.objects.all()  # Lấy tất cả nếu không có tìm kiếm hoặc category
+
+    paginator = Paginator(game_list, 4) 
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    
+    categories = Category.objects.all() 
+
+    return render(request, 'Home/game.html', {
+        'page_obj': page_obj, 
+        'search_query': search_query,
+        'categories': categories 
+    })
 
 @login_required
 def game_form(request):
