@@ -100,17 +100,36 @@ def is_admin(user):
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
-def game_form(request):
+def create_game(request):
     form = GameForm()
     if request.method == 'POST':
         form = GameForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, 'Game đã được lưu vào bản nháp!')
-            return redirect('ProjectWebGame:game_list') 
+            return redirect("ProjectWebGame:gameList")
     else:
         form = GameForm()
         return render(request, 'Game/game_form.html', {'form': form})
+    
+def update_game(request, pk):
+    game = get_object_or_404(Game, pk=pk)
+    if request.method == 'POST':
+        form = GameForm(request.POST, instance=game)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Game đã được cập nhật!')
+            return redirect('ProjectWebGame:gameList')
+    else:
+        form = GameForm(instance=game)
+        return render(request, 'Game/game_form.html', {'form': form})
+
+def delete_game(request, pk):
+    game = get_object_or_404(Game, pk=pk)
+    game.delete()
+    messages.success(request, 'Game đã xóa thành công!')
+    return redirect('ProjectWebGame:gameList')
+
 
 @login_required
 def add_review(request, game_id):
