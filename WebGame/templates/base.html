@@ -1,7 +1,7 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    {% load static %}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
@@ -57,13 +57,13 @@
                 </li>
                 {% if user.is_authenticated %}
                 <li style="color: white; font-weight: bold">
-                  Welcome User: {{ user.username }}
+                  {{ user.username }}
                 </li>
                 <!-- In đậm và trắng -->
                 <li><a href="{% url 'ProjectWebGame:logout' %}">Logout</a></li>
                 {% else %}
                 <li style="color: white; font-weight: bold">
-                  Welcome User: None
+                  None
                 </li>
                 <!-- In đậm và trắng -->
                 <li>
@@ -87,13 +87,14 @@
           <div class="col-lg-6 align-self-center">
             <div class="caption header-text">
               <div class="container my-4">
-                {% block body_block %} {% endblock %}
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+    {% block body_block %}
+    {% endblock %}
 
     <footer>
       <div class="container">
