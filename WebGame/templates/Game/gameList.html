@@ -27,11 +27,13 @@
     <th>Action</th>
   </tr>
   {% for game in games %}
-  <tr>
-    <td>{{ game.id }}</td>
-    <td href="#">{{ game.name }}</td>
-    <td><a href="{% url 'ProjectWebGame:update_game' game.id %}"><i class="fa-solid fa-pen-to-square text-warning"></i></a> | <a href="{% url 'ProjectWebGame:delete_game' game.id %}"><i class="fa-solid fa-trash text-danger"></i></a></td>
-  </tr>
+    {% if game.is_published %}
+      <tr>
+        <td>{{ game.id }}</td>
+        <td href="#">{{ game.name }}</td>
+        <td><a href="{% url 'ProjectWebGame:update_game' game.id %}"><i class="fa-solid fa-pen-to-square text-warning"></i></a> | <a href="{% url 'ProjectWebGame:delete_game' game.id %}"><i class="fa-solid fa-trash text-danger"></i></a></td>
+      </tr>
+    {% endif %}
   {% empty %}
   <li>Không có game nào trong danh sách.</li>
   {% endfor %}
