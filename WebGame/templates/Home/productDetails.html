@@ -5,7 +5,8 @@
   {% load static %}
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
   <title>Lugx Gaming - Product Detail</title>
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -33,11 +34,11 @@
               <li><a href="{% url 'ProjectWebGame:game' %}">Our Game</a></li>
               <li><a href="{% url 'ProjectWebGame:contact' %}">Contact Us</a></li>
               {% if user.is_authenticated %}
-                <li style="color: white; font-weight: bold">Welcome, {{ user.username }}</li>
-                <li><a href="{% url 'ProjectWebGame:logout' %}">Logout</a></li>
+              <li style="color: white; font-weight: bold">Welcome, {{ user.username }}</li>
+              <li><a href="{% url 'ProjectWebGame:logout' %}">Logout</a></li>
               {% else %}
-                <li style="color: white; font-weight: bold">Welcome User: Guest</li>
-                <li><a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a></li>
+              <li style="color: white; font-weight: bold">Welcome User: Guest</li>
+              <li><a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a></li>
               {% endif %}
             </ul>
             <a class='menu-trigger'><span>Menu</span></a>
@@ -54,8 +55,8 @@
         <div class="col-lg-12">
           <h3>{{ game.name }}</h3>
           <span class="breadcrumb" style="background-color: transparent;">
-            <a href="{% url 'ProjectWebGame:index' %}">Home</a> > 
-            <a href="{% url 'ProjectWebGame:game' %}">Our Game</a> > 
+            <a href="{% url 'ProjectWebGame:index' %}">Home</a> >
+            <a href="{% url 'ProjectWebGame:game' %}">Our Game</a> >
             {{ game.name }}
           </span>
         </div>
@@ -68,7 +69,11 @@
       <div class="row">
         <div class="col-lg-6">
           <div class="left-image">
+            {% if game.image %}
             <img src="{{ game.image.url }}" alt="{{ game.name }}">
+            {% else %}
+            <img src="{% static 'images/default.png' %}" alt="No image available">
+            {% endif %}
           </div>
         </div>
         <div class="col-lg-6 align-self-center">
@@ -77,15 +82,15 @@
           <p>{{ game.description }}</p>
 
           {% if user.is_authenticated %}
-            <a href="{{ game.link_download }}" class="btn btn-primary">
-              <i class="fas fa-arrow-circle-down"></i> DOWNLOAD NOW!
-            </a>
+          <a href="{{ game.link_download }}" class="btn btn-primary">
+            <i class="fas fa-arrow-circle-down"></i> DOWNLOAD NOW!
+          </a>
           {% else %}
-            <a href="{% url 'ProjectWebGame:user_login' %}" class="btn btn-secondary">
-              You need to log in to download
-            </a>
+          <a href="{% url 'ProjectWebGame:user_login' %}" class="btn btn-secondary">
+            You need to log in to download
+          </a>
           {% endif %}
-          
+
           <ul>
             <li><span>Game ID:</span> {{ game.id }}</li>
             <li><span>Studio:</span> {{ game.developer }}</li>
@@ -101,91 +106,93 @@
 
   <div class="more-info">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="tabs-content">
-                    <div class="row">
-                        <div class="nav-wrapper">
-                            <ul class="nav nav-tabs" role="tablist">
-                                <li class="nav-item">
-                                    <button class="nav-link active" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="true">Reviews</button>
-                                </li>
-                            </ul>
-                            <div class="tab-content" id="myTabContent">
-                                <div class="tab-pane fade show active" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
-                                    <h5>Leave a Review</h5>
-                                    <form method="POST" action="">
-                                        {% csrf_token %}
-                                        <div class="form-group">
-                                            <label for="rating">Rating (0-10):</label>
-                                            <input type="number" id="rating" name="rating" class="form-control" min="0" max="10" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="comment">Your Comment:</label>
-                                            <textarea id="comment" name="comment" class="form-control" rows="4" required></textarea>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Submit Review</button>
-                                    </form>
-                                    <hr>
-                                    <h5>Existing Reviews</h5>
-                                    {% for review in game.reviews.all %}
-                                        <div class="review">
-                                            <strong>{{ review.user.username }}:</strong>
-                                            <p>Rating: {{ review.rating }}/10</p>
-                                            <p>{{ review.comment }}</p>
-                                        </div>
-                                        <hr>
-                                    {% empty %}
-                                        <p>No reviews yet. Be the first to leave a review!</p>
-                                    {% endfor %}
-                                </div>
-                            </div>
-                        </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="tabs-content">
+            <div class="row">
+              <div class="nav-wrapper">
+                <ul class="nav nav-tabs" role="tablist">
+                  <li class="nav-item">
+                    <button class="nav-link active" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews"
+                      type="button" role="tab" aria-controls="reviews" aria-selected="true">Reviews</button>
+                  </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                  <div class="tab-pane fade show active" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+                    <h5>Leave a Review</h5>
+                    <form method="POST" action="">
+                      {% csrf_token %}
+                      <div class="form-group">
+                        <label for="rating">Rating (0-10):</label>
+                        <input type="number" id="rating" name="rating" class="form-control" min="0" max="10" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="comment">Your Comment:</label>
+                        <textarea id="comment" name="comment" class="form-control" rows="4" required></textarea>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </form>
+                    <hr>
+                    <h5>Existing Reviews</h5>
+                    {% for review in game.reviews.all %}
+                    <div class="review">
+                      <strong>{{ review.user.username }}:</strong>
+                      <p>Rating: {{ review.rating }}/10</p>
+                      <p>{{ review.comment }}</p>
                     </div>
+                    <hr>
+                    {% empty %}
+                    <p>No reviews yet. Be the first to leave a review!</p>
+                    {% endfor %}
+                  </div>
                 </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
   </div>
 
   <div class="section categories related-games">
     <div class="container">
-        <div class="row">
-            <div class="col-lg-6">
-                <div class="section-heading">
-                    <h6>Action</h6>
-                    <h2>Related Games</h2>
-                </div>
-            </div>
-            <div class="col-lg-6">
-                <div class="main-button">
-                    <a href="{% url 'ProjectWebGame:game' %}">View All</a>
-                </div>
-            </div>
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="section-heading">
+            <h6>Action</h6>
+            <h2>Related Games</h2>
+          </div>
         </div>
-        <div class="row">
-            {% for related_game in related_games %}
-            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
-                <div class="item">
-                    <h4>{{ related_game.name }}</h4>
-                    <div class="thumb">
-                        <a href="{% url 'ProjectWebGame:productDetails' related_game.id %}">
-                            <img src="{{ related_game.image.url }}" alt="{{ related_game.name }}">
-                        </a>
-                    </div>
-                </div>
-            </div>
-            {% empty %}
-            <p>No related games found.</p>
-            {% endfor %}
+        <div class="col-lg-6">
+          <div class="main-button">
+            <a href="{% url 'ProjectWebGame:game' %}">View All</a>
+          </div>
         </div>
+      </div>
+      <div class="row">
+        {% for related_game in related_games %}
+        <div class="col-lg-4 col-md-6 col-sm-6 col-xs-12">
+          <div class="item">
+            <h4>{{ related_game.name }}</h4>
+            <div class="thumb">
+              <a href="{% url 'ProjectWebGame:productDetails' related_game.id %}">
+                <img src="{{ related_game.image.url }}" alt="{{ related_game.name }}">
+              </a>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <p>No related games found.</p>
+        {% endfor %}
+      </div>
     </div>
   </div>
 
   <footer>
     <div class="container">
       <div class="col-lg-12">
-        <p>Copyright © 2048 LUGX Gaming Company. All rights reserved. &nbsp;&nbsp; <a rel="nofollow" href="https://templatemo.com" target="_blank">Design: Stolen By ShibaInu</a></p>
+        <p>Copyright © 2048 LUGX Gaming Company. All rights reserved. &nbsp;&nbsp; <a rel="nofollow"
+            href="https://templatemo.com" target="_blank">Design: Stolen By ShibaInu</a></p>
       </div>
     </div>
   </footer>

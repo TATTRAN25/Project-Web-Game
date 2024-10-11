@@ -137,7 +137,7 @@ def is_admin(user):
 def create_game(request):
     form = GameForm()
     if request.method == 'POST':
-        form = GameForm(request.POST)
+        form = GameForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
             messages.success(request, 'Game đã được lưu vào bản nháp!')
