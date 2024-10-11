@@ -10,7 +10,7 @@
     {% block body_block %}
 <div class="container">
   <h1>Category List</h1>
-  <a href="{% url 'ProjectWebGame:add_category' %}" class="btn btn-primary">Add Category</a>
+  <a href="{% url 'Home:add_category' %}" class="btn btn-primary">Add Category</a>
   <table class="table">
     <thead>
       <tr>
@@ -25,8 +25,8 @@
         <td>{{ category.name }}</td>
         <td>{{ category.description }}</td>
         <td>
-          <a href="{% url 'ProjectWebGame:edit_category' category.id %}" class="btn btn-warning">Edit</a>
-          <a href="{% url 'ProjectWebGame:delete_category' category.id %}" class="btn btn-danger">Delete</a>
+          <a href="{% url 'Home:edit_category' category.id %}" class="btn btn-warning">Edit</a>
+          <a href="{% url 'Home:delete_category' category.id %}" class="btn btn-danger">Delete</a>
         </td>
       </tr>
       {% endfor %}

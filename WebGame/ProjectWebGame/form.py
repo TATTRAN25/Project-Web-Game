@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
+from ProjectWebGame.models import UserProfileInfo, Game
+from .models import Comment
 from ProjectWebGame.models import UserProfileInfo, Game, Developer, Category
 
 class UserForm(forms.ModelForm):
@@ -19,6 +21,14 @@ class GameForm(forms.ModelForm):
         model = Game
         exclude = ['release_date','created_at', 'updated_at', 'is_published']
 
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['text']
+
+        widgets = {
+            'text': forms.Textarea(attrs={'class': 'editable medium-editor-textarea', 'rows': 1, 'style': 'resize: none; height: auto;'}),
+        }
 class DeveloperForm(forms.ModelForm):
     class Meta:
         model = Developer

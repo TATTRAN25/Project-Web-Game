@@ -1,3 +1,4 @@
+{% comment %} {% extends 'Home/base.html' %} {% endcomment %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -14,6 +15,7 @@
   <link rel="stylesheet" href="{% static 'css/templatemo-lugx-gaming.css' %}">
   <link rel="stylesheet" href="{% static 'css/owl.css' %}">
   <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
   <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
 </head>
 
@@ -25,19 +27,19 @@
       <div class="row">
         <div class="col-12">
           <nav class="main-nav">
-            <a href="{% url 'ProjectWebGame:index' %}" class="logo">
+            <a href="{% url 'Home:index' %}" class="logo">
               <img src="{% static 'images/logo.png' %}" alt="Logo" style="width: 158px;">
             </a>
             <ul class="nav">
-              <li><a href="{% url 'ProjectWebGame:index' %}">Home</a></li>
-              <li><a href="{% url 'ProjectWebGame:game' %}">Our Game</a></li>
-              <li><a href="{% url 'ProjectWebGame:contact' %}">Contact Us</a></li>
+              <li><a href="{% url 'Home:index' %}">Home</a></li>
+              <li><a href="{% url 'Home:game' %}">Our Game</a></li>
+              <li><a href="{% url 'Home:contact' %}">Contact Us</a></li>
               {% if user.is_authenticated %}
                 <li style="color: white; font-weight: bold">Welcome, {{ user.username }}</li>
-                <li><a href="{% url 'ProjectWebGame:logout' %}">Logout</a></li>
+                <li><a href="{% url 'Home:logout' %}">Logout</a></li>
               {% else %}
                 <li style="color: white; font-weight: bold">Welcome User: Guest</li>
-                <li><a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a></li>
+                <li><a href="{% url 'Home:user_login' %}">Sign In</a></li>
               {% endif %}
             </ul>
             <a class='menu-trigger'><span>Menu</span></a>
@@ -54,8 +56,8 @@
         <div class="col-lg-12">
           <h3>{{ game.name }}</h3>
           <span class="breadcrumb" style="background-color: transparent;">
-            <a href="{% url 'ProjectWebGame:index' %}">Home</a> > 
-            <a href="{% url 'ProjectWebGame:game' %}">Our Game</a> > 
+            <a href="{% url 'Home:index' %}">Home</a> > 
+            <a href="{% url 'Home:game' %}">Our Game</a> > 
             {{ game.name }}
           </span>
         </div>
@@ -115,33 +117,43 @@
                                     <button class="nav-link active" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="true">Reviews</button>
                                 </li>
                             </ul>
+
                             <div class="tab-content" id="myTabContent">
                                 <div class="tab-pane fade show active" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
                                     <h5>Leave a Review</h5>
-                                    <form method="POST" action="">
+                                    <form method="POST">
                                         {% csrf_token %}
-                                        <div class="form-group">
-                                            <label for="rating">Rating (0-10):</label>
-                                            <input type="number" id="rating" name="rating" class="form-control" min="0" max="10" required>
+                                        <div class="input-group">
+                                          {{ form.text }}
+                                          <span class="input-group-btn">
+                                              <button type="submit" class="btn btn-primary">Gửi</button>
+                                          </span>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="comment">Your Comment:</label>
-                                            <textarea id="comment" name="comment" class="form-control" rows="4" required></textarea>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Submit Review</button>
                                     </form>
                                     <hr>
                                     <h5>Existing Reviews</h5>
-                                    {% for review in game.reviews.all %}
-                                        <div class="review">
-                                            <strong>{{ review.user.username }}:</strong>
-                                            <p>Rating: {{ review.rating }}/10</p>
-                                            <p>{{ review.comment }}</p>
-                                        </div>
-                                        <hr>
+                                    {% for comment in comments %}
+                                    <div class="comment">
+                                      <div class="comment-header">
+                                          <strong>{{ comment.author.username }}</strong>
+                                          <span class="comment-date">Posted on: {{ comment.created_date|date:"l, j F Y" }}</span>
+                                      </div>
+                                      <p class="comment-text">{{ comment.text }}</p>
+                                      {% if request.user.is_authenticated %}
+                                          {% if request.user.is_staff or request.user == comment.author %}
+                                              <form method="POST" action="{% url 'ProjectWebGame:delete_comment' comment.id %}" style="display:inline;">
+                                                  {% csrf_token %}
+                                                  <button type="submit" class="btn btn-link delete-button" title="Delete comment">
+                                                      <i class="fas fa-trash"></i>
+                                                  </button>
+                                              </form>
+                                          {% endif %}
+                                      {% endif %}
+                                    </div>
+                                    <hr>
                                     {% empty %}
-                                        <p>No reviews yet. Be the first to leave a review!</p>
-                                    {% endfor %}
+                                    <p>No reviews yet. Be the first to leave a review!</p>
+                                    {% endfor %}                                
                                 </div>
                             </div>
                         </div>
@@ -150,7 +162,8 @@
             </div>
         </div>
     </div>
-  </div>
+</div>
+
 
   <div class="section categories related-games">
     <div class="container">
@@ -163,7 +176,7 @@
             </div>
             <div class="col-lg-6">
                 <div class="main-button">
-                    <a href="{% url 'ProjectWebGame:game' %}">View All</a>
+                    <a href="{% url 'Home:game' %}">View All</a>
                 </div>
             </div>
         </div>
@@ -173,7 +186,7 @@
                 <div class="item">
                     <h4>{{ related_game.name }}</h4>
                     <div class="thumb">
-                        <a href="{% url 'ProjectWebGame:productDetails' related_game.id %}">
+                        <a href="{% url 'Home:productDetails' related_game.id %}">
                             <img src="{{ related_game.image.url }}" alt="{{ related_game.name }}">
                         </a>
                     </div>

@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator
 from django.utils import timezone
+from django.urls import reverse
 
 class UserProfileInfo(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -44,24 +45,26 @@ class Game(models.Model):
     def __str__(self):
         return self.name
 
-class Review(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    game = models.ForeignKey(Game, on_delete=models.CASCADE)
-    content = models.TextField(blank=True)
-    rating = models.FloatField(null=True, validators=[MaxValueValidator(10)])
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-    is_published = models.BooleanField(default=False)
-    def __str__(self):
-        return f"{self.user} đánh giá {self.game}"
-    
 class Draft(models.Model):
-
     title = models.CharField(max_length=200)
-
     content = models.TextField()
-
     created_at = models.DateTimeField(default=timezone.now)
-
     def __str__(self):
-        return self.title
+        return self.title    
+    
+class Comment(models.Model):
+    game = models.ForeignKey(Game, related_name='comments', on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
+    created_date = models.DateTimeField(default=timezone.now)
+
+    def approve(self):
+        self.approved_comment = True
+        self.save()
+
+    def get_absolute_url(self):
+        return reverse("post_list")
+    
+    def __str__(self):
+        return self.text
+    
