@@ -45,53 +45,20 @@
               <!-- ***** Logo End ***** -->
               <!-- ***** Menu Start ***** -->
               <ul class="nav">
-                <li><a href="{% url 'ProjectWebGame:index' %}">Home</a></li>
+                <li><a href="{% url 'ProjectWebGame:index' %}" class="active">Home</a></li>
                 <li><a href="{% url 'ProjectWebGame:game' %}">Our Game</a></li>
-                <li>
-                  <a href="{% url 'ProjectWebGame:productDetails' %}"
-                    >Product Details</a
-                  >
-                </li>
-                <li>
-                  <a href="{% url 'ProjectWebGame:contact' %}">Contact Us</a>
-                </li>
+                <li><a href="{% url 'ProjectWebGame:productDetails' %}">Product Details</a></li>
+                <li><a href="{% url 'ProjectWebGame:contact' %}">Contact Us</a></li>
                 {% if user.is_authenticated %}
-                <li style="color: white; font-weight: bold">
-                  {{ user.username }}
-                </li>
-                <!-- In đậm và trắng -->
-                <li><a href="{% url 'ProjectWebGame:logout' %}">Logout</a></li>
+                <li><a href="{% url 'ProjectWebGame:post_new' %}" >New Post</a></li>
+                <li><a href="{% url 'ProjectWebGame:post_draft_list' %}">Drafts</a></li>
+                    <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li>  <!-- In đậm và trắng -->
+                    <li><a href="{% url 'ProjectWebGame:logout' %}">Logout</a></li>
                 {% else %}
-                <li style="color: white; font-weight: bold">
-                  None
-                </li>
-                <!-- In đậm và trắng -->
-                <li>
-                  <a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a>
-                </li>
+                    <li style="color: white; font-weight: bold;">Welcome User: None</li>  <!-- In đậm và trắng -->
+                    <li><a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a></li>
                 {% endif %}
-              </ul>
-              <ul class="nav navbar-nav navbar-right">
-                {% if user.is_authenticated %}
-                <li>
-                  <a href="{% url 'post_new' %}" >New Post</a>
-                </li>
-        
-                <li>
-                  <a href="{% url 'post_draft_list' %}">Drafts</a>
-                </li>
-                <li>
-                  <a href="{% url 'logout' %}" >Log out</a>
-                </li>
-        
-                <li>
-                  <a >Welcome: {{ user.username }}</a>
-                </li>
-                  {% else %}
-                  <li><a class='nav navbar-right' href="{% url 'login' %}" ><span class="glyphicon glyphicon-user"></span></a></li>
-                {% endif %}
-        
-              </ul>
+            </ul>
               <a class="menu-trigger">
                 <span>Menu</span>
               </a>
@@ -103,7 +70,7 @@
     </header>
     <!-- ***** Header Area End ***** -->
     <div class="main-banner">
-      <div class="container">
+      {% comment %} <div class="container">
         <div class="row">
           <div class="col-lg-6 align-self-center">
             <div class="caption header-text">
@@ -111,7 +78,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </div> {% endcomment %}
     </div>
     {% block body_block %}
     {% endblock %}

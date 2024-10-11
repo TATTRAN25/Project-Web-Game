@@ -19,9 +19,10 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     #path('draft_list/', views.DraftListView, name='draft_list'),
 
-    path('post/(?P<pk>\d+)', views.PostDetailView.as_view(), name='post_detail'),
+    path('post_list/', views.PostListView.as_view(), name='post_list'),
+    path('post/<int:pk>/', views.PostDetailView.as_view(), name='post_detail'),
     path('post/new/', views.CreatePostView.as_view(), name='post_new'),
-    path('post/(?P<pk>\d+)/edit/', views.PostUpdateView.as_view(), name='post_edit'),
+    path('post/<int:pk>/edit/', views.PostUpdateView.as_view(), name='post_edit'),
     path('drafts/', views.DraftListView.as_view(), name='post_draft_list'),
     path('post/(?P<pk>\d+)/remove/', views.PostDeleteView.as_view(), name='post_remove'),
     path('post/(?P<pk>\d+)/publish/', views.post_publish, name='post_publish'),

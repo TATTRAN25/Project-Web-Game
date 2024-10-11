@@ -1,0 +1,21 @@
+{% extends 'Home/base.html' %}
+
+{% block body_block %}
+<div class="centerstage">
+    {% if post_list %}
+    <p>Posts are available:</p>
+        {% for post in post_list %}
+            <div class="post">
+                <h1><a href="{% url 'ProjectWebGame:post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
+                <p>{{ post.text }}</p>
+                <div class="date">
+                    <p>Published on: {{ post.published_date|date:"D M Y"}}</p>
+                </div>
+                <a href="{% url 'ProjectWebGame:post_detail' pk=post.pk %}">Comments: {{ post.approve_comments.count }}</a>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No posts are available.</p>
+    {% endif %}
+    </div>
+{% endblock %}

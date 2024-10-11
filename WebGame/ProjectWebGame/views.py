@@ -7,9 +7,11 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Game, Review, Draft, Post, Comment
 from .form import PostForm, CommentForm
-from django.views.generic import (TemplateView, ListView, DeleteView, CreateView, UpdateView, UpdateView, DeleteView)
+from django.views.generic import (TemplateView, ListView, DeleteView, CreateView, UpdateView, UpdateView, DeleteView, DetailView)
 from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+app_name = 'ProjectWebGame'
 
 
 def index(request):
@@ -159,22 +161,26 @@ def publish_draft(request, draft_id, is_game=True):
 
 class PostListView(ListView):
     model = Post
+    template_name = 'ProjectWebGame/post_list.html'
+    context_object_name = 'post_list'
 
     def get_queryset(self):
-        return Post.object.filter(publish_date_lte = timezone.now()).order_by('publish_date')
+        return Post.objects.filter(published_date__lte = timezone.now()).order_by('published_date')
     
-class PostDetailView(ListView):
+class PostDetailView(DetailView):
     model = Post
+    template_name = 'ProjectWebGame/post_detail.html'
+    context_object_name = 'post'
 
 class CreatePostView(CreateView, LoginRequiredMixin):
     login_url = '/login/'
-    redirect_field_name = 'Home/post_detail.html'
-
+    redirect_field_name = 'redirect_to'
     form_class = PostForm
-
     model = Post
+    template_name = 'ProjectWebGame/post_form.html'
+    success_url = reverse_lazy('ProjectWebGame:post_list')
 
-class PostUpdateView(UpdateView, LoginRequiredMixin):
+class PostUpdateView(UpdateView, LoginRequiredMixin): 
     login_url = '/login/'
     redirect_field_name = 'Home/post_detail.html'
 
@@ -184,12 +190,12 @@ class PostUpdateView(UpdateView, LoginRequiredMixin):
 
 class DraftListView(LoginRequiredMixin, ListView):
     login_url = '/login/'
-    redirect_field_name = 'Home/post_list.html'
+    redirect_field_name = 'ProjectWebGame/post_list.html'
 
     model = Post
 
     def get_queryset(self):
-        return Post.objects.filter(published_date_isnull=True).order_by('created_date')
+        return Post.objects.filter(published_date__isnull=True).order_by('created_date')
     
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
@@ -214,20 +220,20 @@ def add_comment_to_post(request, pk):
             comment = form.save(commit=False)
             comment.post = post
             comment.save()
-            return redirect('post_detail', pk=post.pk)
+            return redirect('ProjectWebGame:post_detail', pk=post.pk)
     else:
         form = CommentForm()
-    return render(request, 'Home/comment_form.html', {'form': form})
+    return render(request, 'ProjectWebGame/comment_form.html', {'form': form})
 
 @login_required
 def comment_approve(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
     comment.approve()
-    return redirect('post_detail', pk=comment.post.pk)
+    return redirect('ProjectWebGame:post_detail', pk=comment.post.pk)
 
 @login_required
 def comment_remove(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
     post_pk = comment.post.pk
     comment.delete()
-    return redirect('post_detail', pk=post_pk)
+    return redirect('ProjectWebGame:post_detail', pk=post_pk)
