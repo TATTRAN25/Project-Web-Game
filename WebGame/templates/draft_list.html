@@ -1,7 +1,7 @@
 {% extends 'Home/base.html' %}
 {% block body_block %}
 
-<h1>Drafts</h1>
+<h1 style="margin-left: 100px; padding-top: 50px">Drafts</h1>
 <ul>
     {% for draft in drafts %}
         {% if draft.is_published == False %}
