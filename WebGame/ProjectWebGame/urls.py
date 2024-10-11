@@ -16,21 +16,14 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),
     path('register/', views.register, name='register'),
     path('user_login/', views.user_login, name='user_login'),
-<<<<<<< HEAD
-    path('add_review/<int:game_id>/', views.add_review, name='add_review'),
+    path('add_review/<int:game_id>/', views.add_review, name='add_review'), 
+    # url game
     path('gameList/', views.gameList, name='gameList'),
     path('gameList/create/', views.create_game, name='create_game'),
     path('gameList/update/<int:pk>/', views.update_game, name='update_game'),
     path('gameList/delete/<int:pk>/', views.delete_game, name='delete_game'),
-    path('dashboard/', views.dashboard, name='dashboard'), 
     path('draft_list/', views.DraftListView, name='draft_list'),
     path('draft_list/publish_draft/<int:draft_id>/', views.publish_draft, name='publish_draft'),
-]
-=======
-    # url game
-    path('create_game/', views.create_game, name='create_game'),  
-    path('gameList/', views.gameList, name='gameList'),  
-    path('dashboard/', views.dashboard, name='dashboard'), 
     # url developer
     path('developer/', views.developer_list, name='developer_list'),
     path('developer/add/', views.add_developer, name='add_developer'),
@@ -45,4 +38,3 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
->>>>>>> django/3-TAT
