@@ -1,4 +1,4 @@
-{% extends 'base.html' %} 
+{% extends 'Home/base.html' %} 
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -25,10 +25,16 @@
     </div>
     {% endif %}
     <div class="container">
+      {% if form.instance.pk %}
+      <h1>Update a Game</h1>
+      {% else %}
       <h1>Create a New Game</h1>
-      <form method="post">
-        {% csrf_token %} {{ form.as_p }}
-        <button type="submit">Create</button>
+      {% endif %}
+
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Save" class="btn btn-success">
         {% if form.errors %}
         <div class="error">Please correct the errors above.</div>
         {% endif %}

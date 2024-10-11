@@ -81,6 +81,7 @@
         </ul>
         <div class="row trending-box">
             {% for game in page_obj %}
+                {% if game.is_published == True %}
                 <div class="col-lg-3 col-md-6 align-self-center mb-30 trending-items">
                     <div class="item">
                         <div class="thumb">
@@ -98,6 +99,7 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
             {% empty %}
                 <p>No games found.</p>
             {% endfor %}

@@ -1,11 +1,11 @@
-from .form import UserForm, UserProfileForm, GameForm,DeveloperForm, CategoryForm
+from .form import UserForm, UserProfileForm, GameForm,CategoryForm,DeveloperForm
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponseRedirect,HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .models import Game, Review, Developer, Category
+from .models import Game, Review, Category,Developer
 from django.core.paginator import Paginator
 
 def index(request):
@@ -27,7 +27,7 @@ def register(request):
             profile.save()  
 
             messages.success(request, 'Đăng ký thành công!')  
-            return redirect('ProjectWebGame:user_login')  
+            return redirect('ProjectWebGame:login')  
 
         # Nếu có lỗi, hiển thị thông báo lỗi
         else:
@@ -122,15 +122,6 @@ def game(request):
         'categories': categories 
     })
 
-@login_required
-def game_form(request):
-    form = GameForm()
-    if request.method == 'POST':
-        form = GameForm(request.POST)
-    else:
-        form = GameForm()
-    return render(request, 'Game/game_form.html', {'form': form})
-
 def gameList(request):
     games = Game.objects.all() 
     return render(request, 'Game/gameList.html', {'games': games})
@@ -144,18 +135,37 @@ def is_admin(user):
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def create_game(request):
+    form = GameForm()
     if request.method == 'POST':
-        game = Game(
-            name=request.POST['name'],
-            description=request.POST['description'],
-            developer=request.user,
-            is_published=False  # Đặt chế độ nháp
-        )
-        game.save()
-        messages.success(request, 'Game đã được lưu vào bản nháp!')
-        return redirect('ProjectWebGame:game_list') 
+        form = GameForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Game đã được lưu vào bản nháp!')
+            return redirect("ProjectWebGame:draft_list")
     else:
-        return render(request, 'Game/create_game_form.html')
+        form = GameForm()
+        return render(request, 'Game/game_form.html', {'form': form})
+
+@login_required
+def update_game(request, pk):
+    game = get_object_or_404(Game, pk=pk)
+    if request.method == 'POST':
+        form = GameForm(request.POST, instance=game)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Game đã được cập nhật!')
+            return redirect('ProjectWebGame:draft_list')
+    else:
+        form = GameForm(instance=game)
+        return render(request, 'Game/game_form.html', {'form': form})
+
+@login_required
+def delete_game(request, pk):
+    game = get_object_or_404(Game, pk=pk)
+    game.delete()
+    messages.success(request, 'Game đã xóa thành công!')
+    return redirect('ProjectWebGame:gameList')
+
 
 @login_required
 def add_review(request, game_id):
@@ -166,27 +176,24 @@ def add_review(request, game_id):
             game=game,
             content=request.POST['content'],
             rating=request.POST['rating'],
-            is_published=False  
+            is_published=False
         )
         review.save()
         messages.success(request, 'Bình luận đã được lưu vào bản nháp!')
         return redirect('Game/game_detail', game_id=game.id)
 
 @login_required
-def publish_draft(request, draft_id, is_game=True):
-    if is_game:
-        game = get_object_or_404(Game, id=draft_id)
-        game.is_published = True
-        game.save()
-        messages.success(request, 'Game đã được công khai!')
-    else:
-        review = get_object_or_404(Review, id=draft_id)
-        review.is_published = True
-        review.save()
-        messages.success(request, 'Bình luận đã được công khai!')
-    return redirect('dashboard')
+def publish_draft(request, draft_id):
+    game = get_object_or_404(Game, id=draft_id)
+    game.is_published = True
+    game.save()
+    messages.success(request, 'Game đã được công khai!')
+    return redirect('ProjectWebGame:gameList')
 
-# Crud Dev and Category
+def DraftListView(request):
+    drafts = Game.objects.all()
+    return render(request, 'draft_list.html', {'drafts': drafts})
+
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def developer_list(request):
@@ -261,6 +268,7 @@ def edit_category(request, category_id):
             return redirect('ProjectWebGame:category_list')
     else:
         form = CategoryForm(instance=category)
+
     return render(request, 'Dev_Category/category_form.html', {'form': form})
 
 @login_required
