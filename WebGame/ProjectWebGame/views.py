@@ -147,6 +147,7 @@ def create_game(request):
         return render(request, 'Game/game_form.html', {'form': form})
 
 @login_required
+@user_passes_test(lambda u: u.is_superuser)
 def update_game(request, pk):
     game = get_object_or_404(Game, pk=pk)
     if request.method == 'POST':
@@ -160,6 +161,7 @@ def update_game(request, pk):
         return render(request, 'Game/game_form.html', {'form': form})
 
 @login_required
+@user_passes_test(lambda u: u.is_superuser)
 def delete_game(request, pk):
     game = get_object_or_404(Game, pk=pk)
     game.delete()
