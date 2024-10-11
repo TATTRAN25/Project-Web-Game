@@ -127,9 +127,6 @@ def gameList(request):
     games = Game.objects.all() 
     return render(request, 'Game/gameList.html', {'games': games})
 
-def dashboard(request):
-    return render(request, 'Game/dashboard.html')
-
 def is_admin(user):
     return user.is_superuser
 
@@ -186,6 +183,7 @@ def add_review(request, game_id):
         return redirect('Game/game_detail', game_id=game.id)
 
 @login_required
+@user_passes_test(lambda u: u.is_superuser)
 def publish_draft(request, draft_id):
     game = get_object_or_404(Game, id=draft_id)
     game.is_published = True
@@ -193,13 +191,15 @@ def publish_draft(request, draft_id):
     messages.success(request, 'Game đã được công khai!')
     return redirect('ProjectWebGame:gameList')
 
+@user_passes_test(lambda u: u.is_superuser)
 def DraftListView(request):
     drafts = Game.objects.all()
-    return render(request, 'draft_list.html', {'drafts': drafts})
+    return render(request, 'Game/draft_list.html', {'drafts': drafts})
 
+@user_passes_test(lambda u: u.is_superuser)
 def DraftDetailView(request, pk):
     draft = get_object_or_404(Game, pk = pk)
-    return render(request, 'draft_list.html', {'draft': draft})
+    return render(request, 'Game/draft_list.html', {'draft': draft})
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)

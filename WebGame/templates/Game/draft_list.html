@@ -17,7 +17,7 @@
     <a href="{% url 'ProjectWebGame:publish_draft' draft.id %}" class="btn btn-primary">Publish</a>
     <a href="{% url 'ProjectWebGame:update_game' draft.id %}" class="btn btn-info">Edit game</a>
     <a href="{% url 'ProjectWebGame:delete_game' draft.id %}" class="btn btn-danger">Delete game</a>
-    <a href="{% url 'ProjectWebGame:draft_list'%}" class="btn btn-danger">Exit</a>
+    <a href="{% url 'ProjectWebGame:draft_list'%}" class="btn btn-secondary">Exit</a>
     {% endif %}
 </ul>
 {% endblock %}
