@@ -199,7 +199,8 @@ class DraftListView(LoginRequiredMixin, ListView):
     
 class PostDeleteView(LoginRequiredMixin, DeleteView):
     model = Post
-    success_url = reverse_lazy('post_list')
+    template_name = 'ProjectWebGame/post_confirm_delete.html'
+    success_url = reverse_lazy('ProjectWebGame:post_list')
 
 #######################################
 ## Functions that require a pk match ##
@@ -209,7 +210,7 @@ class PostDeleteView(LoginRequiredMixin, DeleteView):
 def post_publish(request, pk):
     post = get_object_or_404(Post, pk=pk)
     post.publish()
-    return redirect('post_detail', pk=pk)
+    return redirect('ProjectWebGame:post_detail', pk=pk)
 
 @login_required
 def add_comment_to_post(request, pk):

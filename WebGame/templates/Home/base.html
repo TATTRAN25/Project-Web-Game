@@ -51,6 +51,7 @@
                 <li><a href="{% url 'ProjectWebGame:contact' %}">Contact Us</a></li>
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'ProjectWebGame:post_new' %}" >New Post</a></li>
+                <li><a href="{% url 'ProjectWebGame:post_list' %}" >Post List</a></li>
                 <li><a href="{% url 'ProjectWebGame:post_draft_list' %}">Drafts</a></li>
                     <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li>  <!-- In đậm và trắng -->
                     <li><a href="{% url 'ProjectWebGame:logout' %}">Logout</a></li>

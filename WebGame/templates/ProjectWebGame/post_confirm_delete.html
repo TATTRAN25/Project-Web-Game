@@ -1,0 +1,12 @@
+{% extends 'Home/base.html' %}
+
+{% block body_block %}
+    <h1>Xóa bài viết</h1>
+    <p>Bạn có chắc chắn muốn xóa bài viết "{{ post.title }}"?</p>
+    
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">Xóa</button>
+        <a href="{% url 'ProjectWebGame:post_detail' pk=post.pk %}">Hủy</a>
+    </form>
+{% endblock %}
