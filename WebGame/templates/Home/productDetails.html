@@ -80,8 +80,8 @@
             <h3>{{ game.name }}</h3>
             <span class="breadcrumb" style="background-color: transparent">
               <a href="{% url 'ProjectWebGame:index' %}">Home</a> >
-              <a href="{% url 'ProjectWebGame:game' %}">Our Game</a> > {{
-              game.name }}
+              <a href="{% url 'ProjectWebGame:game' %}">Our Game</a> > 
+              {{ game.name }}
             </span>
           </div>
         </div>
@@ -109,18 +109,15 @@
             <p>{{ game.description }}</p>
 
             {% if user.is_authenticated %}
-            <a href="{{ game.link_download }}" class="btn btn-primary">
+            <a href="{{ game.link_dowload }}" class="btn btn-primary">
               <i class="fas fa-arrow-circle-down"></i> DOWNLOAD NOW!
             </a>
-            {% else %}
-            <a
-              href="{% url 'ProjectWebGame:user_login' %}"
-              class="btn btn-secondary"
-            >
+          {% else %}
+            <a href="{% url 'ProjectWebGame:user_login' %}" class="btn btn-secondary">
               You need to log in to download
             </a>
-            {% endif %}
-
+          {% endif %}
+          
             <ul>
               <li><span>Game ID:</span> {{ game.id }}</li>
               <li><span>Studio:</span> {{ game.developer }}</li>

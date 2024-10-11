@@ -34,7 +34,7 @@ class Game(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     description = models.TextField()
     image = models.ImageField(upload_to='game_pic/', blank=True)
-    link_dowload = models.URLField(blank=True)
+    link_download = models.URLField(blank=True)
     release_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
