@@ -1,0 +1,13 @@
+{% extends 'Home/base.html' %}
+
+{% block body_block %}
+<div class="container">
+  <h1>Confirm Delete</h1>
+  <p>Are you sure you want to delete "{{ object }}"?</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirm</button>
+    <a href="{% url 'ProjectWebGame:developer_list' %}">Cancel</a>
+  </form>
+</div>
+{% endblock %}

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from ProjectWebGame.models import UserProfileInfo
+from ProjectWebGame.models import UserProfileInfo, Game, Developer, Category
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -12,4 +12,19 @@ class UserForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfileInfo
-        fields = ['portfolio_site', 'profile_pic']
+        fields = ['address', 'bio', 'avatar']
+
+class GameForm(forms.ModelForm):
+    class Meta:
+        model = Game
+        fields = ['name', 'description', 'developer', 'image', 'link_dowload', 'release_date']
+
+class DeveloperForm(forms.ModelForm):
+    class Meta:
+        model = Developer
+        fields = ['name', 'description', 'website', 'logo']
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name', 'description']

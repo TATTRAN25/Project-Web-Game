@@ -1,0 +1,15 @@
+{% extends 'Home/base.html' %}
+
+{% block body_block %}
+<div class="container">
+  <h1>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Category</h1>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+  </form>
+  {% if form.errors %}
+  <div class="error">Please correct the errors above.</div>
+  {% endif %}
+</div>
+{% endblock %}

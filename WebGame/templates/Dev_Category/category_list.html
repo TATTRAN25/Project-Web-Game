@@ -1,0 +1,38 @@
+{% extends 'Home/base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category</title>
+</head>
+<body>
+    {% block body_block %}
+<div class="container">
+  <h1>Category List</h1>
+  <a href="{% url 'ProjectWebGame:add_category' %}" class="btn btn-primary">Add Category</a>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for category in categories %}
+      <tr>
+        <td>{{ category.name }}</td>
+        <td>{{ category.description }}</td>
+        <td>
+          <a href="{% url 'ProjectWebGame:edit_category' category.id %}" class="btn btn-warning">Edit</a>
+          <a href="{% url 'ProjectWebGame:delete_category' category.id %}" class="btn btn-danger">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+</body>
+</html>
