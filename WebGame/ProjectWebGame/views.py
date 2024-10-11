@@ -27,7 +27,7 @@ def register(request):
             profile.save()  
 
             messages.success(request, 'Đăng ký thành công!')  
-            return redirect('ProjectWebGame:login')  
+            return redirect('ProjectWebGame:user_login')  
 
         # Nếu có lỗi, hiển thị thông báo lỗi
         else:
@@ -119,9 +119,10 @@ def game(request):
     return render(request, 'Home/game.html', {
         'page_obj': page_obj, 
         'search_query': search_query,
-        'categories': categories 
+        'categories': categories    
     })
 
+@user_passes_test(lambda u: u.is_superuser)
 def gameList(request):
     games = Game.objects.all() 
     return render(request, 'Game/gameList.html', {'games': games})
@@ -147,6 +148,7 @@ def create_game(request):
         return render(request, 'Game/game_form.html', {'form': form})
 
 @login_required
+@user_passes_test(lambda u: u.is_superuser)
 def update_game(request, pk):
     game = get_object_or_404(Game, pk=pk)
     if request.method == 'POST':
@@ -160,6 +162,7 @@ def update_game(request, pk):
         return render(request, 'Game/game_form.html', {'form': form})
 
 @login_required
+@user_passes_test(lambda u: u.is_superuser)
 def delete_game(request, pk):
     game = get_object_or_404(Game, pk=pk)
     game.delete()
