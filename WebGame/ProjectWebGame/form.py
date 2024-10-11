@@ -1,11 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
-<<<<<<< HEAD
 from ProjectWebGame.models import UserProfileInfo, Game
 from .models import Post, Comment
-=======
 from ProjectWebGame.models import UserProfileInfo, Game, Developer, Category
->>>>>>> django/3-TAT
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -24,7 +21,6 @@ class GameForm(forms.ModelForm):
         model = Game
         fields = ['name', 'description', 'developer', 'image', 'link_dowload', 'release_date']
 
-<<<<<<< HEAD
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
@@ -38,13 +34,11 @@ class PostForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ('author', 'text')
+        fields = ['text']
 
         widgets = {
-            'author': forms.TextInput(attrs={'class': 'textinputclass'}),
-            'text': forms.Textarea(attrs={'class': 'editable medium-editor-textarea'}),
+            'text': forms.Textarea(attrs={'class': 'editable medium-editor-textarea', 'rows': 1, 'style': 'resize: none; height: auto;'}),
         }
-=======
 class DeveloperForm(forms.ModelForm):
     class Meta:
         model = Developer
@@ -54,4 +48,3 @@ class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = ['name', 'description']
->>>>>>> django/3-TAT

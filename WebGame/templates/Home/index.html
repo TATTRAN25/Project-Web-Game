@@ -29,28 +29,21 @@
             <div class="col-12">
                 <nav class="main-nav">
                     <!-- ***** Logo Start ***** -->
-                    <a href="{% url 'ProjectWebGame:index' %}" class="logo">
+                    <a href="{% url 'Home:index' %}" class="logo">
                         <img src="{% static 'images/logo.png' %}" alt="" style="width: 158px;">
                     </a>
                     <!-- ***** Logo End ***** -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
-                        <li><a href="{% url 'ProjectWebGame:index' %}" class="active">Home</a></li>
-                        <li><a href="{% url 'ProjectWebGame:game' %}">Our Game</a></li>
-                        <li><a href="{% url 'ProjectWebGame:contact' %}">Contact Us</a></li>
+                        <li><a href="{% url 'Home:index' %}" class="active">Home</a></li>
+                        <li><a href="{% url 'Home:game' %}">Our Game</a></li>
+                        <li><a href="{% url 'Home:contact' %}">Contact Us</a></li>
                         {% if user.is_authenticated %}
-<<<<<<< HEAD
-                        <li><a href="{% url 'ProjectWebGame:post_new' %}" >New Post</a></li>
-                        <li><a href="{% url 'ProjectWebGame:post_list' %}" >Post List</a></li>
-                        <li><a href="{% url 'ProjectWebGame:post_draft_list' %}">Drafts</a></li>
-                            <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li>  <!-- In đậm và trắng -->
-=======
-                            <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li> 
->>>>>>> django/3-TAT
-                            <li><a href="{% url 'ProjectWebGame:logout' %}">Logout</a></li>
+                          <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li> 
+                          <li><a href="{% url 'Home:logout' %}">Logout</a></li>
                         {% else %}
                             <li style="color: white; font-weight: bold;">Welcome User: Guest</li>
-                            <li><a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a></li>
+                            <li><a href="{% url 'Home:user_login' %}">Sign In</a></li>
                         {% endif %}
                     </ul>
                     <a class='menu-trigger'>
@@ -95,7 +88,7 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-3 col-md-6">
-          <a href="{% url 'ProjectWebGame:gameList' %}">
+          <a href="{% url 'Home:gameList' %}">
             <div class="item">
               <div class="image">
                 <img src="{% static 'images/featured-01.png' %}" alt="" style="max-width: 44px;">
@@ -115,7 +108,7 @@
           </a>
         </div>
         <div class="col-lg-3 col-md-6">
-          <a href="{% url 'ProjectWebGame:developer_list' %}">
+          <a href="{% url 'Home:developer_list' %}">
             <div class="item">
               <div class="image">
                 <img src="{% static 'images/featured-03.png' %}" alt="" style="max-width: 44px;">
@@ -125,7 +118,7 @@
           </a>
         </div>
         <div class="col-lg-3 col-md-6">
-          <a href="{% url 'ProjectWebGame:category_list' %}">
+          <a href="{% url 'Home:category_list' %}">
             <div class="item">
               <div class="image">
                 <img src="{% static 'images/featured-04.png' %}" alt="" style="max-width: 44px;">
@@ -155,52 +148,52 @@
         <div class="col-lg-3 col-md-6">
           <div class="item">
             <div class="thumb">
-              <a href="{% url 'ProjectWebGame:game' %}"><img src="{% static 'images/trending-01.jpg' %}" alt=""></a>
+              <a href="{% url 'Home:game' %}"><img src="{% static 'images/trending-01.jpg' %}" alt=""></a>
               <span class="price"><em>$28</em>$20</span>
             </div>
             <div class="down-content">
               <span class="category">Action</span>
               <h4>Assasin Creed</h4>
-              <a href="{% url 'ProjectWebGame:game' %}"><i class="fa fa-shopping-bag"></i></a>
+              <a href="{% url 'Home:game' %}"><i class="fa fa-shopping-bag"></i></a>
             </div>
           </div>
         </div>
         <div class="col-lg-3 col-md-6">
           <div class="item">
             <div class="thumb">
-              <a href="{% url 'ProjectWebGame:game' %}"><img src="{% static 'images/trending-02.jpg' %}" alt=""></a>
+              <a href="{% url 'Home:game' %}"><img src="{% static 'images/trending-02.jpg' %}" alt=""></a>
               <span class="price">$44</span>
             </div>
             <div class="down-content">
               <span class="category">Action</span>
               <h4>Assasin Creed</h4>
-              <a href="{% url 'ProjectWebGame:game' %}"><i class="fa fa-shopping-bag"></i></a>
+              <a href="{% url 'Home:game' %}"><i class="fa fa-shopping-bag"></i></a>
             </div>
           </div>
         </div>
         <div class="col-lg-3 col-md-6">
           <div class="item">
             <div class="thumb">
-              <a href="{% url 'ProjectWebGame:game' %}"><img src="{% static 'images/trending-03.jpg' %}" alt=""></a>
+              <a href="{% url 'Home:game' %}"><img src="{% static 'images/trending-03.jpg' %}" alt=""></a>
               <span class="price"><em>$64</em>$44</span>
             </div>
             <div class="down-content">
               <span class="category">Action</span>
               <h4>Assasin Creed</h4>
-              <a href="{% url 'ProjectWebGame:game' %}"><i class="fa fa-shopping-bag"></i></a>
+              <a href="{% url 'Home:game' %}"><i class="fa fa-shopping-bag"></i></a>
             </div>
           </div>
         </div>
         <div class="col-lg-3 col-md-6">
           <div class="item">
             <div class="thumb">
-              <a href="{% url 'ProjectWebGame:game' %}"><img src="{% static 'images/trending-04.jpg' %}" alt=""></a>
+              <a href="{% url 'Home:game' %}"><img src="{% static 'images/trending-04.jpg' %}" alt=""></a>
               <span class="price">$32</span>
             </div>
             <div class="down-content">
               <span class="category">Action</span>
               <h4>Assasin Creed</h4>
-              <a href="{% url 'ProjectWebGame:game' %}"><i class="fa fa-shopping-bag"></i></a>
+              <a href="{% url 'Home:game' %}"><i class="fa fa-shopping-bag"></i></a>
             </div>
           </div>
         </div>
@@ -225,72 +218,72 @@
         <div class="col-lg-2 col-md-6 col-sm-6">
           <div class="item">
             <div class="thumb">
-              <a href="{% url 'ProjectWebGame:game' %}"><img src="{% static 'images/top-game-01.jpg' %}" alt=""></a>
+              <a href="{% url 'Home:game' %}"><img src="{% static 'images/top-game-01.jpg' %}" alt=""></a>
             </div>
             <div class="down-content">
               <span class="category">Adventure</span>
               <h4>Assasin Creed</h4>
-              <a href="{% url 'ProjectWebGame:game' %}">Explore</a>
+              <a href="{% url 'Home:game' %}">Explore</a>
             </div>
           </div>
         </div>
         <div class="col-lg-2 col-md-6 col-sm-6">
           <div class="item">
             <div class="thumb">
-              <a href="{% url 'ProjectWebGame:game' %}"><img src="{% static 'images/top-game-02.jpg' %}" alt=""></a>
+              <a href="{% url 'Home:game' %}"><img src="{% static 'images/top-game-02.jpg' %}" alt=""></a>
             </div>
             <div class="down-content">
               <span class="category">Adventure</span>
               <h4>Assasin Creed</h4>
-              <a href="{% url 'ProjectWebGame:game' %}">Explore</a>
+              <a href="{% url 'Home:game' %}">Explore</a>
             </div>
           </div>
         </div>
         <div class="col-lg-2 col-md-6 col-sm-6">
           <div class="item">
             <div class="thumb">
-              <a href="{% url 'ProjectWebGame:game' %}"><img src="{% static 'images/top-game-03.jpg' %}" alt=""></a>
+              <a href="{% url 'Home:game' %}"><img src="{% static 'images/top-game-03.jpg' %}" alt=""></a>
             </div>
             <div class="down-content">
               <span class="category">Adventure</span>
               <h4>Assasin Creed</h4>
-              <a href="{% url 'ProjectWebGame:game' %}">Explore</a>
+              <a href="{% url 'Home:game' %}">Explore</a>
             </div>
           </div>
         </div>
         <div class="col-lg-2 col-md-6 col-sm-6">
           <div class="item">
             <div class="thumb">
-              <a href="{% url 'ProjectWebGame:game' %}"><img src="{% static 'images/top-game-04.jpg' %}" alt=""></a>
+              <a href="{% url 'Home:game' %}"><img src="{% static 'images/top-game-04.jpg' %}" alt=""></a>
             </div>
             <div class="down-content">
               <span class="category">Adventure</span>
               <h4>Assasin Creed</h4>
-              <a href="{% url 'ProjectWebGame:game' %}">Explore</a>
+              <a href="{% url 'Home:game' %}">Explore</a>
             </div>
           </div>
         </div>
         <div class="col-lg-2 col-md-6 col-sm-6">
           <div class="item">
             <div class="thumb">
-              <a href="{% url 'ProjectWebGame:game' %}"><img src="{% static 'images/top-game-05.jpg' %}" alt=""></a>
+              <a href="{% url 'Home:game' %}"><img src="{% static 'images/top-game-05.jpg' %}" alt=""></a>
             </div>
             <div class="down-content">
               <span class="category">Adventure</span>
               <h4>Assasin Creed</h4>
-              <a href="{% url 'ProjectWebGame:game' %}">Explore</a>
+              <a href="{% url 'Home:game' %}">Explore</a>
             </div>
           </div>
         </div>
         <div class="col-lg-2 col-md-6 col-sm-6">
           <div class="item">
             <div class="thumb">
-              <a href="{% url 'ProjectWebGame:game' %}"><img src="{% static 'images/top-game-06.jpg' %}" alt=""></a>
+              <a href="{% url 'Home:game' %}"><img src="{% static 'images/top-game-06.jpg' %}" alt=""></a>
             </div>
             <div class="down-content">
               <span class="category">Adventure</span>
               <h4>Assasin Creed</h4>
-              <a href="{% url 'ProjectWebGame:game' %}">Explore</a>
+              <a href="{% url 'Home:game' %}">Explore</a>
             </div>
           </div>
         </div>
@@ -311,7 +304,7 @@
           <div class="item">
             <h4>Action</h4>
             <div class="thumb">
-              <a href="{% url 'ProjectWebGame:game' %}"><img src="{% static 'images/categories-01.jpg' %}" alt=""></a>
+              <a href="{% url 'Home:game' %}"><img src="{% static 'images/categories-01.jpg' %}" alt=""></a>
             </div>
           </div>
         </div>
@@ -319,7 +312,7 @@
           <div class="item">
             <h4>Action</h4>
             <div class="thumb">
-              <a href="{% url 'ProjectWebGame:game' %}"><img src="{% static 'images/categories-02.jpg' %}" alt=""></a>
+              <a href="{% url 'Home:game' %}"><img src="{% static 'images/categories-02.jpg' %}" alt=""></a>
             </div>
           </div>
         </div>
@@ -327,7 +320,7 @@
           <div class="item">
             <h4>Action</h4>
             <div class="thumb">
-              <a href="{% url 'ProjectWebGame:game' %}"><img src="{% static 'images/categories-03.jpg' %}" alt=""></a>
+              <a href="{% url 'Home:game' %}"><img src="{% static 'images/categories-03.jpg' %}" alt=""></a>
             </div>
           </div>
         </div>
@@ -335,7 +328,7 @@
           <div class="item">
             <h4>Action</h4>
             <div class="thumb">
-              <a href="{% url 'ProjectWebGame:game' %}"><img src="{% static 'images/categories-04.jpg' %}" alt=""></a>
+              <a href="{% url 'Home:game' %}"><img src="{% static 'images/categories-04.jpg' %}" alt=""></a>
             </div>
           </div>
         </div>
@@ -343,7 +336,7 @@
           <div class="item">
             <h4>Action</h4>
             <div class="thumb">
-              <a href="{% url 'ProjectWebGame:game' %}"><img src="{% static 'images/categories-05.jpg' %}" alt=""></a>
+              <a href="{% url 'Home:game' %}"><img src="{% static 'images/categories-05.jpg' %}" alt=""></a>
             </div>
           </div>
         </div>

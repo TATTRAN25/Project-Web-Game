@@ -23,19 +23,19 @@
       <div class="row">
         <div class="col-12">
           <nav class="main-nav">
-            <a href="{% url 'ProjectWebGame:index' %}" class="logo">
+            <a href="{% url 'Home:index' %}" class="logo">
               <img src="{% static 'images/logo.png' %}" alt="" style="width: 158px;">
             </a>
             <ul class="nav">
-              <li><a href="{% url 'ProjectWebGame:index' %}">Home</a></li>
-              <li><a href="{% url 'ProjectWebGame:game' %}" class="active">Our Game</a></li>
-              <li><a href="{% url 'ProjectWebGame:contact' %}">Contact Us</a></li>
+              <li><a href="{% url 'Home:index' %}">Home</a></li>
+              <li><a href="{% url 'Home:game' %}" class="active">Our Game</a></li>
+              <li><a href="{% url 'Home:contact' %}">Contact Us</a></li>
               {% if user.is_authenticated %}
                 <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li>
-                <li><a href="{% url 'ProjectWebGame:logout' %}">Logout</a></li>
+                <li><a href="{% url 'Home:logout' %}">Logout</a></li>
               {% else %}
                 <li style="color: white; font-weight: bold;">Welcome User: Guest</li>
-                <li><a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a></li>
+                <li><a href="{% url 'Home:user_login' %}">Sign In</a></li>
               {% endif %}
             </ul>
             <a class='menu-trigger'>
@@ -61,7 +61,7 @@
 
   <!-- Thanh tìm kiếm -->
   <div class="container my-4">
-    <form method="GET" action="{% url 'ProjectWebGame:game' %}">
+    <form method="GET" action="{% url 'Home:game' %}">
         <div class="input-group">
             <input type="text" class="form-control" name="search" placeholder="Search for games..." aria-label="Search for games..." value="{{ search_query }}" />
             <div class="input-group-append">
@@ -74,9 +74,9 @@
 <div class="section trending">
     <div class="container">
         <ul class="trending-filter">
-            <li><a class="is_active" href="{% url 'ProjectWebGame:game' %}" data-filter="*">Show All</a></li>
+            <li><a class="is_active" href="{% url 'Home:game' %}" data-filter="*">Show All</a></li>
             {% for category in categories %}
-                <li><a href="{% url 'ProjectWebGame:game' %}?category={{ category.id }}&search={{ search_query }}" data-filter=".{{ category.slug }}">{{ category.name }}</a></li>
+                <li><a href="{% url 'Home:game' %}?category={{ category.id }}&search={{ search_query }}" data-filter=".{{ category.slug }}">{{ category.name }}</a></li>
             {% endfor %}
         </ul>
         <div class="row trending-box">
@@ -84,7 +84,7 @@
                 <div class="col-lg-3 col-md-6 align-self-center mb-30 trending-items">
                     <div class="item">
                         <div class="thumb">
-                            <a href="{% url 'ProjectWebGame:productDetails' game.id %}">
+                            <a href="{% url 'Home:productDetails' game.id %}">
                                 {% if game.image %}
                                     <img src="{{ game.image.url }}" alt="{{ game.name }}">
                                 {% else %}

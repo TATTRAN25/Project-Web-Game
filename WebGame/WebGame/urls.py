@@ -5,7 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    path('ProjectWebGame/',include('ProjectWebGame.urls')),
+    path('ProjectWebGame/',include('ProjectWebGame.urls', namespace='ProjectWebGame')),
     path("admin/", admin.site.urls),
 ]
 

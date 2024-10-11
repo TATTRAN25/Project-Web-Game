@@ -33,7 +33,7 @@
           <div class="col-12">
             <nav class="main-nav">
               <!-- ***** Logo Start ***** -->
-              <a href="{% url 'ProjectWebGame:index' %}" class="logo">
+              <a href="{% url 'Home:index' %}" class="logo">
                 <img
                   src="{% static 'images/logo.png' %}"
                   alt=""
@@ -43,21 +43,19 @@
               <!-- ***** Logo End ***** -->
               <!-- ***** Menu Start ***** -->
               <ul class="nav">
-                <li><a href="{% url 'ProjectWebGame:index' %}" class="active">Home</a></li>
-                <li><a href="{% url 'ProjectWebGame:game' %}">Our Game</a></li>
-<<<<<<< HEAD
-                <li><a href="{% url 'ProjectWebGame:productDetails' %}">Product Details</a></li>
-                <li><a href="{% url 'ProjectWebGame:contact' %}">Contact Us</a></li>
+                <li><a href="{% url 'Home:index' %}" class="active">Home</a></li>
+                <li><a href="{% url 'Home:game' %}">Our Game</a></li>
+                {% comment %} <li><a href="{% url 'ProjectWebGame:productDetails' %}">Product Details</a></li> {% endcomment %}
+                <li><a href="{% url 'Home:contact' %}">Contact Us</a></li>
                 {% if user.is_authenticated %}
-                <li><a href="{% url 'ProjectWebGame:post_new' %}" >New Post</a></li>
-                <li><a href="{% url 'ProjectWebGame:post_list' %}" >Post List</a></li>
-                <li><a href="{% url 'ProjectWebGame:post_draft_list' %}">Drafts</a></li>
-                    <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li>  <!-- In đậm và trắng -->
-                    <li><a href="{% url 'ProjectWebGame:logout' %}">Logout</a></li>
-                {% else %}
-                    <li style="color: white; font-weight: bold;">Welcome User: None</li>  <!-- In đậm và trắng -->
-                    <li><a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a></li>
-=======
+                <li><a href="{% url 'Home:post_new' %}" >New Post</a></li>
+                <li><a href="{% url 'Home:post_list' %}" >Post List</a></li>
+                <li><a href="{% url 'Home:post_draft_list' %}">Drafts</a></li>
+                <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li>  <!-- In đậm và trắng -->
+                <li><a href="{% url 'Home:logout' %}">Logout</a></li>
+                {% comment %} {% else %}
+                <li style="color: white; font-weight: bold;">Welcome User: None</li>  <!-- In đậm và trắng -->
+                <li><a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a></li>
                 <li><a href="{% url 'ProjectWebGame:contact' %}">Contact Us</a></li>
                 {% if user.is_authenticated %}
                 <li style="color: white; font-weight: bold">
@@ -67,11 +65,10 @@
                 {% else %}
                 <li style="color: white; font-weight: bold">
                   Welcome User: Guest
-                </li>
+                </li> {% endcomment %}
                 <li>
-                  <a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a>
+                  <a href="{% url 'Home:user_login' %}">Sign In</a>
                 </li>
->>>>>>> django/3-TAT
                 {% endif %}
             </ul>
               <a class="menu-trigger">
@@ -93,17 +90,14 @@
               </div>
             </div>
           </div>
-<<<<<<< HEAD
         </div> {% endcomment %}
     </div>
     {% block body_block %}
     {% endblock %}
   </header>
-=======
         </div>
       </div>
     </div>
->>>>>>> django/3-TAT
   <!-- ***** Header Area End ***** -->
 
 
