@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATE_DIR = os.path.join(BASE_DIR,'templates')
@@ -138,7 +137,7 @@ PASSWORD_HASHERS = [
 ]
 
 # MEDIA
+MEDIA_URL = '/media/'
 MEDIA_ROOT = MEDIA_DIR
-MEDIA_URL = 'media/'
 
 LOGIN_URL = 'RegistrationLogin/user_login'

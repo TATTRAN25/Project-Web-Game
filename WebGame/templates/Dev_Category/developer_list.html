@@ -1,0 +1,42 @@
+{% extends 'Home/base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Developer</title>
+</head>
+<body>
+    {% block body_block %}
+<div class="container">
+  <h1>Developer List</h1>
+  <a href="{% url 'ProjectWebGame:add_developer' %}" class="btn btn-primary">Add Developer</a>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Website</th>
+        <th>Logo</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for developer in developers %}
+      <tr>
+        <td>{{ developer.name }}</td>
+        <td>{{ developer.description }}</td>
+        <td><a href="{{ developer.website }}">{{ developer.website }}</a></td>
+        <td>{% if developer.logo %}<img src="{{ developer.logo.url }}" alt="{{ developer.name }}" style="width: 50px;">{% endif %}</td>
+        <td>
+          <a href="{% url 'ProjectWebGame:edit_developer' developer.id %}" class="btn btn-warning">Edit</a>
+          <a href="{% url 'ProjectWebGame:delete_developer' developer.id %}" class="btn btn-danger">Delete</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+</body>
+</html>

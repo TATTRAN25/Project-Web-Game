@@ -37,16 +37,19 @@
                     <ul class="nav">
                         <li><a href="{% url 'ProjectWebGame:index' %}" class="active">Home</a></li>
                         <li><a href="{% url 'ProjectWebGame:game' %}">Our Game</a></li>
-                        <li><a href="{% url 'ProjectWebGame:productDetails' %}">Product Details</a></li>
                         <li><a href="{% url 'ProjectWebGame:contact' %}">Contact Us</a></li>
                         {% if user.is_authenticated %}
+<<<<<<< HEAD
                         <li><a href="{% url 'ProjectWebGame:post_new' %}" >New Post</a></li>
                         <li><a href="{% url 'ProjectWebGame:post_list' %}" >Post List</a></li>
                         <li><a href="{% url 'ProjectWebGame:post_draft_list' %}">Drafts</a></li>
                             <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li>  <!-- In đậm và trắng -->
+=======
+                            <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li> 
+>>>>>>> django/3-TAT
                             <li><a href="{% url 'ProjectWebGame:logout' %}">Logout</a></li>
                         {% else %}
-                            <li style="color: white; font-weight: bold;">Welcome User: None</li>  <!-- In đậm và trắng -->
+                            <li style="color: white; font-weight: bold;">Welcome User: Guest</li>
                             <li><a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a></li>
                         {% endif %}
                     </ul>
@@ -112,22 +115,22 @@
           </a>
         </div>
         <div class="col-lg-3 col-md-6">
-          <a href="#">
+          <a href="{% url 'ProjectWebGame:developer_list' %}">
             <div class="item">
               <div class="image">
                 <img src="{% static 'images/featured-03.png' %}" alt="" style="max-width: 44px;">
               </div>
-              <h4>Reply Ready</h4>
+              <h4>Developer</h4>
             </div>
           </a>
         </div>
         <div class="col-lg-3 col-md-6">
-          <a href="#">
+          <a href="{% url 'ProjectWebGame:category_list' %}">
             <div class="item">
               <div class="image">
                 <img src="{% static 'images/featured-04.png' %}" alt="" style="max-width: 44px;">
               </div>
-              <h4>Easy Layout</h4>
+              <h4>Category</h4>
             </div>
           </a>
         </div>
