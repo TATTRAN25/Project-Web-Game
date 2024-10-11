@@ -122,6 +122,7 @@ def game(request):
         'categories': categories 
     })
 
+@user_passes_test(lambda u: u.is_superuser)
 def gameList(request):
     games = Game.objects.all() 
     return render(request, 'Game/gameList.html', {'games': games})
@@ -195,6 +196,10 @@ def publish_draft(request, draft_id):
 def DraftListView(request):
     drafts = Game.objects.all()
     return render(request, 'draft_list.html', {'drafts': drafts})
+
+def DraftDetailView(request, pk):
+    draft = get_object_or_404(Game, pk = pk)
+    return render(request, 'draft_list.html', {'draft': draft})
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)

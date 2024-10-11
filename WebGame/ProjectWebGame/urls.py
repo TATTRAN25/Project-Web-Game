@@ -23,6 +23,7 @@ urlpatterns = [
     path('gameList/update/<int:pk>/', views.update_game, name='update_game'),
     path('gameList/delete/<int:pk>/', views.delete_game, name='delete_game'),
     path('draft_list/', views.DraftListView, name='draft_list'),
+    path('draft_list/draft_detail/<int:pk>/', views.DraftDetailView, name='draft_detail'),
     path('draft_list/publish_draft/<int:draft_id>/', views.publish_draft, name='publish_draft'),
     # url developer
     path('developer/', views.developer_list, name='developer_list'),
