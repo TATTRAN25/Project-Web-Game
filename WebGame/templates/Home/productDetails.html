@@ -68,7 +68,11 @@
       <div class="row">
         <div class="col-lg-6">
           <div class="left-image">
+            {% if game.image %}
             <img src="{{ game.image.url }}" alt="{{ game.name }}">
+            {% else %}
+            <img src="{% static 'images/default.png' %}" alt="No image available">
+            {% endif %}
           </div>
         </div>
         <div class="col-lg-6 align-self-center">
