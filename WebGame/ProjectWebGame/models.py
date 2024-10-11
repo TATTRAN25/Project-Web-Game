@@ -50,7 +50,32 @@ class Draft(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
+<<<<<<< HEAD
         return self.title    
+=======
+        return self.title
+    
+class Post(models.Model):
+    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    text = models.TextField()
+    created_date = models.DateTimeField(default=timezone.now)
+    published_date = models.DateTimeField(blank=True, null=True)
+
+    def publish(self):
+        self.published_date = timezone.now()
+        self.save()
+
+    def approve_comments(self):
+        return self.comments.filter(approved_comment=True)
+    
+    def get_absolute_url(self):
+        return reverse("model_detail", kwargs={"pk": self.pk})
+    
+    def __str__(self):
+        return self.title
+    
+>>>>>>> origin/django/1-main
     
 class Comment(models.Model):
     game = models.ForeignKey(Game, related_name='comments', on_delete=models.CASCADE)
