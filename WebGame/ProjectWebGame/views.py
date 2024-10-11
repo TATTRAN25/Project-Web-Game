@@ -107,11 +107,12 @@ def create_game(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Game đã được lưu vào bản nháp!')
-            return redirect("ProjectWebGame:gameList")
+            return redirect("ProjectWebGame:draft_list")
     else:
         form = GameForm()
         return render(request, 'Game/game_form.html', {'form': form})
-    
+
+@login_required
 def update_game(request, pk):
     game = get_object_or_404(Game, pk=pk)
     if request.method == 'POST':
@@ -119,11 +120,12 @@ def update_game(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, 'Game đã được cập nhật!')
-            return redirect('ProjectWebGame:gameList')
+            return redirect('ProjectWebGame:draft_list')
     else:
         form = GameForm(instance=game)
         return render(request, 'Game/game_form.html', {'form': form})
 
+@login_required
 def delete_game(request, pk):
     game = get_object_or_404(Game, pk=pk)
     game.delete()
@@ -147,19 +149,13 @@ def add_review(request, game_id):
         return redirect('Game/game_detail', game_id=game.id)
 
 @login_required
-def publish_draft(request, draft_id, is_game=True):
-    if is_game:
-        game = get_object_or_404(Game, id=draft_id)
-        game.is_published = True
-        game.save()
-        messages.success(request, 'Game đã được công khai!')
-    else:
-        review = get_object_or_404(Review, id=draft_id)
-        review.is_published = True
-        review.save()
-        messages.success(request, 'Bình luận đã được công khai!')
-    return redirect('dashboard')
+def publish_draft(request, draft_id):
+    game = get_object_or_404(Game, id=draft_id)
+    game.is_published = True
+    game.save()
+    messages.success(request, 'Game đã được công khai!')
+    return redirect('ProjectWebGame:gameList')
 
 def DraftListView(request):
-    drafts = Draft.objects.all()
+    drafts = Game.objects.all()
     return render(request, 'draft_list.html', {'drafts': drafts})
