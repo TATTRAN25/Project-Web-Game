@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfileInfo, Developer, Category, Game, Draft, Post, Comment
+from .models import UserProfileInfo, Developer, Category, Game, Draft, Comment
 
 @admin.register(UserProfileInfo)
 class UserProfileInfoAdmin(admin.ModelAdmin):
@@ -23,5 +23,4 @@ class GameAdmin(admin.ModelAdmin):
     search_fields = ('name', 'description')
 
 admin.site.register(Draft)
-admin.site.register(Post)
 admin.site.register(Comment)
