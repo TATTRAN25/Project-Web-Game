@@ -8,8 +8,9 @@
             <li>
                 {{ draft.title }} - {{ draft.created_at }}
                 <a href="{% url 'ProjectWebGame:publish_draft' draft.id %}" class="btn btn-primary">Publish</a>
-                <a href="{% url 'ProjectWebGame:update_game' draft.id %}" class="btn btn-info">Edit draft</a>
-                <a href="{% url 'ProjectWebGame:delete_game' draft.id %}" class="btn btn-danger">Delete draft</a>
+                <a href="{% url 'ProjectWebGame:create_game' %}" class="btn btn-success">Add game</a>
+                <a href="{% url 'ProjectWebGame:update_game' draft.id %}" class="btn btn-info">Edit game</a>
+                <a href="{% url 'ProjectWebGame:delete_game' draft.id %}" class="btn btn-danger">Delete game</a>
             </li>
         {% endif %}
     {% endfor %}
