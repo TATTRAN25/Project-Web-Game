@@ -4,7 +4,7 @@
     {% load static %}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
+    <title>Register</title>
     <script
       type="module"
       src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
@@ -22,8 +22,8 @@
         <div class="form-value">
           <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
+            
             <h2>Register</h2>
-
             <!-- Trường Username -->
             <div class="inputbox">
               <ion-icon name="person-outline"></ion-icon>
