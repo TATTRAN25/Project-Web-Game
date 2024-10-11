@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfileInfo, Developer, Category, Game, Review, Draft
+from .models import UserProfileInfo, Developer, Category, Game, Review, Draft, Post, Comment
 
 @admin.register(UserProfileInfo)
 class UserProfileInfoAdmin(admin.ModelAdmin):
@@ -29,3 +29,5 @@ class ReviewAdmin(admin.ModelAdmin):
     search_fields = ('content',)
 
 admin.site.register(Draft)
+admin.site.register(Post)
+admin.site.register(Comment)
