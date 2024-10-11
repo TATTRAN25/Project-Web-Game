@@ -17,12 +17,7 @@ class UserProfileForm(forms.ModelForm):
 class GameForm(forms.ModelForm):
     class Meta:
         model = Game
-<<<<<<< HEAD
         exclude = ['release_date','created_at', 'updated_at', 'is_published']
-            
-            
-=======
-        fields = ['name', 'description', 'developer', 'image', 'link_dowload', 'release_date']
 
 class DeveloperForm(forms.ModelForm):
     class Meta:
@@ -33,4 +28,3 @@ class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = ['name', 'description']
->>>>>>> django/3-TAT

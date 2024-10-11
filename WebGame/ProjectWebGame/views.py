@@ -1,11 +1,11 @@
-from .form import UserForm, UserProfileForm, GameForm,DeveloperForm, CategoryForm
+from .form import UserForm, UserProfileForm, GameForm,CategoryForm,DeveloperForm
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponseRedirect,HttpResponse
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .models import Game, Review, Developer, Category
+from .models import Game, Review, Category,Developer
 from django.core.paginator import Paginator
 
 def index(request):
@@ -27,7 +27,7 @@ def register(request):
             profile.save()  
 
             messages.success(request, 'Đăng ký thành công!')  
-            return redirect('ProjectWebGame:user_login')  
+            return redirect('ProjectWebGame:login')  
 
         # Nếu có lỗi, hiển thị thông báo lỗi
         else:
@@ -193,3 +193,90 @@ def publish_draft(request, draft_id):
 def DraftListView(request):
     drafts = Game.objects.all()
     return render(request, 'draft_list.html', {'drafts': drafts})
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def developer_list(request):
+    developers = Developer.objects.all()
+    return render(request, 'Dev_Category/developer_list.html', {'developers': developers})
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def category_list(request):
+    categories = Category.objects.all()
+    return render(request, 'Dev_Category/category_list.html', {'categories': categories})
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def add_developer(request):
+    if request.method == 'POST':
+        form = DeveloperForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Developer added successfully!')
+            return redirect('ProjectWebGame:developer_list')
+    else:
+        form = DeveloperForm()
+    return render(request, 'Dev_Category/developer_form.html', {'form': form})
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def edit_developer(request, developer_id):
+    developer = get_object_or_404(Developer, id=developer_id)
+    if request.method == 'POST':
+        form = DeveloperForm(request.POST, request.FILES, instance=developer)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Developer updated successfully!')
+            return redirect('ProjectWebGame:developer_list')
+    else:
+        form = DeveloperForm(instance=developer)
+    return render(request, 'Dev_Category/developer_form.html', {'form': form})
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def delete_developer(request, developer_id):
+    developer = get_object_or_404(Developer, id=developer_id)
+    if request.method == 'POST':
+        developer.delete()
+        messages.success(request, 'Developer deleted successfully!')
+        return redirect('ProjectWebGame:developer_list')
+    return render(request, 'Dev_Category/confirm_delete.html', {'object': developer})
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def add_category(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Category added successfully!')
+            return redirect('ProjectWebGame:category_list')
+    else:
+        form = CategoryForm()
+    return render(request, 'Dev_Category/category_form.html', {'form': form})
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def edit_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, instance=category)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Category updated successfully!')
+            return redirect('ProjectWebGame:category_list')
+    else:
+        form = CategoryForm(instance=category)
+
+    return render(request, 'Dev_Category/category_form.html', {'form': form})
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def delete_category(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    if request.method == 'POST':
+        category.delete()
+        messages.success(request, 'Category deleted successfully!')
+        return redirect('ProjectWebGame:category_list')
+    return render(request, 'Dev_Category/confirm_delete.html', {'object': category})
