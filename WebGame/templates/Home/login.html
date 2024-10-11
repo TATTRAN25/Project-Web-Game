@@ -22,6 +22,17 @@
         <div class="form-value">
           <form method="post">
             {% csrf_token %}
+
+            {% if messages %}
+            <div class="alert-container">
+              {% for message in messages %}
+                <div class="alert" style="color: white">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+
             <h2>Login</h2>
             <div class="inputbox">
               <ion-icon name="mail-outline"></ion-icon>

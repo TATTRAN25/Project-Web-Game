@@ -34,12 +34,13 @@ class Game(models.Model):
     developer = models.ForeignKey(Developer, on_delete=models.CASCADE) 
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     description = models.TextField()
-    image = models.ImageField(upload_to='game_pic', blank=True)
+    image = models.ImageField(upload_to='game_pic/', blank=True)
     link_dowload = models.URLField(blank=True)
     release_date = models.DateField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=False)
+
     def __str__(self):
         return self.name
 
@@ -53,6 +54,7 @@ class Review(models.Model):
     is_published = models.BooleanField(default=False)
     def __str__(self):
         return f"{self.user} đánh giá {self.game}"
+<<<<<<< HEAD
     
 class Draft(models.Model):
 
@@ -68,3 +70,5 @@ class Draft(models.Model):
 
 
 
+=======
+>>>>>>> django/3-TAT
