@@ -1,0 +1,17 @@
+{% extends 'Home/base.html' %}
+{% block body_block %}
+
+<h1 style="margin-left: 100px; padding-top: 50px">Drafts</h1>
+<ul>
+    {% for draft in drafts %}
+        {% if draft.is_published == False %}
+            <li>
+                {{ draft.name }} - {{ draft.created_at }}
+                <a href="{% url 'ProjectWebGame:publish_draft' draft.id %}" class="btn btn-primary">Publish</a>
+                <a href="{% url 'ProjectWebGame:update_game' draft.id %}" class="btn btn-info">Edit game</a>
+                <a href="{% url 'ProjectWebGame:delete_game' draft.id %}" class="btn btn-danger">Delete game</a>
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,12 +1,23 @@
-from .form import UserForm, UserProfileForm, GameForm,DeveloperForm, CategoryForm
+from .form import UserForm, UserProfileForm, GameForm,CategoryForm,DeveloperForm
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponseRedirect,HttpResponse
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .models import Game, Review, Developer, Category
+<<<<<<< HEAD
+from .models import Game, Draft, Comment, Developer, Category
+from .form import CommentForm
+=======
+from .models import Game, Draft, Post, Comment, Developer, Category
+from .form import PostForm, CommentForm
+>>>>>>> origin/django/1-main
+from django.views.generic import (TemplateView, ListView, DeleteView, CreateView, UpdateView, UpdateView, DeleteView, DetailView)
+from django.utils import timezone
+from django.contrib.auth.mixins import LoginRequiredMixin 
 from django.core.paginator import Paginator
+
+app_name = 'ProjectWebGame'
 
 def index(request):
     return render(request, 'Home/index.html')
@@ -85,19 +96,29 @@ def contact(request):
 
 def productDetails(request, id):
     game = get_object_or_404(Game, id=id)
-    
-    related_games = Game.objects.filter(category=game.category).exclude(id=game.id)[:3] 
+    related_games = Game.objects.filter(category=game.category).exclude(id=game.id)[:3]
+    comments = game.comments.all()
 
-    # Kiểm tra nếu người dùng không đăng nhập và cố gắng tải game
     if request.method == 'POST':
         if not request.user.is_authenticated:
             messages.error(request, "You need to log in to download this game.")
-            return redirect('login')  # Thay 'login' bằng tên URL của trang đăng nhập nếu khác
+            return redirect('login')
+        
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.game = game
+            comment.author = request.user
+            comment.save()
+            print(f"Comment saved: {comment.text}")
+            messages.success(request, "Your comment has been added.")
+            # return redirect('Home:productDetails', id=id)
+            comments = game.comments.all()
+    else:
+        form = CommentForm()
 
-    return render(request, 'Home/productDetails.html', {
-        'game': game,
-        'related_games': related_games 
-    })
+    return render(request, 'Home/productDetails.html', {'game': game, 'related_games': related_games, 'form': form, 'comments': comments,})
+
 
 def game(request):
     search_query = request.GET.get('search', '')  # Lấy tham số tìm kiếm
@@ -119,18 +140,10 @@ def game(request):
     return render(request, 'Home/game.html', {
         'page_obj': page_obj, 
         'search_query': search_query,
-        'categories': categories 
+        'categories': categories    
     })
 
-@login_required
-def game_form(request):
-    form = GameForm()
-    if request.method == 'POST':
-        form = GameForm(request.POST)
-    else:
-        form = GameForm()
-    return render(request, 'Game/game_form.html', {'form': form})
-
+@user_passes_test(lambda u: u.is_superuser)
 def gameList(request):
     games = Game.objects.all() 
     return render(request, 'Game/gameList.html', {'games': games})
@@ -144,6 +157,7 @@ def is_admin(user):
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def create_game(request):
+    form = GameForm()
     if request.method == 'POST':
         game = Game(
             name=request.POST['name'],
@@ -155,36 +169,127 @@ def create_game(request):
         messages.success(request, 'Game đã được lưu vào bản nháp!')
         return redirect('ProjectWebGame:game_list') 
     else:
-        return render(request, 'Game/create_game_form.html')
+        form = GameForm()
+        return render(request, 'Game/game_form.html', {'form': form})
+    
+@login_required
+def publish_draft(request, draft_id):
+    game = get_object_or_404(Game, id=draft_id)
+    game.is_published = True
+    game.save()
+    messages.success(request, 'Game đã được công khai!')
+    return redirect('ProjectWebGame:gameList')
 
 @login_required
-def add_review(request, game_id):
-    game = get_object_or_404(Game, id=game_id)
+@user_passes_test(lambda u: u.is_superuser)
+def update_game(request, pk):
+    game = get_object_or_404(Game, pk=pk)
     if request.method == 'POST':
-        review = Review(
-            user=request.user,
-            game=game,
-            content=request.POST['content'],
-            rating=request.POST['rating'],
-            is_published=False  
-        )
-        review.save()
-        messages.success(request, 'Bình luận đã được lưu vào bản nháp!')
-        return redirect('Game/game_detail', game_id=game.id)
+        form = GameForm(request.POST, instance=game)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Game đã được cập nhật!')
+            return redirect('ProjectWebGame:draft_list')
+    else:
+        form = GameForm(instance=game)
+        return render(request, 'Game/game_form.html', {'form': form})
 
 @login_required
-def publish_draft(request, draft_id, is_game=True):
-    if is_game:
-        game = get_object_or_404(Game, id=draft_id)
-        game.is_published = True
-        game.save()
-        messages.success(request, 'Game đã được công khai!')
+@user_passes_test(lambda u: u.is_superuser)
+def delete_game(request, pk):
+    game = get_object_or_404(Game, pk=pk)
+    game.delete()
+    messages.success(request, 'Game đã xóa thành công!')
+    return redirect('ProjectWebGame:gameList')
+
+<<<<<<< HEAD
+@user_passes_test(lambda u: u.is_superuser)
+def DraftListView(request):
+    drafts = Game.objects.all()
+    return render(request, 'Game/draft_list.html', {'drafts': drafts})
+=======
+
+class PostListView(ListView):
+    model = Post
+    template_name = 'ProjectWebGame/post_list.html'
+    context_object_name = 'post_list'
+
+    def get_queryset(self):
+        return Post.objects.filter(published_date__lte = timezone.now()).order_by('published_date')
+    
+class PostDetailView(DetailView):
+    model = Post
+    template_name = 'ProjectWebGame/post_detail.html'
+    context_object_name = 'post'
+
+class CreatePostView(CreateView, LoginRequiredMixin):
+    login_url = '/login/'
+    redirect_field_name = 'redirect_to'
+    form_class = PostForm
+    model = Post
+    template_name = 'ProjectWebGame/post_form.html'
+    success_url = reverse_lazy('ProjectWebGame:post_list')
+
+class PostUpdateView(UpdateView, LoginRequiredMixin): 
+    login_url = '/login/'
+    redirect_field_name = 'Home/productDetails.html'
+
+    form_class = PostForm
+
+    model = Post
+
+class DraftListView(LoginRequiredMixin, ListView):
+    login_url = '/login/'
+    redirect_field_name = 'Home/gameList.html'
+
+    model = Post
+
+    def get_queryset(self):
+        return Post.objects.filter(published_date__isnull=True).order_by('created_date')
+    
+class PostDeleteView(LoginRequiredMixin, DeleteView):
+    model = Post
+    template_name = 'ProjectWebGame/post_confirm_delete.html'
+    success_url = reverse_lazy('ProjectWebGame:post_list')
+
+
+@login_required
+def post_publish(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    post.publish()
+    return redirect('ProjectWebGame:post_detail', pk=pk)
+
+@login_required
+def add_comment_to_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.method == 'POST':
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.save()
+            return redirect('ProjectWebGame:post_detail', pk=post.pk)
     else:
-        review = get_object_or_404(Review, id=draft_id)
-        review.is_published = True
-        review.save()
-        messages.success(request, 'Bình luận đã được công khai!')
-    return redirect('dashboard')
+        form = CommentForm()
+    return render(request, 'ProjectWebGame/comment_form.html', {'form': form})
+
+@login_required
+def comment_approve(request, pk):
+    comment = get_object_or_404(Comment, pk=pk)
+    comment.approve()
+    return redirect('ProjectWebGame:post_detail', pk=comment.post.pk)
+>>>>>>> origin/django/1-main
+
+@login_required
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    # Kiểm tra xem người dùng có quyền xóa không
+    if request.user.is_staff or request.user == comment.author:
+        comment.delete()
+        messages.success(request, "Comment deleted successfully.")
+    else:
+        messages.error(request, "You do not have permission to delete this comment.")
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
 
 # Crud Dev and Category
 @login_required
@@ -261,6 +366,7 @@ def edit_category(request, category_id):
             return redirect('ProjectWebGame:category_list')
     else:
         form = CategoryForm(instance=category)
+
     return render(request, 'Dev_Category/category_form.html', {'form': form})
 
 @login_required

@@ -1,7 +1,7 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    {% load static %}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta charset="utf-8" />
@@ -33,7 +33,7 @@
           <div class="col-12">
             <nav class="main-nav">
               <!-- ***** Logo Start ***** -->
-              <a href="{% url 'ProjectWebGame:index' %}" class="logo">
+              <a href="{% url 'Home:index' %}" class="logo">
                 <img
                   src="{% static 'images/logo.png' %}"
                   alt=""
@@ -43,23 +43,18 @@
               <!-- ***** Logo End ***** -->
               <!-- ***** Menu Start ***** -->
               <ul class="nav">
-                <li><a href="{% url 'ProjectWebGame:index' %}">Home</a></li>
-                <li><a href="{% url 'ProjectWebGame:game' %}">Our Game</a></li>
-                <li><a href="{% url 'ProjectWebGame:contact' %}">Contact Us</a></li>
+                <li><a href="{% url 'Home:index' %}" class="active">Home</a></li>
+                <li><a href="{% url 'Home:game' %}">Our Game</a></li>
+                <!-- {% comment %} <li><a href="{% url 'ProjectWebGame:productDetails' %}">Product Details</a></li> {% endcomment %} -->
+                <li><a href="{% url 'Home:contact' %}">Contact Us</a></li>
                 {% if user.is_authenticated %}
-                <li style="color: white; font-weight: bold">
-                  Welcome User: {{ user.username }}
-                </li>
-                <li><a href="{% url 'ProjectWebGame:logout' %}">Logout</a></li>
-                {% else %}
-                <li style="color: white; font-weight: bold">
-                  Welcome User: Guest
-                </li>
+                <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li>  <!-- In đậm và trắng -->
+                <li><a href="{% url 'Home:logout' %}">Logout</a></li>
                 <li>
-                  <a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a>
+                  <a href="{% url 'Home:user_login' %}">Sign In</a>
                 </li>
                 {% endif %}
-              </ul>
+            </ul>
               <a class="menu-trigger">
                 <span>Menu</span>
               </a>
@@ -70,22 +65,37 @@
       </div>
     </header>
     <!-- ***** Header Area End ***** -->
-    <div class="main-banner">
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+>>>>>>> origin/django/1-main
+    <div class="page-heading header-text">
       <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <h3>Only for admin</h3>
+            <span class="breadcrumb" style="background-color: transparent;"><a href="{% url 'ProjectWebGame:index' %}"">Home</a> > Only for admin</span>
+<<<<<<< HEAD
+=======
+=======
+    <div class="main-banner">
+      {% comment %} <div class="container">
         <div class="row">
           <div class="col-lg-6 align-self-center">
             <div class="caption header-text">
               <div class="container my-4">
-                {% block body_block %} {% endblock %}
               </div>
             </div>
+>>>>>>> django/4-ShibaInu
+>>>>>>> origin/django/1-main
           </div>
         </div>
       </div>
     </div>
   <!-- ***** Header Area End ***** -->
 
-
+  {% block body_block %}
+  {% endblock %}
     <!-- Scripts -->
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
