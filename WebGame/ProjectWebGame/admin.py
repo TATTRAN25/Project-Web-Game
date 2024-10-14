@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfileInfo, Developer, Category, Game, Draft, Comment
+from .models import UserProfileInfo, Developer, Category, Game, Comment
 
 @admin.register(UserProfileInfo)
 class UserProfileInfoAdmin(admin.ModelAdmin):
@@ -22,5 +22,4 @@ class GameAdmin(admin.ModelAdmin):
     list_filter = ('developer', 'category', 'is_published')
     search_fields = ('name', 'description')
 
-admin.site.register(Draft)
 admin.site.register(Comment)

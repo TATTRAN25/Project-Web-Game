@@ -5,13 +5,8 @@ from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponseRedirect,HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required, user_passes_test
-<<<<<<< HEAD
-from .models import Game, Draft, Comment, Developer, Category
+from .models import Game, Comment, Developer, Category
 from .form import CommentForm
-=======
-from .models import Game, Draft, Post, Comment, Developer, Category
-from .form import PostForm, CommentForm
->>>>>>> origin/django/1-main
 from django.views.generic import (TemplateView, ListView, DeleteView, CreateView, UpdateView, UpdateView, DeleteView, DetailView)
 from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin 
@@ -156,15 +151,10 @@ def is_admin(user):
 def create_game(request):
     form = GameForm()
     if request.method == 'POST':
-        game = Game(
-            name=request.POST['name'],
-            description=request.POST['description'],
-            developer=request.user,
-            is_published=False  # Đặt chế độ nháp
-        )
-        game.save()
+        form = GameForm(request.POST)
+        form.save()
         messages.success(request, 'Game đã được lưu vào bản nháp!')
-        return redirect('ProjectWebGame:game_list') 
+        return redirect('ProjectWebGame:gameList')
     else:
         form = GameForm()
         return render(request, 'Game/game_form.html', {'form': form})
@@ -186,7 +176,10 @@ def update_game(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, 'Game đã được cập nhật!')
-            return redirect('ProjectWebGame:draft_list')
+            if game.is_published == True:
+                return redirect('ProjectWebGame:gameList')
+            else:
+                return redirect('ProjectWebGame:draft_list')
     else:
         form = GameForm(instance=game)
         return render(request, 'Game/game_form.html', {'form': form})
@@ -197,26 +190,10 @@ def delete_game(request, pk):
     game = get_object_or_404(Game, pk=pk)
     game.delete()
     messages.success(request, 'Game đã xóa thành công!')
-    return redirect('ProjectWebGame:gameList')
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
-@login_required
-def add_review(request, game_id):
-    game = get_object_or_404(Game, id=game_id)
-    if request.method == 'POST':
-        review = Review(
-            user=request.user,
-            game=game,
-            content=request.POST['content'],
-            rating=request.POST['rating'],
-            is_published=False
-        )
-        review.save()
-        messages.success(request, 'Bình luận đã được lưu vào bản nháp!')
-        return redirect('Game/game_detail', game_id=game.id)
+    if game.is_published == True:
+        return redirect('ProjectWebGame:gameList')
+    else:
+        return redirect('ProjectWebGame:draft_list')
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
@@ -227,91 +204,21 @@ def publish_draft(request, draft_id):
     messages.success(request, 'Game đã được công khai!')
     return redirect('ProjectWebGame:gameList')
 
->>>>>>> origin/django/2-Charizard
 @user_passes_test(lambda u: u.is_superuser)
 def DraftListView(request):
     drafts = Game.objects.all()
     return render(request, 'Game/draft_list.html', {'drafts': drafts})
-<<<<<<< HEAD
-=======
-=======
 
 @user_passes_test(lambda u: u.is_superuser)
 def DraftDetailView(request, pk):
     draft = get_object_or_404(Game, pk = pk)
     return render(request, 'Game/draft_list.html', {'draft': draft})
->>>>>>> origin/django/2-Charizard
-
-class PostListView(ListView):
-    model = Post
-    template_name = 'ProjectWebGame/post_list.html'
-    context_object_name = 'post_list'
-
-    def get_queryset(self):
-        return Post.objects.filter(published_date__lte = timezone.now()).order_by('published_date')
-    
-class PostDetailView(DetailView):
-    model = Post
-    template_name = 'ProjectWebGame/post_detail.html'
-    context_object_name = 'post'
-
-class CreatePostView(CreateView, LoginRequiredMixin):
-    login_url = '/login/'
-    redirect_field_name = 'redirect_to'
-    form_class = PostForm
-    model = Post
-    template_name = 'ProjectWebGame/post_form.html'
-    success_url = reverse_lazy('ProjectWebGame:post_list')
-
-class PostUpdateView(UpdateView, LoginRequiredMixin): 
-    login_url = '/login/'
-    redirect_field_name = 'Home/productDetails.html'
-
-    form_class = PostForm
-
-    model = Post
-
-class DraftListView(LoginRequiredMixin, ListView):
-    login_url = '/login/'
-    redirect_field_name = 'Home/gameList.html'
-
-    model = Post
-
-    def get_queryset(self):
-        return Post.objects.filter(published_date__isnull=True).order_by('created_date')
-    
-class PostDeleteView(LoginRequiredMixin, DeleteView):
-    model = Post
-    template_name = 'ProjectWebGame/post_confirm_delete.html'
-    success_url = reverse_lazy('ProjectWebGame:post_list')
-
-
-@login_required
-def post_publish(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    post.publish()
-    return redirect('ProjectWebGame:post_detail', pk=pk)
-
-@login_required
-def add_comment_to_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.save()
-            return redirect('ProjectWebGame:post_detail', pk=post.pk)
-    else:
-        form = CommentForm()
-    return render(request, 'ProjectWebGame/comment_form.html', {'form': form})
 
 @login_required
 def comment_approve(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
     comment.approve()
     return redirect('ProjectWebGame:post_detail', pk=comment.post.pk)
->>>>>>> origin/django/1-main
 
 @login_required
 def delete_comment(request, comment_id):
