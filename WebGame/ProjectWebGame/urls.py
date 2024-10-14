@@ -25,6 +25,10 @@ urlpatterns = [
     path('gameList/delete/<int:pk>/', views.delete_game, name='delete_game'),
     path('draft_list/', views.DraftListView, name='draft_list'),
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    path('draft_list/draft_detail/<int:pk>/', views.DraftDetailView, name='draft_detail'),
+>>>>>>> origin/django/2-Charizard
     path('draft_list/publish_draft/<int:draft_id>/', views.publish_draft, name='publish_draft'),
 =======
 >>>>>>> origin/django/1-main

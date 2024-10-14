@@ -148,9 +148,6 @@ def gameList(request):
     games = Game.objects.all() 
     return render(request, 'Game/gameList.html', {'games': games})
 
-def dashboard(request):
-    return render(request, 'Game/dashboard.html')
-
 def is_admin(user):
     return user.is_superuser
 
@@ -203,11 +200,47 @@ def delete_game(request, pk):
     return redirect('ProjectWebGame:gameList')
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+@login_required
+def add_review(request, game_id):
+    game = get_object_or_404(Game, id=game_id)
+    if request.method == 'POST':
+        review = Review(
+            user=request.user,
+            game=game,
+            content=request.POST['content'],
+            rating=request.POST['rating'],
+            is_published=False
+        )
+        review.save()
+        messages.success(request, 'Bình luận đã được lưu vào bản nháp!')
+        return redirect('Game/game_detail', game_id=game.id)
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def publish_draft(request, draft_id):
+    game = get_object_or_404(Game, id=draft_id)
+    game.is_published = True
+    game.save()
+    messages.success(request, 'Game đã được công khai!')
+    return redirect('ProjectWebGame:gameList')
+
+>>>>>>> origin/django/2-Charizard
 @user_passes_test(lambda u: u.is_superuser)
 def DraftListView(request):
     drafts = Game.objects.all()
     return render(request, 'Game/draft_list.html', {'drafts': drafts})
+<<<<<<< HEAD
 =======
+=======
+
+@user_passes_test(lambda u: u.is_superuser)
+def DraftDetailView(request, pk):
+    draft = get_object_or_404(Game, pk = pk)
+    return render(request, 'Game/draft_list.html', {'draft': draft})
+>>>>>>> origin/django/2-Charizard
 
 class PostListView(ListView):
     model = Post
