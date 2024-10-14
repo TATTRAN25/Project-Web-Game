@@ -45,7 +45,6 @@
               <ul class="nav">
                 <li><a href="{% url 'Home:index' %}" class="active">Home</a></li>
                 <li><a href="{% url 'Home:game' %}">Our Game</a></li>
-                <!-- {% comment %} <li><a href="{% url 'ProjectWebGame:productDetails' %}">Product Details</a></li> {% endcomment %} -->
                 <li><a href="{% url 'Home:contact' %}">Contact Us</a></li>
                 {% if user.is_authenticated %}
                 <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li>  <!-- In đậm và trắng -->
@@ -65,19 +64,13 @@
       </div>
     </header>
     <!-- ***** Header Area End ***** -->
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> origin/django/1-main
     <div class="page-heading header-text">
       <div class="container">
         <div class="row">
           <div class="col-lg-12">
             <h3>Only for admin</h3>
             <span class="breadcrumb" style="background-color: transparent;"><a href="{% url 'ProjectWebGame:index' %}"">Home</a> > Only for admin</span>
-<<<<<<< HEAD
-=======
-=======
+
     <div class="main-banner">
       {% comment %} <div class="container">
         <div class="row">
@@ -86,11 +79,9 @@
               <div class="container my-4">
               </div>
             </div>
->>>>>>> django/4-ShibaInu
->>>>>>> origin/django/1-main
           </div>
         </div>
-      </div>
+      </div> {% endcomment %}
     </div>
   <!-- ***** Header Area End ***** -->
 

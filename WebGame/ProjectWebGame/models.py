@@ -50,9 +50,6 @@ class Draft(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
-<<<<<<< HEAD
-        return self.title    
-=======
         return self.title
     
 class Post(models.Model):
@@ -75,7 +72,6 @@ class Post(models.Model):
     def __str__(self):
         return self.title
     
->>>>>>> origin/django/1-main
     
 class Comment(models.Model):
     game = models.ForeignKey(Game, related_name='comments', on_delete=models.CASCADE)
