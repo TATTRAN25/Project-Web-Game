@@ -37,7 +37,7 @@ class Game(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to='game_pic/', blank=True)
     link_dowload = models.URLField(blank=True)
-    release_date = models.DateField()
+    release_date = models.DateField(auto_now_add=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_published = models.BooleanField(default=False)
@@ -50,10 +50,35 @@ class Draft(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
+<<<<<<< HEAD
         return self.title    
+=======
+        return self.title
+    
+class Post(models.Model):
+    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    text = models.TextField()
+    created_date = models.DateTimeField(default=timezone.now)
+    published_date = models.DateTimeField(blank=True, null=True)
+
+    def publish(self):
+        self.published_date = timezone.now()
+        self.save()
+
+    def approve_comments(self):
+        return self.comments.filter(approved_comment=True)
+    
+    def get_absolute_url(self):
+        return reverse("model_detail", kwargs={"pk": self.pk})
+    
+    def __str__(self):
+        return self.title
+    
+>>>>>>> origin/django/1-main
     
 class Comment(models.Model):
-    game =  game = models.ForeignKey(Game, related_name='comments', on_delete=models.CASCADE)
+    game = models.ForeignKey(Game, related_name='comments', on_delete=models.CASCADE)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     created_date = models.DateTimeField(default=timezone.now)

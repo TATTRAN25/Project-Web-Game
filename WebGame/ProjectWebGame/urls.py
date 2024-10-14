@@ -19,12 +19,15 @@ urlpatterns = [
     path('register/', views.register, name='register'),
     path('user_login/', views.user_login, name='user_login'),
     # url game
-    path('create_game/', views.create_game, name='create_game'),  
-    path('gamelist/', views.game, name='gameList'),  
-    path('dashboard/', views.dashboard, name='dashboard'),
-    
-    path('gameList/', views.gameList, name='gameList'),  
-    path('dashboard/', views.dashboard, name='dashboard'), 
+    path('gameList/', views.gameList, name='gameList'),
+    path('gameList/create/', views.create_game, name='create_game'),
+    path('gameList/update/<int:pk>/', views.update_game, name='update_game'),
+    path('gameList/delete/<int:pk>/', views.delete_game, name='delete_game'),
+    path('draft_list/', views.DraftListView, name='draft_list'),
+<<<<<<< HEAD
+    path('draft_list/publish_draft/<int:draft_id>/', views.publish_draft, name='publish_draft'),
+=======
+>>>>>>> origin/django/1-main
     # url developer
     path('developer/', views.developer_list, name='developer_list'),
     path('developer/add/', views.add_developer, name='add_developer'),
