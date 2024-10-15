@@ -35,6 +35,9 @@ urlpatterns = [
     path('category/add/', views.add_category, name='add_category'),
     path('category/edit/<int:category_id>/', views.edit_category, name='edit_category'),
     path('category/delete/<int:category_id>/', views.delete_category, name='delete_category'),
+    # url dev_category_list
+    path('dev-list/developer/<int:dev_id>/', views.dev_category_list, name='dev_list'),
+    path('dev-list/category/<int:category_id>/', views.dev_category_list, name='category_list'),
 ]
 
 if settings.DEBUG:

@@ -31,11 +31,15 @@
               <li><a href="{% url 'Home:game' %}" class="active">Our Game</a></li>
               <li><a href="{% url 'Home:contact' %}">Contact Us</a></li>
               {% if user.is_authenticated %}
-                <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li>
-                <li><a href="{% url 'Home:logout' %}">Logout</a></li>
+              {% if user.is_superuser %}
+              <li style="color: white; font-weight: bold;">Admin: {{ user.username }}</li>
               {% else %}
-                <li style="color: white; font-weight: bold;">Welcome User: Guest</li>
-                <li><a href="{% url 'Home:user_login' %}">Sign In</a></li>
+              <li style="color: white; font-weight: bold;">User: {{ user.username }}</li>
+              {% endif %}
+              <li><a href="{% url 'Home:logout' %}">Logout</a></li>
+              {% else %}
+              <li style="color: white; font-weight: bold;">Guest</li>
+              <li><a href="{% url 'Home:user_login' %}">Sign In</a></li>
               {% endif %}
             </ul>
             <a class='menu-trigger'>
@@ -71,63 +75,64 @@
     </form>
   </div>
 
-<div class="section trending">
+  <div class="section trending">
     <div class="container">
-        <ul class="trending-filter">
-            <li><a class="is_active" href="{% url 'Home:game' %}" data-filter="*">Show All</a></li>
-            {% for category in categories %}
-                <li><a href="{% url 'Home:game' %}?category={{ category.id }}&search={{ search_query }}" data-filter=".{{ category.slug }}">{{ category.name }}</a></li>
-            {% endfor %}
-        </ul>
+      <ul class="trending-filter">
+        <li><a class="{% if not category_id %}is_active{% endif %}" href="{% url 'Home:game' %}?search={{ search_query }}" data-filter="*" onclick="saveScrollPosition(event)">Show All</a></li>
+        {% for category in categories %}
+        <li><a class="{% if category_id == category.id|stringformat:'i' %}is_active{% endif %}" href="{% url 'Home:game' %}?category={{ category.id }}&search={{ search_query }}" data-filter=".{{ category.slug }}" onclick="saveScrollPosition(event)">{{ category.name }}</a></li>
+        {% endfor %}
+      </ul>
         <div class="row trending-box">
-            {% for game in page_obj %}
-                {% if game.is_published == True %}
-                <div class="col-lg-3 col-md-6 align-self-center mb-30 trending-items">
-                    <div class="item">
-                        <div class="thumb">
-                            <a href="{% url 'Home:productDetails' game.id %}">
-                                {% if game.image %}
-                                    <img src="{{ game.image.url }}" alt="{{ game.name }}">
-                                {% else %}
-                                    <img src="{% static 'images/default.jpg' %}" alt="No image available">
-                                {% endif %}
-                            </a>
-                        </div>
-                        <div class="down-content">
-                            <span class="category">{{ game.category.name }}</span>
-                            <h4>{{ game.name }}</h4>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-            {% empty %}
-                <p>No games found.</p>
-            {% endfor %}
+          {% for game in page_obj %}
+          {% if game.is_published == True %}
+          <div class="col-lg-3 col-md-6 align-self-center mb-30 trending-items">
+              <div class="item">
+                  <div class="thumb">
+                      <a href="{% url 'Home:productDetails' game.id %}">
+                          {% if game.image %}
+                              <img src="{{ game.image.url }}" alt="{{ game.name }}">
+                          {% else %}
+                              <img src="{% static 'images/default.jpg' %}" alt="No image available">
+                          {% endif %}
+                      </a>
+                  </div>
+                  <div class="down-content">
+                      <span class="category">{{ game.category.name }}</span>
+                      <p>Release Date: {{ game.release_date }}</p>
+                      <h4>{{ game.name }}</h4>
+                  </div>
+              </div>
+          </div>
+          {% endif %}
+      {% empty %}
+          <p>No games found.</p>
+      {% endfor %}
         </div>
 
-      <div class="row">
-        <div class="col-lg-12">
-          <ul class="pagination">
-            {% if page_obj.has_previous %}
-              <li><a href="?page=1">&lt;&lt;</a></li>
-              <li><a href="?page={{ page_obj.previous_page_number }}">&lt;</a></li>
-            {% endif %}
-            {% for num in page_obj.paginator.page_range %}
-              {% if page_obj.number == num %}
-                <li><a class="is_active" href="#">{{ num }}</a></li>
-              {% else %}
-                <li><a href="?page={{ num }}">{{ num }}</a></li>
+        <div class="row">
+          <div class="col-lg-12">
+            <ul class="pagination">
+              {% if page_obj.has_previous %}
+              <li><a href="?page=1&search={{ search_query }}&category={{ category_id }}">&lt;&lt;</a></li>
+              <li><a href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}&category={{ category_id }}">&lt;</a></li>
               {% endif %}
-            {% endfor %}
-            {% if page_obj.has_next %}
-              <li><a href="?page={{ page_obj.next_page_number }}">&gt;</a></li>
-              <li><a href="?page={{ page_obj.paginator.num_pages }}">&gt;&gt;</a></li>
-            {% endif %}
-          </ul>
+              {% for num in page_obj.paginator.page_range %}
+              {% if page_obj.number == num %}
+              <li><a class="is_active" href="#">{{ num }}</a></li>
+              {% else %}
+              <li><a href="?page={{ num }}&search={{ search_query }}&category={{ category_id }}">{{ num }}</a></li>
+              {% endif %}
+              {% endfor %}
+              {% if page_obj.has_next %}
+              <li><a href="?page={{ page_obj.next_page_number }}&search={{ search_query }}&category={{ category_id }}">&gt;</a></li>
+              <li><a href="?page={{ page_obj.paginator.num_pages }}&search={{ search_query }}&category={{ category_id }}">&gt;&gt;</a></li>
+              {% endif %}
+            </ul>
+          </div>
         </div>
-      </div>
-    </div>
-  </div>
+        </div>
+        </div>
 
   <footer>
     <div class="container">
@@ -140,7 +145,25 @@
   <!-- Scripts -->
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
+  <script>
+    document.querySelectorAll('.pagination a').forEach(link => {
+      link.addEventListener('click', saveScrollPosition);
+    });
+  
+    function saveScrollPosition(event) {
+      event.preventDefault();
+      sessionStorage.setItem('scrollPosition', window.pageYOffset);
+      window.location.href = event.target.href;
+    }
+    
+    window.addEventListener('load', function() {
+    const scrollPosition = sessionStorage.getItem('scrollPosition');
+    if (scrollPosition) {
+      window.scrollTo(0, scrollPosition);
+      sessionStorage.removeItem('scrollPosition');
+    }
+    });
+    </script>
 </body>
 
 </html>

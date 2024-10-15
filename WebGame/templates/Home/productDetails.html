@@ -35,11 +35,15 @@
               <li><a href="{% url 'Home:game' %}">Our Game</a></li>
               <li><a href="{% url 'Home:contact' %}">Contact Us</a></li>
               {% if user.is_authenticated %}
-                <li style="color: white; font-weight: bold">Welcome User: {{ user.username }}</li>
-                <li><a href="{% url 'Home:logout' %}">Logout</a></li>
+              {% if user.is_superuser %}
+              <li style="color: white; font-weight: bold;">Admin: {{ user.username }}</li>
               {% else %}
-                <li style="color: white; font-weight: bold">Welcome User: Guest</li>
-                <li><a href="{% url 'Home:user_login' %}">Sign In</a></li>
+              <li style="color: white; font-weight: bold;">User: {{ user.username }}</li>
+              {% endif %}
+              <li><a href="{% url 'Home:logout' %}">Logout</a></li>
+              {% else %}
+              <li style="color: white; font-weight: bold;">Guest</li>
+              <li><a href="{% url 'Home:user_login' %}">Sign In</a></li>
               {% endif %}
             </ul>
             <a class='menu-trigger'><span>Menu</span></a>
@@ -79,7 +83,7 @@
         </div>
         <div class="col-lg-6 align-self-center">
           <h4>{{ game.name }}</h4>
-          <span class="price">Cracked</span>
+          <span class="price">Status: Cracked</span>
           <p>{{ game.description }}</p>
 
           {% if user.is_authenticated %}
@@ -94,8 +98,9 @@
           
           <ul>
             <li><span>Game ID:</span> {{ game.id }}</li>
-            <li><span>Studio:</span> {{ game.developer }}</li>
-            <li><span>Category:</span> {{ game.category }}</li>
+            <li><span>Developer:</span> <a href="{% url 'ProjectWebGame:dev_list' dev_id=game.developer.id %}">{{ game.developer }}</a></li>
+            <li><span>Category:</span> <a href="{% url 'ProjectWebGame:category_list' category_id=game.category.id %}">{{ game.category }}</a></li>
+            <li><span>Release Date:</span>{{ game.release_date }}</li>
           </ul>
         </div>
         <div class="col-lg-12">
@@ -135,7 +140,7 @@
                                     {% for comment in comments %}
                                     <div class="comment">
                                       <div class="comment-header">
-                                          <strong>{{ comment.author.username }}</strong>
+                                          <strong>User: {{ comment.author.username }}</strong>
                                           <span class="comment-date">Posted on: {{ comment.created_date|date:"l, j F Y" }}</span>
                                       </div>
                                       <p class="comment-text">{{ comment.text }}</p>
@@ -187,7 +192,11 @@
                     <h4>{{ related_game.name }}</h4>
                     <div class="thumb">
                         <a href="{% url 'Home:productDetails' related_game.id %}">
+                            {% if game.image %}
                             <img src="{{ related_game.image.url }}" alt="{{ related_game.name }}">
+                            {% else %}
+                            <img src="{% static 'images/default.jpg' %}" alt="No image available">
+                            {% endif %}
                         </a>
                     </div>
                 </div>

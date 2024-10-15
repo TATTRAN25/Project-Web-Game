@@ -115,26 +115,26 @@ def productDetails(request, id):
 
 
 def game(request):
-    search_query = request.GET.get('search', '')  # Lấy tham số tìm kiếm
-    category_id = request.GET.get('category')  # Lấy tham số category
+    search_query = request.GET.get('search', '')
+    category_id = request.GET.get('category', '')
 
+    queryset = Game.objects.all()
     if search_query:
-        game_list = Game.objects.filter(name__icontains=search_query)
-    elif category_id:
-        game_list = Game.objects.filter(category_id=category_id)  # Lọc theo category
-    else:
-        game_list = Game.objects.all()  # Lấy tất cả nếu không có tìm kiếm hoặc category
+        queryset = queryset.filter(name__icontains=search_query)
+    if category_id:
+        queryset = queryset.filter(category_id=category_id)
 
-    paginator = Paginator(game_list, 4) 
+    paginator = Paginator(queryset, 4)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
-    categories = Category.objects.all() 
+
+    categories = Category.objects.all()
 
     return render(request, 'Home/game.html', {
-        'page_obj': page_obj, 
+        'page_obj': page_obj,
         'search_query': search_query,
-        'categories': categories    
+        'category_id': category_id,
+        'categories': categories
     })
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -178,7 +178,7 @@ def update_game(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, 'Game đã được cập nhật!')
-            return redirect('ProjectWebGame:draft_list')
+            return redirect('ProjectWebGame:gameList')
     else:
         form = GameForm(instance=game)
         return render(request, 'Game/game_form.html', {'form': form})
@@ -328,3 +328,35 @@ def delete_category(request, category_id):
         messages.success(request, 'Category deleted successfully!')
         return redirect('ProjectWebGame:category_list')
     return render(request, 'Dev_Category/confirm_delete.html', {'object': category})
+
+def dev_category_list(request, dev_id=None, category_id=None):
+    if dev_id:
+        developer = get_object_or_404(Developer, id=dev_id)
+        games = Game.objects.filter(developer=developer, is_published=True)
+        filter_type = 'developer'
+        filter_obj = developer
+    elif category_id:
+        category = get_object_or_404(Category, id=category_id)
+        games = Game.objects.filter(category=category, is_published=True)
+        filter_type = 'category'
+        filter_obj = category
+    else:
+        games = Game.objects.filter(is_published=True)
+        filter_type = None
+        filter_obj = None
+
+    paginator = Paginator(games, 4)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    categories = Category.objects.all()
+    developers = Developer.objects.all()
+
+    context = {
+        'filter_type': filter_type,
+        'filter_obj': filter_obj,
+        'page_obj': page_obj,
+        'categories': categories,
+        'developers': developers,
+    }
+    return render(request, 'Dev_Category/dev_category_list.html', context)

@@ -34,11 +34,7 @@
             <nav class="main-nav">
               <!-- ***** Logo Start ***** -->
               <a href="{% url 'Home:index' %}" class="logo">
-                <img
-                  src="{% static 'images/logo.png' %}"
-                  alt=""
-                  style="width: 158px"
-                />
+                <img src="{% static 'images/logo.png' %}" alt="" style="width: 158px" />
               </a>
               <!-- ***** Logo End ***** -->
               <!-- ***** Menu Start ***** -->
@@ -48,13 +44,17 @@
                 <!-- {% comment %} <li><a href="{% url 'ProjectWebGame:productDetails' %}">Product Details</a></li> {% endcomment %} -->
                 <li><a href="{% url 'Home:contact' %}">Contact Us</a></li>
                 {% if user.is_authenticated %}
-                <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li>  <!-- In đậm và trắng -->
-                <li><a href="{% url 'Home:logout' %}">Logout</a></li>
-                <li>
-                  <a href="{% url 'Home:user_login' %}">Sign In</a>
-                </li>
+                {% if user.is_superuser %}
+                <li style="color: white; font-weight: bold;">Admin: {{ user.username }}</li>
+                {% else %}
+                <li style="color: white; font-weight: bold;">User: {{ user.username }}</li>
                 {% endif %}
-            </ul>
+                <li><a href="{% url 'Home:logout' %}">Logout</a></li>
+                {% else %}
+                <li style="color: white; font-weight: bold;">Guest</li>
+                <li><a href="{% url 'Home:user_login' %}">Sign In</a></li>
+                {% endif %}
+              </ul>
               <a class="menu-trigger">
                 <span>Menu</span>
               </a>
