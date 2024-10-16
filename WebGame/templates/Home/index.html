@@ -39,7 +39,7 @@
                         <li><a href="{% url 'Home:game' %}">Our Game</a></li>
                         <li><a href="{% url 'Home:contact' %}">Contact Us</a></li>
                         {% if user.is_authenticated %}
-                          <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li> 
+                          <li style="color: white; font-weight: bold;"><a href="{% url 'Home:user_profile' user.id %}" style="text-decoration: none; font-weight: bold;">Welcome User: {{ user.username }}</a></li> 
                           <li><a href="{% url 'Home:logout' %}">Logout</a></li>
                         {% else %}
                             <li style="color: white; font-weight: bold;">Welcome User: Guest</li>

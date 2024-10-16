@@ -20,7 +20,7 @@ urlpatterns = [
     path('user_login/', views.user_login, name='user_login'),
     path('userList/', views.user_list, name='userList'),
     path('userList/create/', views.create_super_user, name='create_super_user'),
-    # path('userList/details/<int:pk>/', views.user_details, name='user_details'),
+    path('userList/details/<int:pk>/', views.user_profile, name='user_profile'),
     path('userList/update/<int:pk>/', views.update_user, name='update_user'),
     path('userList/delete/<int:pk>/', views.delete_user, name='delete_user'),
     # url game

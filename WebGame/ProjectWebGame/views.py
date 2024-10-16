@@ -31,7 +31,7 @@ def register(request):
 
             profile = profile_form.save(commit=False)
             profile.user = user  
-            profile.save()  
+            profile.save()
 
             messages.success(request, 'Đăng ký thành công!')  
             return redirect('ProjectWebGame:user_login')  
@@ -92,25 +92,33 @@ def user_list(request):
     users = User.objects.all()
     return render(request, 'Users/user_list.html', {'users': users})
 
+@login_required
+def user_profile(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    return render(request, 'Users/user_profile.html',  {'user':user})
+
 @user_passes_test(lambda u: u.is_superuser)
 def create_super_user(request):
-    form = UserForm()
     if request.method == 'POST':
         form = UserForm(request.POST)
+        profile_form = UserProfileForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
             user.is_superuser = True
             user.is_staff = True
             user.save()
+
+            profile = profile_form.save(commit=False)
+            profile.user = user
+            profile.save()
+
             messages.success(request, 'Super user đã được tạo thành công.')
             return redirect('ProjectWebGame:userList')
-        else:
-            for error in form.non_field_errors():
-                messages.error(request, error)
     else:
         form = UserForm()
-        return render(request, 'Users/user_form.html', {'form': form})
+        profile_form = UserProfileForm()
+        return render(request, 'Users/user_form.html', {'form': form, 'profile_form': profile_form})
 
 @user_passes_test(lambda u: u.is_superuser)
 def update_user(request, pk):
@@ -197,7 +205,7 @@ def is_admin(user):
 def create_game(request):
     form = GameForm()
     if request.method == 'POST':
-        form = GameForm(request.POST)
+        form = GameForm(request.POST, request.FILES)
         form.save()
         messages.success(request, 'Game đã được lưu vào bản nháp!')
         return redirect('ProjectWebGame:gameList')
@@ -218,7 +226,7 @@ def publish_draft(request, draft_id):
 def update_game(request, pk):
     game = get_object_or_404(Game, pk=pk)
     if request.method == 'POST':
-        form = GameForm(request.POST, instance=game)
+        form = GameForm(request.POST,request.FILES, instance=game)
         if form.is_valid():
             form.save()
             messages.success(request, 'Game đã được cập nhật!')
