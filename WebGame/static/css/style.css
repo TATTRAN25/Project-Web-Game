@@ -33,3 +33,28 @@
 .delete-button:hover {
     text-decoration: underline; /* Hiệu ứng khi hover */
 }
+
+.rating {
+    display: flex;
+    cursor: pointer;
+}
+
+.star {
+    font-size: 24px; /* Kích thước của sao */
+    color: rgb(0, 0, 0); /* Màu mặc định của sao */
+    transition: color 0.2s; /* Hiệu ứng chuyển màu */
+    margin-right: 5px; /* Khoảng cách giữa các sao */
+}
+
+.star.hovered {
+    color: gold; /* Màu khi di chuột lên sao */
+}
+
+#emoji-picker {
+    display: none; /* Bắt đầu ẩn */
+    border: 1px solid #ccc;
+    background: white;
+    position: absolute; /* Đặt vị trí tuyệt đối */
+    z-index: 1000; /* Để đảm bảo nó hiện lên trên các phần tử khác */
+    margin-top: 5px; /* Khoảng cách giữa button và emoji picker */
+}

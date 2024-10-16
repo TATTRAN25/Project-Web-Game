@@ -107,9 +107,8 @@ def productDetails(request, id):
             comment.game = game
             comment.author = request.user
             comment.save()
-            print(f"Comment saved: {comment.text}")
+            print(f"Comment saved: {comment.text} with rating: {comment.rating}")
             messages.success(request, "Your comment has been added.")
-            # return redirect('Home:productDetails', id=id)
             comments = game.comments.all()
     else:
         form = CommentForm()

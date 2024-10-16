@@ -78,6 +78,7 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     text = models.TextField()
     created_date = models.DateTimeField(default=timezone.now)
+    rating = models.PositiveIntegerField(default=0)
 
     def approve(self):
         self.approved_comment = True
