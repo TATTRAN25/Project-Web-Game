@@ -16,10 +16,20 @@ class UserProfileForm(forms.ModelForm):
         model = UserProfileInfo
         fields = ['address', 'bio', 'avatar']
 
+        widgets = {
+            'address': forms.TextInput(attrs={'class': 'form-control', 'style': 'margin-bottom: 1rem'}),
+            'bio': forms.Textarea(attrs={'class': 'form-control', 'style': 'margin-bottom: 1rem'}),
+        }
+
 class GameForm(forms.ModelForm):
     class Meta:
         model = Game
         exclude = ['release_date','created_at', 'updated_at', 'is_published']
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'style': 'margin-bottom: 1rem'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'style': 'margin-bottom: 1rem'}),
+        }
 
 class CommentForm(forms.ModelForm):
     class Meta:
@@ -34,7 +44,17 @@ class DeveloperForm(forms.ModelForm):
         model = Developer
         fields = ['name', 'description', 'website', 'logo']
 
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'style': 'margin-bottom: 1rem'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'style': 'margin-bottom: 1rem'}),
+        }
+
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = ['name', 'description']
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'style': 'margin-bottom: 1rem'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'style': 'margin-bottom: 1rem'}),
+        }
