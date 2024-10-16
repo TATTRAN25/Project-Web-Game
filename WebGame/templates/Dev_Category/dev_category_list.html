@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% load static %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <title>Lugx Gaming - Game Page</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="{% static 'css/fontawesome.css' %}">
+  <link rel="stylesheet" href="{% static 'css/templatemo-lugx-gaming.css' %}">
+  <link rel="stylesheet" href="{% static 'css/owl.css' %}">
+  <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+  <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+</head>
+
+<body>
+
+  <!-- ***** Header Area Start ***** -->
+  <header class="header-area header-sticky">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <nav class="main-nav">
+            <a href="{% url 'Home:index' %}" class="logo">
+              <img src="{% static 'images/logo.png' %}" alt="" style="width: 158px;">
+            </a>
+            <ul class="nav">
+              <li><a href="{% url 'Home:index' %}">Home</a></li>
+              <li><a href="{% url 'Home:game' %}" class="active">Our Game</a></li>
+              <li><a href="{% url 'Home:contact' %}">Contact Us</a></li>
+              {% if user.is_authenticated %}
+              {% if user.is_superuser %}
+              <li style="color: white; font-weight: bold;">Admin: {{ user.username }}</li>
+              {% else %}
+              <li style="color: white; font-weight: bold;">User: {{ user.username }}</li>
+              {% endif %}
+              <li><a href="{% url 'Home:logout' %}">Logout</a></li>
+              {% else %}
+              <li style="color: white; font-weight: bold;">Guest</li>
+              <li><a href="{% url 'Home:user_login' %}">Sign In</a></li>
+              {% endif %}
+            </ul>
+            <a class='menu-trigger'>
+              <span>Menu</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </header>
+  <!-- ***** Header Area End ***** -->
+
+  <div class="page-heading header-text">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          <h3>Game</h3>
+          <span class="breadcrumb" style="background-color: transparent;"><a href="{% url 'ProjectWebGame:index' %}">Home</a> > Game</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section trending">
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12">
+          {% if filter_type == 'developer' %}
+          <h2>Developer: {{ filter_obj.name }}</h2>
+          <p>Description: {{ filter_obj.description }}</p>
+          {% elif filter_type == 'category' %}
+          <h2>Category: {{ filter_obj.name }}</h2>
+          <p>Description: {{ filter_obj.description }}</p>
+          {% endif %}
+        </div>
+      </div>
+      
+      <div class="row trending-box">
+        {% for game in page_obj %}
+        <div class="col-lg-3 col-md-6 align-self-center mb-30 trending-items">
+          <div class="item">
+            <div class="thumb">
+              <a href="{% url 'ProjectWebGame:productDetails' game.id %}">
+                {% if game.image %}
+                <img src="{{ game.image.url }}" alt="{{ game.name }}">
+                {% else %}
+                <img src="{% static 'images/default.jpg' %}" alt="No image available">
+                {% endif %}
+              </a>
+            </div>
+            <div class="down-content">
+              <span class="category">{{ game.category.name }}</span>
+              <h4>{{ game.name }}</h4>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <p>No games found.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page=1&search={{ search_query }}&category={{ category_id }}">&laquo;</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}&category={{ category_id }}">&lsaquo;</a></li>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+            <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="?page={{ num }}&search={{ search_query }}&category={{ category_id }}">{{ num }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&search={{ search_query }}&category={{ category_id }}">&rsaquo;</a></li>
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}&search={{ search_query }}&category={{ category_id }}">&raquo;</a></li>
+            {% endif %}
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="col-lg-12">
+        <p>Copyright © 2048 LUGX Gaming Company. All rights reserved. &nbsp;&nbsp; <a rel="nofollow" href="https://templatemo.com" target="_blank">Design: Stole By Charizard</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+  <script>
+  document.querySelectorAll('.pagination a').forEach(link => {
+    link.addEventListener('click', saveScrollPosition);
+  });
+
+  function saveScrollPosition(event) {
+    event.preventDefault();
+    sessionStorage.setItem('scrollPosition', window.pageYOffset);
+    window.location.href = event.target.href;
+  }
+
+  window.addEventListener('load', function() {
+  const scrollPosition = sessionStorage.getItem('scrollPosition');
+  if (scrollPosition) {
+    window.scrollTo(0, scrollPosition);
+    sessionStorage.removeItem('scrollPosition');
+  }
+  });
+  </script>
+</body>
+
+</html>

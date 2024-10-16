@@ -24,10 +24,7 @@ urlpatterns = [
     path('gameList/update/<int:pk>/', views.update_game, name='update_game'),
     path('gameList/delete/<int:pk>/', views.delete_game, name='delete_game'),
     path('draft_list/', views.DraftListView, name='draft_list'),
-<<<<<<< HEAD
     path('draft_list/publish_draft/<int:draft_id>/', views.publish_draft, name='publish_draft'),
-=======
->>>>>>> origin/django/1-main
     # url developer
     path('developer/', views.developer_list, name='developer_list'),
     path('developer/add/', views.add_developer, name='add_developer'),
@@ -38,6 +35,9 @@ urlpatterns = [
     path('category/add/', views.add_category, name='add_category'),
     path('category/edit/<int:category_id>/', views.edit_category, name='edit_category'),
     path('category/delete/<int:category_id>/', views.delete_category, name='delete_category'),
+    # url dev_category_list
+    path('dev-list/developer/<int:dev_id>/', views.dev_category_list, name='dev_list'),
+    path('dev-list/category/<int:category_id>/', views.dev_category_list, name='category_list'),
 ]
 
 if settings.DEBUG:

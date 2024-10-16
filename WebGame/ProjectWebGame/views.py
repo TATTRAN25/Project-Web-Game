@@ -5,13 +5,8 @@ from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponseRedirect,HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required, user_passes_test
-<<<<<<< HEAD
-from .models import Game, Draft, Comment, Developer, Category
-from .form import CommentForm
-=======
 from .models import Game, Draft, Post, Comment, Developer, Category
-from .form import PostForm, CommentForm
->>>>>>> origin/django/1-main
+from .form import CommentForm
 from django.views.generic import (TemplateView, ListView, DeleteView, CreateView, UpdateView, UpdateView, DeleteView, DetailView)
 from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin 
@@ -112,7 +107,6 @@ def productDetails(request, id):
             comment.save()
             print(f"Comment saved: {comment.text}")
             messages.success(request, "Your comment has been added.")
-            # return redirect('Home:productDetails', id=id)
             comments = game.comments.all()
     else:
         form = CommentForm()
@@ -121,26 +115,26 @@ def productDetails(request, id):
 
 
 def game(request):
-    search_query = request.GET.get('search', '')  # Lấy tham số tìm kiếm
-    category_id = request.GET.get('category')  # Lấy tham số category
+    search_query = request.GET.get('search', '')
+    category_id = request.GET.get('category', '')
 
+    queryset = Game.objects.all()
     if search_query:
-        game_list = Game.objects.filter(name__icontains=search_query)
-    elif category_id:
-        game_list = Game.objects.filter(category_id=category_id)  # Lọc theo category
-    else:
-        game_list = Game.objects.all()  # Lấy tất cả nếu không có tìm kiếm hoặc category
+        queryset = queryset.filter(name__icontains=search_query)
+    if category_id:
+        queryset = queryset.filter(category_id=category_id)
 
-    paginator = Paginator(game_list, 4) 
+    paginator = Paginator(queryset, 4)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
-    categories = Category.objects.all() 
+
+    categories = Category.objects.all()
 
     return render(request, 'Home/game.html', {
-        'page_obj': page_obj, 
+        'page_obj': page_obj,
         'search_query': search_query,
-        'categories': categories    
+        'category_id': category_id,
+        'categories': categories
     })
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -159,15 +153,10 @@ def is_admin(user):
 def create_game(request):
     form = GameForm()
     if request.method == 'POST':
-        game = Game(
-            name=request.POST['name'],
-            description=request.POST['description'],
-            developer=request.user,
-            is_published=False  # Đặt chế độ nháp
-        )
-        game.save()
+        form = GameForm(request.POST)
+        form.save()
         messages.success(request, 'Game đã được lưu vào bản nháp!')
-        return redirect('ProjectWebGame:game_list') 
+        return redirect('ProjectWebGame:gameList')
     else:
         form = GameForm()
         return render(request, 'Game/game_form.html', {'form': form})
@@ -189,7 +178,7 @@ def update_game(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, 'Game đã được cập nhật!')
-            return redirect('ProjectWebGame:draft_list')
+            return redirect('ProjectWebGame:gameList')
     else:
         form = GameForm(instance=game)
         return render(request, 'Game/game_form.html', {'form': form})
@@ -202,12 +191,10 @@ def delete_game(request, pk):
     messages.success(request, 'Game đã xóa thành công!')
     return redirect('ProjectWebGame:gameList')
 
-<<<<<<< HEAD
 @user_passes_test(lambda u: u.is_superuser)
 def DraftListView(request):
     drafts = Game.objects.all()
     return render(request, 'Game/draft_list.html', {'drafts': drafts})
-=======
 
 class PostListView(ListView):
     model = Post
@@ -217,42 +204,6 @@ class PostListView(ListView):
     def get_queryset(self):
         return Post.objects.filter(published_date__lte = timezone.now()).order_by('published_date')
     
-class PostDetailView(DetailView):
-    model = Post
-    template_name = 'ProjectWebGame/post_detail.html'
-    context_object_name = 'post'
-
-class CreatePostView(CreateView, LoginRequiredMixin):
-    login_url = '/login/'
-    redirect_field_name = 'redirect_to'
-    form_class = PostForm
-    model = Post
-    template_name = 'ProjectWebGame/post_form.html'
-    success_url = reverse_lazy('ProjectWebGame:post_list')
-
-class PostUpdateView(UpdateView, LoginRequiredMixin): 
-    login_url = '/login/'
-    redirect_field_name = 'Home/productDetails.html'
-
-    form_class = PostForm
-
-    model = Post
-
-class DraftListView(LoginRequiredMixin, ListView):
-    login_url = '/login/'
-    redirect_field_name = 'Home/gameList.html'
-
-    model = Post
-
-    def get_queryset(self):
-        return Post.objects.filter(published_date__isnull=True).order_by('created_date')
-    
-class PostDeleteView(LoginRequiredMixin, DeleteView):
-    model = Post
-    template_name = 'ProjectWebGame/post_confirm_delete.html'
-    success_url = reverse_lazy('ProjectWebGame:post_list')
-
-
 @login_required
 def post_publish(request, pk):
     post = get_object_or_404(Post, pk=pk)
@@ -278,7 +229,6 @@ def comment_approve(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
     comment.approve()
     return redirect('ProjectWebGame:post_detail', pk=comment.post.pk)
->>>>>>> origin/django/1-main
 
 @login_required
 def delete_comment(request, comment_id):
@@ -378,3 +328,35 @@ def delete_category(request, category_id):
         messages.success(request, 'Category deleted successfully!')
         return redirect('ProjectWebGame:category_list')
     return render(request, 'Dev_Category/confirm_delete.html', {'object': category})
+
+def dev_category_list(request, dev_id=None, category_id=None):
+    if dev_id:
+        developer = get_object_or_404(Developer, id=dev_id)
+        games = Game.objects.filter(developer=developer, is_published=True)
+        filter_type = 'developer'
+        filter_obj = developer
+    elif category_id:
+        category = get_object_or_404(Category, id=category_id)
+        games = Game.objects.filter(category=category, is_published=True)
+        filter_type = 'category'
+        filter_obj = category
+    else:
+        games = Game.objects.filter(is_published=True)
+        filter_type = None
+        filter_obj = None
+
+    paginator = Paginator(games, 4)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    categories = Category.objects.all()
+    developers = Developer.objects.all()
+
+    context = {
+        'filter_type': filter_type,
+        'filter_obj': filter_obj,
+        'page_obj': page_obj,
+        'categories': categories,
+        'developers': developers,
+    }
+    return render(request, 'Dev_Category/dev_category_list.html', context)

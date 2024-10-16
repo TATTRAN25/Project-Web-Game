@@ -39,11 +39,15 @@
                         <li><a href="{% url 'Home:game' %}">Our Game</a></li>
                         <li><a href="{% url 'Home:contact' %}">Contact Us</a></li>
                         {% if user.is_authenticated %}
-                          <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li> 
-                          <li><a href="{% url 'Home:logout' %}">Logout</a></li>
+                        {% if user.is_superuser %}
+                        <li style="color: white; font-weight: bold;">Admin: {{ user.username }}</li>
                         {% else %}
-                            <li style="color: white; font-weight: bold;">Welcome User: Guest</li>
-                            <li><a href="{% url 'Home:user_login' %}">Sign In</a></li>
+                        <li style="color: white; font-weight: bold;">User: {{ user.username }}</li>
+                        {% endif %}
+                        <li><a href="{% url 'Home:logout' %}">Logout</a></li>
+                        {% else %}
+                        <li style="color: white; font-weight: bold;">Guest</li>
+                        <li><a href="{% url 'Home:user_login' %}">Sign In</a></li>
                         {% endif %}
                     </ul>
                     <a class='menu-trigger'>
@@ -84,6 +88,7 @@
     </div>
   </div>
 
+  {% if user.is_authenticated and user.is_superuser %}
   <div class="features">
     <div class="container">
       <div class="row">
@@ -130,6 +135,7 @@
       </div>
     </div>
   </div>
+{% endif %}
 
   <div class="section trending">
     <div class="container">
