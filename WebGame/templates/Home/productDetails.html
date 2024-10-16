@@ -3,26 +3,14 @@
   <head>
     {% load static %}
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
     <title>Lugx Gaming - Product Detail</title>
     <!-- Bootstrap CSS -->
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-    />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
     <!-- Additional CSS Files -->
     <link rel="stylesheet" href="{% static 'css/fontawesome.css' %}" />
-    <link
-      rel="stylesheet"
-      href="{% static 'css/templatemo-lugx-gaming.css' %}"
-    />
+    <link rel="stylesheet" href="{% static 'css/templatemo-lugx-gaming.css' %}"/>
     <link rel="stylesheet" href="{% static 'css/owl.css' %}" />
     <link rel="stylesheet" href="{% static 'css/animate.css' %}" />
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
@@ -60,6 +48,11 @@
                 <li><a href="{% url 'Home:user_login' %}">Sign In</a></li>
                 {% endif %}
               </ul>
+              <div class="theme-selector">
+                <button id="theme-toggle" title="Toggle Theme">
+                    <i class="fas fa-sun" id="theme-icon"></i>
+                </button>
+              </div>
               <a class="menu-trigger"><span>Menu</span></a>
             </nav>
           </div>
@@ -326,6 +319,41 @@
       });
     });
     highlightStars(0);
+
+    const themeToggleButton = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+
+    function changeTheme(theme) {
+      // Xóa các lớp chủ đề hiện tại
+      document.body.classList.remove('light-theme', 'dark-theme');
+    
+      // Thêm lớp chủ đề mới
+      document.body.classList.add(theme + '-theme');
+
+      // Thay đổi biểu tượng
+      if (theme === 'dark') {
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+      } else {
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+      }
+
+      // Lưu chủ đề đã chọn vào localStorage
+      localStorage.setItem('theme', theme);
+    }
+
+    // Khi trang được tải, kiểm tra localStorage để áp dụng chủ đề đã lưu
+    window.onload = function() {
+      const savedTheme = localStorage.getItem('theme') || 'light'; // Mặc định là light
+      changeTheme(savedTheme);
+    };
+
+    // Đặt sự kiện click cho nút đổi chủ đề
+    themeToggleButton.addEventListener('click', function() {
+      const currentTheme = document.body.classList.contains('dark-theme') ? 'light' : 'dark';
+      changeTheme(currentTheme);
+    });
     </script>
   </body>
 </html>

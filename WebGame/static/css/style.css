@@ -154,3 +154,32 @@
     outline: none; /* Bỏ viền ngoài khi chọn */
     background-color: #35393f; /* Thay đổi màu nền khi chọn */
 }
+
+body.light-theme {
+    background-color: #ffffff; /* Màu nền sáng */
+    color: #000000; /* Màu chữ tối */
+}
+
+body.dark-theme {
+    background-color: #2f3136; /* Màu nền tối */
+    color: #ffffff; /* Màu chữ sáng */
+}
+
+.theme-selector {
+    position: fixed; /* Đặt vị trí cố định */
+    top: 10px; /* Khoảng cách từ trên cùng */
+    right: 10px; /* Khoảng cách từ bên phải */
+}
+
+.theme-selector button {
+    background: none; /* Không có màu nền */
+    border: none; /* Không có viền */
+    color: inherit; /* Màu chữ giống như văn bản */
+    cursor: pointer; /* Con trỏ tay khi di chuột */
+    font-size: 24px; /* Kích thước lớn cho biểu tượng */
+    margin: 0 5px; /* Khoảng cách giữa các biểu tượng */
+}
+
+.theme-selector button:hover {
+    opacity: 0.7; /* Hiệu ứng mờ khi di chuột */
+}
