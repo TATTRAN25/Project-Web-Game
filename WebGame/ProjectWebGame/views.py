@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect,HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required, user_passes_test
 from .models import Game, Draft, Comment, Developer, Category
-from .form import CommentForm
+from .form import CommentForm, ReplyCommentForm
 from .models import Game, Draft, Post, Comment, Developer, Category
 from .form import CommentForm
 from django.views.generic import (TemplateView, ListView, DeleteView, CreateView, UpdateView, UpdateView, DeleteView, DetailView)
@@ -106,14 +106,46 @@ def productDetails(request, id):
             comment = form.save(commit=False)
             comment.game = game
             comment.author = request.user
+            
+            parent_id = request.POST.get('parent_id')
+            if parent_id:
+                comment.parent = Comment.objects.get(id=parent_id)
+
             comment.save()
-            print(f"Comment saved: {comment.text} with rating: {comment.rating}")
+            #print(f"Comment saved: {comment.text} with rating: {comment.rating}")
             messages.success(request, "Your comment has been added.")
             comments = game.comments.all()
+            return redirect('Home:productDetails', id=game.id)
     else:
         form = CommentForm()
 
     return render(request, 'Home/productDetails.html', {'game': game, 'related_games': related_games, 'form': form, 'comments': comments,})
+
+def reply_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            messages.error(request, "You need to log in to reply to comments.")
+            return redirect('login')
+
+        form = ReplyCommentForm(request.POST)
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.author = request.user
+            reply.comment = comment  # Gán bình luận cha
+            reply.save()
+            #print(f"Comment ID: {comment_id}, Game ID: {comment.game.id}")
+            messages.success(request, "Your reply has been added.")
+            return redirect('Home:productDetails', id=comment.game.id)
+
+    # Xử lý trường hợp GET hoặc lỗi form
+    form = CommentForm()
+    return render(request, 'Home/productDetails.html', {
+        'form': form,
+        'comments': Comment.objects.filter(game=comment.game),
+    })
+
 
 
 def game(request):

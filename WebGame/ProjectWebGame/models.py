@@ -79,6 +79,7 @@ class Comment(models.Model):
     text = models.TextField()
     created_date = models.DateTimeField(default=timezone.now)
     rating = models.PositiveIntegerField(default=0)
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='children', on_delete=models.CASCADE)
 
     def approve(self):
         self.approved_comment = True
@@ -88,5 +89,14 @@ class Comment(models.Model):
         return reverse("post_list")
     
     def __str__(self):
-        return self.text
+         return f'Comment by {self.author.username}'
+    
+class ReplyComment(models.Model):
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='replies')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    text = models.TextField()
+    created_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'Reply by {self.author.username} on {self.comment}'
     

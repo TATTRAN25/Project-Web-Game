@@ -12,6 +12,7 @@ urlpatterns = [
     path('contact/',views.contact,name='contact'),
     path('productDetails/<int:id>/', views.productDetails, name='productDetails'),
     path('comment/delete/<int:comment_id>/', views.delete_comment, name='delete_comment'),
+    path('reply_comment/<int:comment_id>/', views.reply_comment, name='reply_comment'),
     path('game/',views.game,name='game'),
     # url user
     path('login/', views.special, name='login'),

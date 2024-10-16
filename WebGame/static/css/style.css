@@ -58,3 +58,99 @@
     z-index: 1000; /* Để đảm bảo nó hiện lên trên các phần tử khác */
     margin-top: 5px; /* Khoảng cách giữa button và emoji picker */
 }
+
+.comment, .reply {
+    border: 1px solid #ddd; /* Đường viền cho bình luận và phản hồi */
+    border-radius: 5px; /* Bo tròn các góc */
+    padding: 10px; /* Khoảng cách bên trong */
+    margin-bottom: 10px; /* Khoảng cách giữa các bình luận */
+    background-color: #f9f9f9; /* Màu nền nhẹ */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển màu nền */
+}
+
+.comment:hover, .reply:hover {
+    background-color: #f1f1f1; /* Đổi màu nền khi di chuột qua */
+}
+
+.comment-header {
+    font-weight: bold; /* Đậm tiêu đề bình luận */
+    margin-bottom: 5px; /* Khoảng cách dưới tiêu đề */
+}
+
+.reply-comment-date {
+    font-size: 0.9em; /* Kích thước chữ nhỏ hơn cho ngày */
+    color: #666; /* Màu xám cho ngày */
+}
+
+.reply-button {
+    background-color: #007bff; /* Màu nền nút phản hồi */
+    color: white; /* Màu chữ nút */
+    border: none; /* Bỏ viền */
+    padding: 5px 10px; /* Khoảng cách bên trong nút */
+    border-radius: 3px; /* Bo tròn góc nút */
+    cursor: pointer; /* Con trỏ tay khi di chuột */
+    margin-top: 5px; /* Khoảng cách trên nút */
+}
+
+.reply-button:hover {
+    background-color: #0056b3; /* Màu nền khi di chuột qua nút */
+}
+
+.replies {
+    margin-top: 10px; /* Khoảng cách trên phần phản hồi */
+    padding-left: 20px; /* Thụt lề phần phản hồi */
+    border-left: 2px solid #007bff; /* Đường viền bên trái */
+}
+
+.reply {
+    background-color: #e9ecef; /* Màu nền nhẹ hơn cho phản hồi */
+    margin-top: 5px; /* Khoảng cách giữa các phản hồi */
+    padding: 5px; /* Khoảng cách bên trong phản hồi */
+    border-radius: 3px; /* Bo tròn góc phản hồi */
+}
+
+.reply-form {
+    border: 1px solid #ccc; /* Đường viền nhẹ cho form */
+    border-radius: 8px; /* Bo tròn góc */
+    padding: 10px; /* Khoảng cách bên trong */
+    background-color: #2f3136; /* Màu nền tối như Discord */
+    color: #ffffff; /* Màu chữ trắng */
+    margin-top: 10px; /* Khoảng cách trên form */
+}
+
+.reply-form h5 {
+    margin-bottom: 10px; /* Khoảng cách dưới tiêu đề form */
+    font-size: 1.2em; /* Kích thước chữ lớn hơn cho tiêu đề */
+    color: #ffffff; /* Màu chữ tiêu đề */
+}
+
+.reply-form button {
+    background-color: #7289da; /* Màu nền nút giống Discord */
+    color: white; /* Màu chữ nút */
+    border: none; /* Bỏ viền */
+    padding: 8px 12px; /* Khoảng cách bên trong nút */
+    border-radius: 5px; /* Bo tròn góc nút */
+    cursor: pointer; /* Con trỏ tay khi di chuột */
+    transition: background-color 0.2s; /* Hiệu ứng chuyển màu */
+}
+
+.reply-form button:hover {
+    background-color: #5b6eae; /* Màu nền khi di chuột qua nút */
+}
+
+.reply-form input[type="text"], .reply-form textarea {
+    width: 100%; /* Chiều rộng 100% */
+    padding: 10px; /* Khoảng cách bên trong */
+    margin-top: 5px; /* Khoảng cách trên trường văn bản */
+    border: 1px solid #ccc; /* Đường viền cho trường văn bản */
+    border-radius: 5px; /* Bo tròn góc trường văn bản */
+    background-color: #40444b; /* Màu nền cho trường văn bản */
+    color: #ffffff; /* Màu chữ trường văn bản */
+    box-sizing: border-box; /* Đảm bảo padding không làm tăng chiều rộng */
+}
+
+.reply-form input[type="text"]:focus, .reply-form textarea:focus {
+    border-color: #7289da; /* Đổi màu viền khi trường văn bản được chọn */
+    outline: none; /* Bỏ viền ngoài khi chọn */
+    background-color: #35393f; /* Thay đổi màu nền khi chọn */
+}
