@@ -5,11 +5,11 @@ from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponseRedirect,HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .models import Game, Draft, Post, Comment, Developer, Category
+from django.contrib.auth.models import User
+from .models import Game, Comment, Developer, Category, UserProfileInfo,Post
 from .form import CommentForm
 from django.views.generic import (TemplateView, ListView, DeleteView, CreateView, UpdateView, UpdateView, DeleteView, DetailView)
 from django.utils import timezone
-from django.contrib.auth.mixins import LoginRequiredMixin 
 from django.core.paginator import Paginator
 
 app_name = 'ProjectWebGame'
@@ -86,6 +86,51 @@ def user_login(request):
     
     return render(request, 'Home/login.html')
 
+@user_passes_test(lambda u: u.is_superuser)
+def user_list(request):
+    users = User.objects.all()
+    return render(request, 'Users/user_list.html', {'users': users})
+
+@user_passes_test(lambda u: u.is_superuser)
+def create_super_user(request):
+    form = UserForm()
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.is_superuser = True
+            user.is_staff = True
+            user.save()
+            messages.success(request, 'Super user đã được tạo thành công.')
+            return redirect('ProjectWebGame:userList')
+        else:
+            for error in form.non_field_errors():
+                messages.error(request, error)
+    else:
+        form = UserForm()
+        return render(request, 'Users/user_form.html', {'form': form})
+
+@user_passes_test(lambda u: u.is_superuser)
+def update_user(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    user_info = UserProfileInfo.objects.get(user=user)
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=user_info)
+        form.save()
+        messages.success(request, 'Thông tin tài khoản đã được cập nhật thành công.')
+        return redirect('ProjectWebGame:userList')
+    else:
+        form = UserProfileForm(instance=user_info)
+        return render(request, 'Users/user_form.html', {'form': form})
+
+@user_passes_test(lambda u: u.is_superuser)
+def delete_user(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    user.delete()
+    messages.success(request, 'Tài khoản đã được xóa thành công.')
+    return redirect('ProjectWebGame:userList')
+
 def contact(request):
     return render(request, 'Home/contact.html')
 
@@ -142,9 +187,6 @@ def gameList(request):
     games = Game.objects.all() 
     return render(request, 'Game/gameList.html', {'games': games})
 
-def dashboard(request):
-    return render(request, 'Game/dashboard.html')
-
 def is_admin(user):
     return user.is_superuser
 
@@ -178,7 +220,10 @@ def update_game(request, pk):
         if form.is_valid():
             form.save()
             messages.success(request, 'Game đã được cập nhật!')
-            return redirect('ProjectWebGame:gameList')
+            if game.is_published == True:
+                return redirect('ProjectWebGame:gameList')
+            else:
+                return redirect('ProjectWebGame:draft_list')
     else:
         form = GameForm(instance=game)
         return render(request, 'Game/game_form.html', {'form': form})
@@ -189,6 +234,18 @@ def delete_game(request, pk):
     game = get_object_or_404(Game, pk=pk)
     game.delete()
     messages.success(request, 'Game đã xóa thành công!')
+    if game.is_published == True:
+        return redirect('ProjectWebGame:gameList')
+    else:
+        return redirect('ProjectWebGame:draft_list')
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def publish_draft(request, draft_id):
+    game = get_object_or_404(Game, id=draft_id)
+    game.is_published = True
+    game.save()
+    messages.success(request, 'Game đã được công khai!')
     return redirect('ProjectWebGame:gameList')
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -223,6 +280,10 @@ def add_comment_to_post(request, pk):
     else:
         form = CommentForm()
     return render(request, 'ProjectWebGame/comment_form.html', {'form': form})
+@user_passes_test(lambda u: u.is_superuser)
+def DraftDetailView(request, pk):
+    draft = get_object_or_404(Game, pk = pk)
+    return render(request, 'Game/draft_list.html', {'draft': draft})
 
 @login_required
 def comment_approve(request, pk):

@@ -31,8 +31,11 @@
     {% if game.is_published %}
       <tr>
         <td>{{ game.id }}</td>
-        <td href="#">{{ game.name }}</td>
-        <td><a href="{% url 'ProjectWebGame:update_game' game.id %}"><i class="fa-solid fa-pen-to-square text-warning"></i></a> | <a href="{% url 'ProjectWebGame:delete_game' game.id %}"><i class="fa-solid fa-trash text-danger"></i></a></td>
+        <td>{{ game.name }}</td>
+        <td>
+          <a href="{% url 'ProjectWebGame:update_game' game.id %}"><i class="fa-solid fa-pen-to-square text-warning"></i></a> | 
+          <a href="{% url 'ProjectWebGame:delete_game' game.id %}"><i class="fa-solid fa-trash text-danger"></i></a>
+        </td>
       </tr>
     {% endif %}
   {% empty %}
@@ -40,6 +43,6 @@
   {% endfor %}
 </table>
 <div>
-  <a href="{% url 'ProjectWebGame:create_game' %}" class="btn btn-success">Thêm Game</a>
+  <a href="{% url 'ProjectWebGame:create_game' %}" class="btn btn-success">Add game</a>
 </div>
 {% endblock %}
