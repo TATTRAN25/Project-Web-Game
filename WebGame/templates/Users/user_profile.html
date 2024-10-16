@@ -34,8 +34,8 @@
                 </tr>
                 {% endif %}
             </table>
+            <a href="{% url 'ProjectWebGame:update_user' user.id %}?details" class="btn btn-warning">Edit</a>   
         </div>
-    </div>
-    <a href="{% url 'ProjectWebGame:update_user' user.id %}" class="btn btn-warning">Edit</a>    
+    </div> 
 </div>
 {% endblock %}

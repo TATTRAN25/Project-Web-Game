@@ -128,7 +128,8 @@ def update_user(request, pk):
         form = UserProfileForm(request.POST,request.FILES, instance=user_info)
         form.save()
         messages.success(request, 'Thông tin tài khoản đã được cập nhật thành công.')
-        if (request.META.get('HTTP_REFERER').split('/')[5] != ""):
+        prevous_url = request.META.get('HTTP_REFERER').split('/')
+        if (prevous_url[len(prevous_url) - 1] == "?details"):
             return redirect('ProjectWebGame:user_profile', pk=user.id)
         else:
             return redirect('ProjectWebGame:userList')
