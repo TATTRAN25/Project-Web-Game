@@ -27,7 +27,7 @@ class CommentForm(forms.ModelForm):
         fields = ['text']
 
         widgets = {
-            'text': forms.Textarea(attrs={'class': 'editable medium-editor-textarea', 'rows': 1, 'style': 'resize: none; height: auto;'}),
+            'text': forms.Textarea(attrs={'class': 'editable medium-editor-textarea', 'rows': 1, 'style': 'resize: none; height: auto;', 'name': 'text'}),
         }
 class DeveloperForm(forms.ModelForm):
     class Meta:

@@ -204,35 +204,6 @@ def DraftListView(request):
     drafts = Game.objects.all()
     return render(request, 'Game/draft_list.html', {'drafts': drafts})
 
-# class PostListView(ListView):
-#     model = Post
-#     template_name = 'ProjectWebGame/post_list.html'
-#     context_object_name = 'post_list'
-
-#     def get_queryset(self):
-#         return Post.objects.filter(published_date__lte = timezone.now()).order_by('published_date')
-    
-# class PostDetailView(DetailView):
-#     model = Post
-#     template_name = 'ProjectWebGame/post_detail.html'
-#     context_object_name = 'post'
-
-# class CreatePostView(CreateView, LoginRequiredMixin):
-#     login_url = '/login/'
-#     redirect_field_name = 'redirect_to'
-#     form_class = PostForm
-#     model = Post
-#     template_name = 'ProjectWebGame/post_form.html'
-#     success_url = reverse_lazy('ProjectWebGame:post_list')
-
-# class PostUpdateView(UpdateView, LoginRequiredMixin): 
-#     login_url = '/login/'
-#     redirect_field_name = 'Home/productDetails.html'
-
-#     form_class = PostForm
-
-#     model = Post
-
 class DraftListView(LoginRequiredMixin, ListView):
     login_url = '/login/'
     redirect_field_name = 'Home/gameList.html'
@@ -241,12 +212,6 @@ class DraftListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Post.objects.filter(published_date__isnull=True).order_by('created_date')
-    
-# class PostDeleteView(LoginRequiredMixin, DeleteView):
-#     model = Post
-#     template_name = 'ProjectWebGame/post_confirm_delete.html'
-#     success_url = reverse_lazy('ProjectWebGame:post_list')
-
 
 @login_required
 def post_publish(request, pk):
