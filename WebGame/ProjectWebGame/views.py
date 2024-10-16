@@ -11,7 +11,7 @@ from .form import CommentForm
 from django.views.generic import (TemplateView, ListView, DeleteView, CreateView, UpdateView, UpdateView, DeleteView, DetailView)
 from django.utils import timezone
 from django.core.paginator import Paginator
-
+from django.core.mail import send_mail   
 app_name = 'ProjectWebGame'
 
 def index(request):
@@ -140,6 +140,26 @@ def delete_user(request, pk):
     return redirect('ProjectWebGame:userList')
 
 def contact(request):
+    if request.method == 'POST':
+        name = request.POST['name'] 
+        email = request.POST['email']  
+        message = request.POST['message']  
+
+        # Gửi email
+        try:
+            send_mail(
+                f'Message from {name}',  
+                f'From: {name} \n\nMessage:\n{message}',  
+                'anhtuan251104@gmail.com',  
+                [email],  
+                fail_silently=False,
+            )
+            messages.success(request, 'Your message has been sent successfully!')
+            return redirect('ProjectWebGame:contact')
+        except Exception as e:
+            messages.error(request, f'Error sending message: {e}')
+            return redirect('ProjectWebGame:contact')
+
     return render(request, 'Home/contact.html')
 
 def productDetails(request, id):
