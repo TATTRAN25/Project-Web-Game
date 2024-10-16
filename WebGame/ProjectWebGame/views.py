@@ -1,4 +1,3 @@
-from .form import UserForm, UserProfileForm, GameForm,CategoryForm,DeveloperForm
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import logout, login, authenticate
@@ -7,11 +6,13 @@ from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from .models import Game, Comment, Developer, Category, UserProfileInfo,Post
-from .form import CommentForm
+from .form import CommentForm, ReplyCommentForm, UserForm, UserProfileForm, GameForm,CategoryForm,DeveloperForm
 from django.views.generic import (TemplateView, ListView, DeleteView, CreateView, UpdateView, UpdateView, DeleteView, DetailView)
 from django.utils import timezone
 from django.core.paginator import Paginator
 from django.core.mail import send_mail   
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 app_name = 'ProjectWebGame'
 
 def index(request):
@@ -177,14 +178,46 @@ def productDetails(request, id):
             comment = form.save(commit=False)
             comment.game = game
             comment.author = request.user
+            
+            parent_id = request.POST.get('parent_id')
+            if parent_id:
+                comment.parent = Comment.objects.get(id=parent_id)
+
             comment.save()
-            print(f"Comment saved: {comment.text}")
+            #print(f"Comment saved: {comment.text} with rating: {comment.rating}")
             messages.success(request, "Your comment has been added.")
             comments = game.comments.all()
+            return redirect('Home:productDetails', id=game.id)
     else:
         form = CommentForm()
 
     return render(request, 'Home/productDetails.html', {'game': game, 'related_games': related_games, 'form': form, 'comments': comments,})
+
+def reply_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    
+    if request.method == 'POST':
+        if not request.user.is_authenticated:
+            messages.error(request, "You need to log in to reply to comments.")
+            return redirect('login')
+
+        form = ReplyCommentForm(request.POST)
+        if form.is_valid():
+            reply = form.save(commit=False)
+            reply.author = request.user
+            reply.comment = comment  # Gán bình luận cha
+            reply.save()
+            #print(f"Comment ID: {comment_id}, Game ID: {comment.game.id}")
+            messages.success(request, "Your reply has been added.")
+            return redirect('Home:productDetails', id=comment.game.id)
+
+    # Xử lý trường hợp GET hoặc lỗi form
+    form = CommentForm()
+    return render(request, 'Home/productDetails.html', {
+        'form': form,
+        'comments': Comment.objects.filter(game=comment.game),
+    })
+
 
 
 def game(request):
@@ -280,15 +313,8 @@ def publish_draft(request, draft_id):
 def DraftListView(request):
     drafts = Game.objects.all()
     return render(request, 'Game/draft_list.html', {'drafts': drafts})
-
-class PostListView(ListView):
-    model = Post
-    template_name = 'ProjectWebGame/post_list.html'
-    context_object_name = 'post_list'
-
-    def get_queryset(self):
-        return Post.objects.filter(published_date__lte = timezone.now()).order_by('published_date')
     
+
 @login_required
 def post_publish(request, pk):
     post = get_object_or_404(Post, pk=pk)

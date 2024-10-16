@@ -22,6 +22,7 @@
       rel="stylesheet"
       href="{% static 'css/templatemo-lugx-gaming.css' %}"
     />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="{% static 'css/owl.css' %}" />
     <link rel="stylesheet" href="{% static 'css/animate.css' %}" />
   </head>
@@ -41,7 +42,6 @@
               <ul class="nav">
                 <li><a href="{% url 'Home:index' %}" class="active">Home</a></li>
                 <li><a href="{% url 'Home:game' %}">Our Game</a></li>
-                <!-- {% comment %} <li><a href="{% url 'ProjectWebGame:productDetails' %}">Product Details</a></li> {% endcomment %} -->
                 <li><a href="{% url 'Home:contact' %}">Contact Us</a></li>
                 {% if user.is_authenticated %}
                 {% if user.is_superuser %}
@@ -73,7 +73,7 @@
             <span class="breadcrumb" style="background-color: transparent;"><a href="{% url 'ProjectWebGame:index' %}"">Home</a> > Only for admin</span>
           </div>
         </div>
-      </div>
+      </div> 
     </div>
   </header>
   <!-- ***** Header Area End ***** -->

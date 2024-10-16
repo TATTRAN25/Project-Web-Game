@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from ProjectWebGame.models import UserProfileInfo, Game
-from .models import Comment
+from .models import Comment, ReplyComment
 from ProjectWebGame.models import UserProfileInfo, Game, Developer, Category
 
 class UserForm(forms.ModelForm):
@@ -34,11 +34,17 @@ class GameForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['text']
+        fields = ['text', 'rating']
 
         widgets = {
-            'text': forms.Textarea(attrs={'class': 'editable medium-editor-textarea', 'rows': 1, 'style': 'resize: none; height: auto;'}),
+            'text': forms.Textarea(attrs={'class': 'editable medium-editor-textarea', 'rows': 1, 'style': 'resize: none; height: auto;', 'name': 'text'}),
         }
+        
+class ReplyCommentForm(forms.ModelForm):
+    class Meta:
+        model = ReplyComment
+        fields = ['text']
+
 class DeveloperForm(forms.ModelForm):
     class Meta:
         model = Developer

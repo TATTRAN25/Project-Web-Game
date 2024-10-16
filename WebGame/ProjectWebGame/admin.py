@@ -21,5 +21,4 @@ class GameAdmin(admin.ModelAdmin):
     list_display = ('name', 'developer', 'category', 'release_date', 'is_published')
     list_filter = ('developer', 'category', 'is_published')
     search_fields = ('name', 'description')
-
 admin.site.register(Comment)
