@@ -101,7 +101,7 @@ def user_profile(request, pk):
 def create_super_user(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
-        profile_form = UserProfileForm(request.POST, request.FILES)
+        profile_form = UserProfileForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
@@ -120,15 +120,18 @@ def create_super_user(request):
         profile_form = UserProfileForm()
         return render(request, 'Users/user_form.html', {'form': form, 'profile_form': profile_form})
 
-@user_passes_test(lambda u: u.is_superuser)
+@login_required
 def update_user(request, pk):
     user = get_object_or_404(User, pk=pk)
     user_info = UserProfileInfo.objects.get(user=user)
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, instance=user_info)
+        form = UserProfileForm(request.POST,request.FILES, instance=user_info)
         form.save()
         messages.success(request, 'Thông tin tài khoản đã được cập nhật thành công.')
-        return redirect('ProjectWebGame:userList')
+        if (request.META.get('HTTP_REFERER').split('/')[5] != ""):
+            return redirect('ProjectWebGame:user_profile', pk=user.id)
+        else:
+            return redirect('ProjectWebGame:userList')
     else:
         form = UserProfileForm(instance=user_info)
         return render(request, 'Users/user_form.html', {'form': form})

@@ -1,29 +1,41 @@
 {% extends 'Home/base.html' %}
 {% block body_block %}
+{% load static %}
 <div class="container">
     <h1>User Details</h1>
-    {% if user.userprofileinfo %}
-    <img src="">
-    {% endif %}
-    <table>
-        <tr>
-            <td>Name:</td>
-            <td>{{ user.username }}</td>
-        </tr>
-        <tr>
-            <td>Email:</td>
-            <td>{{ user.email }}</td>
-        </tr>
-        {% if user.userprofileinfo %}
-        <tr>
-            <td>Bio:</td>
-            <td>{{ user.userprofileinfo.bio }}</td>
-        </tr>
-        <tr>
-            <td>Address:</td>
-            <td>{{ user.userprofileinfo.address }}</td>
-        </tr>
-        {% endif %}
-    </table>
+    <div class="row">
+        <div class="col-lg-5 text-center">
+            {% if user.userprofileinfo.avatar %}
+            <img src="{{ user.userprofileinfo.avatar.url }}" alt="avatar" class="img-fluid" style="width: 50%;border-radius: 50%;">
+            {% else %}
+            <img src="{% static 'images/default.jpg' %}" alt="No image available"> 
+            {% endif %}
+            <h3>{{user.username}}</h3>
+            <p>Date joied: {{user.date_joined }}</p>
+        </div>
+        <div class="col-lg-6">
+            <table>
+                <tr>
+                    <td>Name:</td>
+                    <td>{{ user.username }}</td>
+                </tr>
+                <tr>
+                    <td>Email:</td>
+                    <td>{{ user.email }}</td>
+                </tr>
+                {% if user.userprofileinfo %}
+                <tr>
+                    <td>Bio:</td>
+                    <td>{{ user.userprofileinfo.bio|slice:255 }}</td>
+                </tr>
+                <tr>
+                    <td>Address:</td>
+                    <td>{{ user.userprofileinfo.address|slice:255 }}</td>
+                </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+    <a href="{% url 'ProjectWebGame:update_user' user.id %}" class="btn btn-warning">Edit</a>    
 </div>
 {% endblock %}
