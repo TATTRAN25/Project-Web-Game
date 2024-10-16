@@ -7,11 +7,9 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from .models import Game, Comment, Developer, Category, UserProfileInfo,Post
 from .form import CommentForm, ReplyCommentForm, UserForm, UserProfileForm, GameForm,CategoryForm,DeveloperForm
-from django.views.generic import (TemplateView, ListView, DeleteView, CreateView, UpdateView, UpdateView, DeleteView, DetailView)
-from django.utils import timezone
 from django.core.paginator import Paginator
 from django.core.mail import send_mail   
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import JsonResponse
 
 app_name = 'ProjectWebGame'
 
@@ -146,11 +144,18 @@ def contact(request):
         email = request.POST['email']  
         message = request.POST['message']  
 
-        # Gửi email
         try:
             send_mail(
                 f'Message from {name}',  
-                f'From: {name} \n\nMessage:\n{message}',  
+                f'From: {name}, Email: {email} \n\nMessage:\n{message}',  
+                'anhtuan251104@gmail.com',  
+                ['anhtuan251104@gmail.com'],  
+                fail_silently=False,
+            )
+
+            send_mail(
+                'Cảm ơn bạn đã góp ý!',
+                'Cảm ơn bạn đã gửi ý kiến cho chúng tôi. Chúng tôi sẽ xem xét và phản hồi sớm nhất có thể.',
                 'anhtuan251104@gmail.com',  
                 [email],  
                 fail_silently=False,
@@ -170,9 +175,8 @@ def productDetails(request, id):
 
     if request.method == 'POST':
         if not request.user.is_authenticated:
-            messages.error(request, "You need to log in to download this game.")
-            return redirect('login')
-        
+            return JsonResponse({'error': 'You need to log in to download this game.'}, status=403)
+
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
@@ -184,22 +188,32 @@ def productDetails(request, id):
                 comment.parent = Comment.objects.get(id=parent_id)
 
             comment.save()
-            #print(f"Comment saved: {comment.text} with rating: {comment.rating}")
-            messages.success(request, "Your comment has been added.")
             comments = game.comments.all()
-            return redirect('Home:productDetails', id=game.id)
+
+            # Trả về phản hồi JSON
+            return JsonResponse({
+                'author': comment.author.username,
+                'text': comment.text,
+                'created_date': comment.created_date.strftime("%j %B %Y"),
+                'rating': comment.rating,  # Nếu có rating
+            })
+
     else:
         form = CommentForm()
 
-    return render(request, 'Home/productDetails.html', {'game': game, 'related_games': related_games, 'form': form, 'comments': comments,})
+    return render(request, 'Home/productDetails.html', {
+        'game': game,
+        'related_games': related_games,
+        'form': form,
+        'comments': comments,
+    })
 
 def reply_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
-    
+
     if request.method == 'POST':
         if not request.user.is_authenticated:
-            messages.error(request, "You need to log in to reply to comments.")
-            return redirect('login')
+            return JsonResponse({'error': 'You need to log in to reply to comments.'}, status=403)
 
         form = ReplyCommentForm(request.POST)
         if form.is_valid():
@@ -207,16 +221,15 @@ def reply_comment(request, comment_id):
             reply.author = request.user
             reply.comment = comment  # Gán bình luận cha
             reply.save()
-            #print(f"Comment ID: {comment_id}, Game ID: {comment.game.id}")
-            messages.success(request, "Your reply has been added.")
-            return redirect('Home:productDetails', id=comment.game.id)
 
-    # Xử lý trường hợp GET hoặc lỗi form
-    form = CommentForm()
-    return render(request, 'Home/productDetails.html', {
-        'form': form,
-        'comments': Comment.objects.filter(game=comment.game),
-    })
+            # Trả về phản hồi JSON
+            return JsonResponse({
+                'author': reply.author.username,
+                'text': reply.text,
+                'created_date': reply.created_date.strftime("%j %B %Y"),
+            })
+
+    return JsonResponse({'error': 'Invalid form data'}, status=400)
 
 
 

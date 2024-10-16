@@ -317,7 +317,88 @@
     });
     highlightStars(0);
 
-    
+    $(document).ready(function() {
+    // Xử lý gửi bình luận
+    $('#commentForm').submit(function(event) {
+        event.preventDefault(); // Ngăn chặn việc tải lại trang
+
+        const formData = $(this).serialize(); // Lấy dữ liệu từ form
+        
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'), // URL từ thuộc tính action của form
+            data: formData,
+            success: function(response) {
+                const newComment = `
+                    <div class="comment existing-comment">
+                        <div class="comment-header">
+                            <strong>${response.author}</strong>
+                            <span class="comment-date">Posted on: ${response.created_date}</span>
+                        </div>
+                        <p class="comment-rating">Rating: ${'★'.repeat(response.rating)}${'☆'.repeat(5 - response.rating)}</p>
+                        <p class="comment-text">${response.text}</p>
+                        <hr />
+                    </div>
+                `;
+                $('#reviews').prepend(newComment);
+                $('#commentForm')[0].reset(); // Xóa dữ liệu trong form
+            },
+            error: function(xhr, status, error) {
+                alert('Error adding comment: ' + error);
+            }
+        });
+    });
+
+    // Xử lý gửi bình luận trả lời
+    $('.reply-form').submit(function(event) {
+        event.preventDefault(); // Ngăn chặn việc tải lại trang
+
+        const replyData = $(this).serialize(); // Lấy dữ liệu từ form trả lời
+        const replyFormAction = $(this).attr('action'); // URL từ thuộc tính action của form trả lời
+
+        $.ajax({
+            type: 'POST',
+            url: replyFormAction,
+            data: replyData,
+            success: function(response) {
+                const newReply = `
+                    <div class="reply">
+                        <strong>${response.author}</strong>: ${response.text}<br>
+                        <span class="reply-comment-date">Posted on: ${response.created_date}</span>
+                    </div>
+                `;
+                // Thêm bình luận trả lời vào vị trí hiện tại
+                $(event.target).closest('.comment').find('.replies').append(newReply);
+                $(event.target)[0].reset(); // Xóa dữ liệu trong form trả lời
+            },
+            error: function(xhr, status, error) {
+                alert('Error adding reply: ' + error);
+            }
+        });
+    });
+
+    // Xử lý xóa bình luận
+    $(document).on('click', '.delete-button', function(event) {
+    event.preventDefault(); // Ngăn chặn việc tải lại trang
+
+    const deleteForm = $(this).closest('form');
+    const deleteUrl = deleteForm.attr('action'); // URL để xóa comment
+
+    $.ajax({
+        type: 'POST',
+        url: deleteUrl,
+        data: deleteForm.serialize(), // Gửi CSRF token
+        success: function(response) {
+            // Xóa bình luận khỏi DOM
+            deleteForm.closest('.comment').remove();
+        },
+        error: function(xhr, status, error) {
+            const errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : 'Error deleting comment';
+            alert(errorMessage);
+          }
+      });
+  });
+});
     </script>
   </body>
 </html>
