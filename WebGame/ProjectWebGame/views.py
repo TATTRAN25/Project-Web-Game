@@ -345,7 +345,7 @@ def dev_category_list(request, dev_id=None, category_id=None):
         filter_type = None
         filter_obj = None
 
-    paginator = Paginator(games, 4)
+    paginator = Paginator(games, 8)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
