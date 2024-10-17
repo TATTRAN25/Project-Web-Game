@@ -236,3 +236,9 @@ body.dark-theme p {
 .toggle-replies:hover {
     background-color: rgba(0, 123, 255, 0.1); /* Màu nền nhẹ khi hover */
 }
+
+.button-group {
+    display: flex;
+    gap: 10px; /* Điều chỉnh khoảng cách giữa các nút */
+    margin-top: 15px; /* Khoảng cách trên cùng */
+}
