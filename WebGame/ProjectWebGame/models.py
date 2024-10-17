@@ -8,6 +8,8 @@ class UserProfileInfo(models.Model):
     address = models.CharField(max_length=255, blank=True)
     bio = models.TextField(blank=True)
     avatar = models.ImageField(upload_to='user_pic', blank=True)
+    is_vip_requested = models.BooleanField(default=False)
+    is_vip = models.BooleanField(default=False)  # Trường theo dõi trạng thái VIP
 
     def __str__(self):
         return self.user.username

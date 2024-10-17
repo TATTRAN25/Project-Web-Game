@@ -11,6 +11,7 @@ urlpatterns = [
     path('index/',views.index,name='index'),
     path('contact/',views.contact,name='contact'),
     path('productDetails/<int:id>/', views.productDetails, name='productDetails'),
+    path('advertisement/', views.advertisement_page, name='advertisement_page'),  # Đường dẫn cho advertisement_page
     path('comment/delete/<int:comment_id>/', views.delete_comment, name='delete_comment'),
     path('reply_comment/<int:comment_id>/', views.reply_comment, name='reply_comment'),
     path('game/',views.game,name='game'),
@@ -24,6 +25,7 @@ urlpatterns = [
     path('userList/details/<int:pk>/', views.user_profile, name='user_profile'),
     path('userList/update/<int:pk>/', views.update_user, name='update_user'),
     path('userList/delete/<int:pk>/', views.delete_user, name='delete_user'),
+    path('upgrade-to-vip/', views.upgrade_to_vip, name='upgrade_to_vip'),
     # url game
     path('gameList/', views.gameList, name='gameList'),
     path('gameList/create/', views.create_game, name='create_game'),
@@ -45,4 +47,7 @@ urlpatterns = [
     # url dev_category_list
     path('dev-list/developer/<int:dev_id>/', views.dev_category_list, name='dev_list'),
     path('dev-list/category/<int:category_id>/', views.dev_category_list, name='category_list'),
+    # url admin
+    path('admin/vip_requests/', views.vip_requests, name='vip_requests'),
+    path('admin/approve_vip/<int:user_id>/', views.approve_vip, name='approve_vip'),
 ]

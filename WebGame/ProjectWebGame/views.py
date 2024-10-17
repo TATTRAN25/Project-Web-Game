@@ -10,6 +10,8 @@ from .form import CommentForm, ReplyCommentForm, UserForm, UserProfileForm, Game
 from django.core.paginator import Paginator
 from django.core.mail import send_mail   
 from django.http import JsonResponse
+from django.template.loader import render_to_string
+import time
 
 app_name = 'ProjectWebGame'
 
@@ -207,6 +209,10 @@ def productDetails(request, id):
         'form': form,
         'comments': comments,
     })
+
+def advertisement_page(request):
+    download_link = request.GET.get('redirect')
+    return render(request, 'Home/advertisement_page.html', {'download_link': download_link})
 
 def reply_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
@@ -488,3 +494,34 @@ def dev_category_list(request, dev_id=None, category_id=None):
         'developers': developers,
     }
     return render(request, 'Dev_Category/dev_category_list.html', context)
+
+# Nâng cấp vip
+def upgrade_to_vip(request):
+    user_profile = get_object_or_404(UserProfileInfo, user=request.user)
+
+    # Thay đổi trạng thái VIP
+    user_profile.is_vip_requested = True
+    user_profile.save()
+
+    messages.success(request, 'Your request to upgrade to VIP has been submitted. Please wait for admin approval.')
+    return redirect('ProjectWebGame:user_profile', pk=request.user.id)  # Chuyển hướng về trang profile
+
+def staff_required(user):
+    return user.is_staff
+
+@user_passes_test(staff_required)
+def vip_requests(request):
+    vip_requests = UserProfileInfo.objects.filter(is_vip_requested=True)
+    print(vip_requests)
+    return render(request, 'admin/vip_requests.html', {'vip_requests': vip_requests})
+
+@login_required
+@user_passes_test(staff_required)
+def approve_vip(request, user_id):
+    user_profile = UserProfileInfo.objects.get(user_id=user_id)
+    user_profile.is_vip_requested = False  # Đánh dấu yêu cầu đã được xử lý
+    user_profile.is_vip = True  # Đánh dấu người dùng là VIP
+    user_profile.save()
+    
+    messages.success(request, f"{user_profile.user.username} has been upgraded to VIP.")
+    return redirect('ProjectWebGame:vip_requests')

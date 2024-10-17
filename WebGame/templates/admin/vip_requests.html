@@ -1,0 +1,39 @@
+{% extends 'Home/base.html' %}
+
+{% block body_block %}
+<h1>VIP Upgrade Requests</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>User</th>
+            <th>Bio</th>
+            <th>Address</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for request in vip_requests %}
+        <tr>
+            <td>{{ request.user.username }}</td>
+            <td>{{ request.bio }}</td>
+            <td>{{ request.address }}</td>
+            <td>{{ request.is_vip|yesno:"VIP,Not VIP" }}</td>
+            <td>
+                {% if request.is_vip %}
+                    <button class="btn btn-secondary" disabled>Already VIP</button>
+                {% else %}
+                    <form method="POST" action="{% url 'ProjectWebGame:approve_vip' request.user.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-success">Approve</button>
+                    </form>
+                {% endif %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4">No pending requests.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

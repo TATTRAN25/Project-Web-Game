@@ -1,33 +1,39 @@
-.comment {
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
-    background-color: #f9f9f9;
+.comment, .reply, .reply-form {
+    border: 1px solid #ddd; /* Viền cho bình luận và phản hồi */
+    border-radius: 5px; /* Bo tròn các góc */
+    padding: 10px; /* Khoảng cách bên trong */
+    margin-bottom: 10px; /* Khoảng cách giữa các bình luận */
+    background-color: #f9f9f9; /* Màu nền nhẹ */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển màu nền */
+}
+
+.comment:hover, .reply:hover {
+    background-color: #f1f1f1; /* Đổi màu nền khi di chuột qua */
 }
 
 .comment-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 5px;
+    display: flex; /* Đặt tiêu đề bình luận trong một hàng */
+    justify-content: space-between; /* Căn giữa khoảng cách giữa các phần tử */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    margin-bottom: 5px; /* Khoảng cách dưới tiêu đề */
+    font-weight: bold; /* Đậm tiêu đề bình luận */
 }
 
-.comment-date {
-    font-size: 12px;
-    color: #888;
+.comment-date, .reply-comment-date {
+    font-size: 12px; /* Kích thước chữ cho ngày */
+    color: #888; /* Màu xám cho ngày */
 }
 
 .comment-text {
-    margin: 0;
+    margin: 0; /* Bỏ khoảng cách */
 }
 
 .delete-button {
     color: #d9534f; /* Màu đỏ cho nút xóa */
-    padding: 0;
-    border: none;
-    background: none;
-    cursor: pointer;
+    padding: 0; /* Bỏ padding */
+    border: none; /* Bỏ viền */
+    background: none; /* Bỏ nền */
+    cursor: pointer; /* Con trỏ tay khi di chuột */
 }
 
 .delete-button:hover {
@@ -35,8 +41,8 @@
 }
 
 .rating {
-    display: flex;
-    cursor: pointer;
+    display: flex; /* Hiển thị sao trong hàng ngang */
+    cursor: pointer; /* Con trỏ tay khi di chuột */
 }
 
 .star {
@@ -55,31 +61,21 @@
     border: 1px solid #ccc;
     background: white;
     position: absolute; /* Đặt vị trí tuyệt đối */
-    z-index: 1000; /* Để đảm bảo nó hiện lên trên các phần tử khác */
+    z-index: 1000; /* Đảm bảo hiện lên trên các phần tử khác */
     margin-top: 5px; /* Khoảng cách giữa button và emoji picker */
 }
 
-.comment, .reply {
-    border: 1px solid #ddd; /* Đường viền cho bình luận và phản hồi */
-    border-radius: 5px; /* Bo tròn các góc */
-    padding: 10px; /* Khoảng cách bên trong */
-    margin-bottom: 10px; /* Khoảng cách giữa các bình luận */
-    background-color: #f9f9f9; /* Màu nền nhẹ */
-    transition: background-color 0.3s; /* Hiệu ứng chuyển màu nền */
+.replies {
+    margin-top: 10px; /* Khoảng cách trên phần phản hồi */
+    padding-left: 20px; /* Thụt lề phần phản hồi */
+    border-left: 2px solid #007bff; /* Đường viền bên trái */
 }
 
-.comment:hover, .reply:hover {
-    background-color: #f1f1f1; /* Đổi màu nền khi di chuột qua */
-}
-
-.comment-header {
-    font-weight: bold; /* Đậm tiêu đề bình luận */
-    margin-bottom: 5px; /* Khoảng cách dưới tiêu đề */
-}
-
-.reply-comment-date {
-    font-size: 0.9em; /* Kích thước chữ nhỏ hơn cho ngày */
-    color: #666; /* Màu xám cho ngày */
+.reply {
+    background-color: #e9ecef; /* Màu nền nhẹ hơn cho phản hồi */
+    margin-top: 5px; /* Khoảng cách giữa các phản hồi */
+    padding: 5px; /* Khoảng cách bên trong phản hồi */
+    border-radius: 3px; /* Bo tròn góc phản hồi */
 }
 
 .reply-button {
@@ -96,24 +92,10 @@
     background-color: #0056b3; /* Màu nền khi di chuột qua nút */
 }
 
-.replies {
-    margin-top: 10px; /* Khoảng cách trên phần phản hồi */
-    padding-left: 20px; /* Thụt lề phần phản hồi */
-    border-left: 2px solid #007bff; /* Đường viền bên trái */
-}
-
-.reply {
-    background-color: #e9ecef; /* Màu nền nhẹ hơn cho phản hồi */
-    margin-top: 5px; /* Khoảng cách giữa các phản hồi */
-    padding: 5px; /* Khoảng cách bên trong phản hồi */
-    border-radius: 3px; /* Bo tròn góc phản hồi */
-}
-
 .reply-form {
     border: 1px solid #ccc; /* Đường viền nhẹ cho form */
     border-radius: 8px; /* Bo tròn góc */
     padding: 10px; /* Khoảng cách bên trong */
-    background-color: #2f3136; /* Màu nền tối như Discord */
     color: #ffffff; /* Màu chữ trắng */
     margin-top: 10px; /* Khoảng cách trên form */
 }
@@ -144,25 +126,23 @@
     margin-top: 5px; /* Khoảng cách trên trường văn bản */
     border: 1px solid #ccc; /* Đường viền cho trường văn bản */
     border-radius: 5px; /* Bo tròn góc trường văn bản */
-    background-color: #40444b; /* Màu nền cho trường văn bản */
-    color: #ffffff; /* Màu chữ trường văn bản */
+    color: #000000; /* Màu chữ trường văn bản */
+    background-color: #fff; /* Đặt màu nền cho trường văn bản */
     box-sizing: border-box; /* Đảm bảo padding không làm tăng chiều rộng */
 }
 
 .reply-form input[type="text"]:focus, .reply-form textarea:focus {
     border-color: #7289da; /* Đổi màu viền khi trường văn bản được chọn */
     outline: none; /* Bỏ viền ngoài khi chọn */
-    background-color: #35393f; /* Thay đổi màu nền khi chọn */
 }
 
 body.light-theme {
     background-color: #ffffff; /* Màu nền sáng */
-    color: #000000; /* Màu chữ tối */
 }
 
 body.dark-theme {
-    background-color: #2f3136; /* Màu nền tối */
-    color: #ffffff; /* Màu chữ sáng */
+    /*color: #ffffff; /* Màu chữ sáng */
+    background-color: #2b2b2b; /* Màu nền tối*/
 }
 
 .theme-selector {
@@ -180,6 +160,79 @@ body.dark-theme {
     margin: 0 5px; /* Khoảng cách giữa các biểu tượng */
 }
 
+body.light-theme .theme-selector button {
+    color: #000; /* Màu chữ nút cho chế độ sáng */
+    background-color: #fff; /* Màu nền nút cho chế độ sáng */
+
+}
+
+body.dark-theme .theme-selector button {
+    color: #fff; /* Màu chữ nút cho chế độ tối */
+    background-color: #333; /* Màu nền nút cho chế độ tối */
+}
+
+body.light-theme td {
+    color: #000; /* Màu chữ trong thẻ td cho chế độ sáng */
+}
+
+/* Chế độ tối */
+body.dark-theme td {
+    color: #fff; /* Màu chữ trong thẻ td cho chế độ tối */
+}
+
+body.light-theme h1 {
+    color: #000; /* Màu chữ trong thẻ td cho chế độ sáng */
+}
+
+/* Chế độ tối */
+body.dark-theme h1 {
+    color: #fff; /* Màu chữ trong thẻ td cho chế độ tối */
+}
+
+body.light-theme h4 {
+    color: #000; /* Màu chữ trong thẻ td cho chế độ sáng */
+}
+
+/* Chế độ tối */
+body.dark-theme h4 {
+    color: #fff; /* Màu chữ trong thẻ td cho chế độ tối */
+}
+
+body.light-theme p {
+    color: #000; /* Màu chữ trong thẻ td cho chế độ sáng */
+}
+
+/* Chế độ tối */
+body.dark-theme p {
+    color: #fff; /* Màu chữ trong thẻ td cho chế độ tối */
+}
+
 .theme-selector button:hover {
     opacity: 0.7; /* Hiệu ứng mờ khi di chuột */
+}
+
+/* Nút thu gọn/mở rộng reply comment */
+.btn-show-reply {
+    background-color: #007bff; /* Màu nền nút */
+    color: white; /* Màu chữ */
+    border: none; /* Bỏ viền */
+    border-radius: 5px; /* Bo tròn góc */
+    padding: 8px 12px; /* Khoảng cách bên trong */
+    cursor: pointer; /* Đổi con trỏ thành hình bàn tay khi hover */
+    transition: background-color 0.3s; /* Hiệu ứng chuyển màu khi hover */
+}
+
+.btn-show-reply:hover {
+    background-color: #0056b3; /* Màu nền khi hover */
+}
+
+.toggle-replies {
+    background-color: transparent; /* Nền trong suốt */
+    color: #007bff; /* Màu chữ giống màu link */
+    font-size: 14px; /* Kích thước chữ */
+    text-decoration: underline; /* Gạch chân giống link */
+}
+
+.toggle-replies:hover {
+    background-color: rgba(0, 123, 255, 0.1); /* Màu nền nhẹ khi hover */
 }
