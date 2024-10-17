@@ -46,6 +46,7 @@
                 <li><a href="{% url 'Home:contact' %}">Contact Us</a></li>
                 {% if user.is_authenticated %}
                 {% if user.is_superuser %}
+                  <li><a href="{% url 'ProjectWebGame:vip_requests' %}">Admin</a></li>
                   <li style="color: white; font-weight: bold;"><a href="{% url 'Home:user_profile' user.id %}" style="text-decoration: none; font-weight: bold;">Admin: {{ user.username }}</a></li> 
                 {% else %}
                 <li style="color: white; font-weight: bold;"><a href="{% url 'Home:user_profile' user.id %}" style="text-decoration: none; font-weight: bold;">User: {{ user.username }}</a></li>
