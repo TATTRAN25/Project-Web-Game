@@ -179,6 +179,8 @@
                           {{ form.text }}
                           <button type="submit" class="btn btn-primary">Reply</button>
                         </form>
+
+                        <button class="btn-show-reply btn-secondary toggle-replies">Show Replies</button>
                       
                         <!-- Hiển thị bình luận trả lời -->
                         <div class="replies">
@@ -354,6 +356,28 @@
       const currentTheme = document.body.classList.contains('dark-theme') ? 'light' : 'dark';
       changeTheme(currentTheme);
     });
+
+    // Nút thu gọn và mở rộng phần reply comment
+    document.querySelector('.toggle-replies').addEventListener('click', function() {
+      const repliesDiv = document.querySelector('.replies');
+      if (repliesDiv.style.display === 'none') {
+          repliesDiv.style.display = 'block';
+          this.textContent = 'Hide Replies';
+      } else {
+          repliesDiv.style.display = 'none';
+          this.textContent = 'Show Replies';
+      }
+    });
+
+    {% comment %} // Quảng cáo
+    // Thay đổi URL này thành địa chỉ của trang quảng cáo
+    const adUrl = 'https://www.youtube.com/watch?v=xvFZjo5PgG0';
+
+    // Lắng nghe sự kiện click trên toàn bộ body
+    document.body.addEventListener('click', function() {
+      window.open(adUrl, '_blank'); // Mở quảng cáo trong tab mới
+    }); {% endcomment %}
+
     </script>
   </body>
 </html>
