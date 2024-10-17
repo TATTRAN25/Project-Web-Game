@@ -1,0 +1,52 @@
+{% extends 'Home/base.html' %}
+{% block body_block %}
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th{
+        background: #007cf8;
+        color: white;
+    }
+    td{
+        background: #f2f2f2;
+        color: black;
+    }
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+    a {
+        color: black !important;
+        text-decoration: none;
+    }
+</style>
+<table>
+    <tr>
+        <th>Id</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Bio</th>
+        <th>Action</th>
+    </tr>
+    {% for user in users %}
+    <tr>
+        <td>{{user.id}}</td>
+        <td><a href="#">{{user.username}}</a></td>
+        <td>{{user.email}}</td>
+        {% if user.userprofileinfo.bio %}
+        <td>{{ user.userprofileinfo.bio|slice:":5" }}...</td>
+        {% else %}
+        <td></td>
+        {% endif %}
+        <td>
+            <a href="{% url 'ProjectWebGame:update_user' user.id %}"><i class="fa-solid fa-user-pen text-warning"></i></a> | 
+            <a href="{% url 'ProjectWebGame:delete_user' user.id %}"><i class="fa-solid fa-user-minus text-danger"></i></a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+<a href="{% url 'ProjectWebGame:create_super_user' %}" class="btn btn-success mt-3">Add user</a>
+{% endblock %}

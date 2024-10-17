@@ -39,11 +39,15 @@
                         <li><a href="{% url 'Home:game' %}">Our Game</a></li>
                         <li><a href="{% url 'Home:contact' %}">Contact Us</a></li>
                         {% if user.is_authenticated %}
-                          <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li> 
-                          <li><a href="{% url 'Home:logout' %}">Logout</a></li>
+                        {% if user.is_superuser %}
+                          <li style="color: white; font-weight: bold;"><a href="{% url 'Home:user_profile' user.id %}" style="text-decoration: none; font-weight: bold;">Admin: {{ user.username }}</a></li> 
                         {% else %}
-                            <li style="color: white; font-weight: bold;">Welcome User: Guest</li>
-                            <li><a href="{% url 'Home:user_login' %}">Sign In</a></li>
+                        <li style="color: white; font-weight: bold;"><a href="{% url 'Home:user_profile' user.id %}" style="text-decoration: none; font-weight: bold;">User: {{ user.username }}</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'Home:logout' %}">Logout</a></li>
+                        {% else %}
+                        <li style="color: white; font-weight: bold;">Guest</li>
+                        <li><a href="{% url 'Home:user_login' %}">Sign In</a></li>
                         {% endif %}
                     </ul>
                     <a class='menu-trigger'>
@@ -84,6 +88,7 @@
     </div>
   </div>
 
+  {% if user.is_authenticated and user.is_superuser %}
   <div class="features">
     <div class="container">
       <div class="row">
@@ -98,7 +103,7 @@
           </a>
         </div>
         <div class="col-lg-3 col-md-6">
-          <a href="#">
+          <a href="{% url 'Home:userList' %}">
             <div class="item">
               <div class="image">
                 <img src="{% static 'images/featured-02.png' %}" alt="" style="max-width: 44px;">
@@ -130,6 +135,7 @@
       </div>
     </div>
   </div>
+{% endif %}
 
   <div class="section trending">
     <div class="container">

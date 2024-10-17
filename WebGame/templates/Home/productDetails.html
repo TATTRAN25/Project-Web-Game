@@ -37,22 +37,18 @@
                 <li><a href="{% url 'Home:game' %}">Our Game</a></li>
                 <li><a href="{% url 'Home:contact' %}">Contact Us</a></li>
                 {% if user.is_authenticated %}
-                <li style="color: white; font-weight: bold">
-                  Welcome, {{ user.username }}
-                </li>
+                {% if user.is_superuser %}
+                  <li style="color: white; font-weight: bold;"><a href="{% url 'Home:user_profile' user.id %}" style="text-decoration: none; font-weight: bold;">Admin: {{ user.username }}</a></li> 
+                {% else %}
+                <li style="color: white; font-weight: bold;"><a href="{% url 'Home:user_profile' user.id %}" style="text-decoration: none; font-weight: bold;">User: {{ user.username }}</a></li>
+                {% endif %}
                 <li><a href="{% url 'Home:logout' %}">Logout</a></li>
                 {% else %}
-                <li style="color: white; font-weight: bold">
-                  Welcome User: Guest
-                </li>
+                <li style="color: white; font-weight: bold;">Guest</li>
                 <li><a href="{% url 'Home:user_login' %}">Sign In</a></li>
                 {% endif %}
               </ul>
-              <div class="theme-selector">
-                <button id="theme-toggle" title="Toggle Theme">
-                    <i class="fas fa-sun" id="theme-icon"></i>
-                </button>
-              </div>
+              
               <a class="menu-trigger"><span>Menu</span></a>
             </nav>
           </div>
@@ -85,7 +81,7 @@
               <img src="{{ game.image.url }}" alt="{{ game.name }}" />
               {% else %}
               <img
-                src="{% static 'images/default.png' %}"
+                src="{% static 'images/default.jpg' %}"
                 alt="No image available"
               />
               {% endif %}
@@ -108,11 +104,11 @@
               You need to log in to download
             </a>
             {% endif %}
-
             <ul>
               <li><span>Game ID:</span> {{ game.id }}</li>
-              <li><span>Studio:</span> {{ game.developer }}</li>
-              <li><span>Category:</span> {{ game.category }}</li>
+              <li><span>Developer:</span> <a href="{% url 'ProjectWebGame:dev_list' dev_id=game.developer.id %}">{{ game.developer }}</a></li>
+              <li><span>Category:</span> <a href="{% url 'ProjectWebGame:category_list' category_id=game.category.id %}">{{ game.category }}</a></li>
+              <li><span>Release Date:</span>{{ game.release_date }}</li>
             </ul>
           </div>
           <div class="col-lg-12">
@@ -241,10 +237,11 @@
               <h4>{{ related_game.name }}</h4>
               <div class="thumb">
                 <a href="{% url 'Home:productDetails' related_game.id %}">
-                  <img
-                    src="{{ related_game.image.url }}"
-                    alt="{{ related_game.name }}"
-                  />
+                  {% if game.image %}
+                  <img src="{{ related_game.image.url }}" alt="{{ related_game.name }}">
+                  {% else %}
+                  <img src="{% static 'images/default.jpg' %}" alt="No image available">
+                  {% endif %}
                 </a>
               </div>
             </div>
@@ -322,41 +319,39 @@
     });
     highlightStars(0);
 
-    const themeToggleButton = document.getElementById('theme-toggle');
-    const themeIcon = document.getElementById('theme-icon');
+    $(document).ready(function() {
+    // Xử lý gửi bình luận
+    $('#commentForm').submit(function(event) {
+        event.preventDefault(); // Ngăn chặn việc tải lại trang
 
-    function changeTheme(theme) {
-      // Xóa các lớp chủ đề hiện tại
-      document.body.classList.remove('light-theme', 'dark-theme');
-    
-      // Thêm lớp chủ đề mới
-      document.body.classList.add(theme + '-theme');
-
-      // Thay đổi biểu tượng
-      if (theme === 'dark') {
-        themeIcon.classList.remove('fa-sun');
-        themeIcon.classList.add('fa-moon');
-      } else {
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun');
-      }
-
-      // Lưu chủ đề đã chọn vào localStorage
-      localStorage.setItem('theme', theme);
-    }
-
-    // Khi trang được tải, kiểm tra localStorage để áp dụng chủ đề đã lưu
-    window.onload = function() {
-      const savedTheme = localStorage.getItem('theme') || 'light'; // Mặc định là light
-      changeTheme(savedTheme);
-    };
-
-    // Đặt sự kiện click cho nút đổi chủ đề
-    themeToggleButton.addEventListener('click', function() {
-      const currentTheme = document.body.classList.contains('dark-theme') ? 'light' : 'dark';
-      changeTheme(currentTheme);
+        const formData = $(this).serialize(); // Lấy dữ liệu từ form
+        
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'), // URL từ thuộc tính action của form
+            data: formData,
+            success: function(response) {
+                const newComment = `
+                    <div class="comment existing-comment">
+                        <div class="comment-header">
+                            <strong>${response.author}</strong>
+                            <span class="comment-date">Posted on: ${response.created_date}</span>
+                        </div>
+                        <p class="comment-rating">Rating: ${'★'.repeat(response.rating)}${'☆'.repeat(5 - response.rating)}</p>
+                        <p class="comment-text">${response.text}</p>
+                        <hr />
+                    </div>
+                `;
+                $('#reviews').prepend(newComment);
+                $('#commentForm')[0].reset(); // Xóa dữ liệu trong form
+            },
+            error: function(xhr, status, error) {
+                alert('Error adding comment: ' + error);
+            }
+        });
     });
 
+<<<<<<< HEAD
     // Nút thu gọn và mở rộng phần reply comment
     document.querySelector('.toggle-replies').addEventListener('click', function() {
       const repliesDiv = document.querySelector('.replies');
@@ -378,6 +373,58 @@
       window.open(adUrl, '_blank'); // Mở quảng cáo trong tab mới
     }); {% endcomment %}
 
+=======
+    // Xử lý gửi bình luận trả lời
+    $('.reply-form').submit(function(event) {
+        event.preventDefault(); // Ngăn chặn việc tải lại trang
+
+        const replyData = $(this).serialize(); // Lấy dữ liệu từ form trả lời
+        const replyFormAction = $(this).attr('action'); // URL từ thuộc tính action của form trả lời
+
+        $.ajax({
+            type: 'POST',
+            url: replyFormAction,
+            data: replyData,
+            success: function(response) {
+                const newReply = `
+                    <div class="reply">
+                        <strong>${response.author}</strong>: ${response.text}<br>
+                        <span class="reply-comment-date">Posted on: ${response.created_date}</span>
+                    </div>
+                `;
+                // Thêm bình luận trả lời vào vị trí hiện tại
+                $(event.target).closest('.comment').find('.replies').append(newReply);
+                $(event.target)[0].reset(); // Xóa dữ liệu trong form trả lời
+            },
+            error: function(xhr, status, error) {
+                alert('Error adding reply: ' + error);
+            }
+        });
+    });
+
+    // Xử lý xóa bình luận
+    $(document).on('click', '.delete-button', function(event) {
+    event.preventDefault(); // Ngăn chặn việc tải lại trang
+
+    const deleteForm = $(this).closest('form');
+    const deleteUrl = deleteForm.attr('action'); // URL để xóa comment
+
+    $.ajax({
+        type: 'POST',
+        url: deleteUrl,
+        data: deleteForm.serialize(), // Gửi CSRF token
+        success: function(response) {
+            // Xóa bình luận khỏi DOM
+            deleteForm.closest('.comment').remove();
+        },
+        error: function(xhr, status, error) {
+            const errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : 'Error deleting comment';
+            alert(errorMessage);
+          }
+      });
+  });
+});
+>>>>>>> 7417a3ac02062f28075098b89eb1c102ef41db34
     </script>
   </body>
 </html>

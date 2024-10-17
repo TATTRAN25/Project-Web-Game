@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import MaxValueValidator
 from django.utils import timezone
 from django.urls import reverse
 
@@ -50,7 +49,7 @@ class Draft(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
-        return self.title
+        return self.title    
     
 class Post(models.Model):
     author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
@@ -89,7 +88,7 @@ class Comment(models.Model):
         return reverse("post_list")
     
     def __str__(self):
-         return f'Comment by {self.author.username}'
+        return f'Comment by {self.author.username}'
     
 class ReplyComment(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name='replies')

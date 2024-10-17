@@ -42,11 +42,15 @@
                         <li><a href="{% url 'ProjectWebGame:game' %}">Our Game</a></li>
                         <li><a href="{% url 'ProjectWebGame:contact' %}"  class="active">Contact Us</a></li>
                         {% if user.is_authenticated %}
-                            <li style="color: white; font-weight: bold;">Welcome User: {{ user.username }}</li> 
-                            <li><a href="{% url 'ProjectWebGame:logout' %}">Logout</a></li>
+                        {% if user.is_superuser %}
+                          <li style="color: white; font-weight: bold;"><a href="{% url 'Home:user_profile' user.id %}" style="text-decoration: none; font-weight: bold;">Admin: {{ user.username }}</a></li> 
                         {% else %}
-                            <li style="color: white; font-weight: bold;">Welcome User: Guest</li> 
-                            <li><a href="{% url 'ProjectWebGame:user_login' %}">Sign In</a></li>
+                        <li style="color: white; font-weight: bold;"><a href="{% url 'Home:user_profile' user.id %}" style="text-decoration: none; font-weight: bold;">User: {{ user.username }}</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'Home:logout' %}">Logout</a></li>
+                        {% else %}
+                        <li style="color: white; font-weight: bold;">Guest</li>
+                        <li><a href="{% url 'Home:user_login' %}">Sign In</a></li>
                         {% endif %}
                     </ul>
                     <a class='menu-trigger'>
@@ -70,7 +74,7 @@
       </div>
     </div>
   </div>
-
+  
   <div class="contact-page section">
     <div class="container">
       <div class="row">
@@ -78,13 +82,13 @@
           <div class="left-text">
             <div class="section-heading">
               <h6>Contact Us</h6>
-              <h2>Say Hello!</h2>
+              <h2>Chào Mấy Ní!</h2>
             </div>
-            <p>LUGX Gaming Template is based on the latest Bootstrap 5 CSS framework. This template is provided by TemplateMo and it is suitable for your gaming shop ecommerce websites. Feel free to use this for any purpose. Thank you.</p>
+            <p>Hãy liên hệ với admin để góp ý cho website ngày càng phát triển hơn. Cám ơn góp ý của bạn</p>
             <ul>
-              <li><span>Address</span> Sunny Isles Beach, FL 33160, United States</li>
-              <li><span>Phone</span> +123 456 7890</li>
-              <li><span>Email</span> lugx@contact.com</li>
+              <li><span>Address</span> 53 Đ. Võ Văn Ngân, Linh Chiểu, Thành Phố Thủ Đức, Hồ Chí Minh</li>
+              <li><span>Phone</span> 0868238480</li>
+              <li><span>Email</span> anhtuan251104@gmail.com</li>
             </ul>
           </div>
         </div>
@@ -97,47 +101,47 @@
                 </div>
               </div>
               <div class="col-lg-12">
-                <form id="contact-form" action="" method="post">
+                <form id="contact-form" action="{% url 'ProjectWebGame:contact' %}" method="post">
+                  {% csrf_token %}
+                  {% if messages %}
+                  <div class="alert-container">
+                    {% for message in messages %}
+                      <div class="alert" style="color: black">
+                        {{ message }}
+                      </div>
+                    {% endfor %}
+                  </div>
+                  {% endif %}
                   <div class="row">
                     <div class="col-lg-6">
-                      <fieldset>
-                        <input type="name" name="name" id="name" placeholder="Your Name..." autocomplete="on" required>
-                      </fieldset>
+                        <fieldset>
+                            <input type="text" name="name" id="name" placeholder="Your Name..." required>
+                        </fieldset>
                     </div>
                     <div class="col-lg-6">
-                      <fieldset>
-                        <input type="surname" name="surname" id="surname" placeholder="Your Surname..." autocomplete="on" required>
-                      </fieldset>
-                    </div>
-                    <div class="col-lg-6">
-                      <fieldset>
-                        <input type="text" name="email" id="email" pattern="[^ @]*@[^ @]*" placeholder="Your E-mail..." required="">
-                      </fieldset>
-                    </div>
-                    <div class="col-lg-6">
-                      <fieldset>
-                        <input type="subject" name="subject" id="subject" placeholder="Subject..." autocomplete="on" >
-                      </fieldset>
+                        <fieldset>
+                            <input type="email" name="email" id="email" placeholder="Your E-mail..." required>
+                        </fieldset>
                     </div>
                     <div class="col-lg-12">
-                      <fieldset>
-                        <textarea name="message" id="message" placeholder="Your Message"></textarea>
-                      </fieldset>
+                        <fieldset>
+                            <textarea name="message" id="message" placeholder="Your Message" required></textarea>
+                        </fieldset>
                     </div>
                     <div class="col-lg-12">
-                      <fieldset>
-                        <button type="submit" id="form-submit" class="orange-button">Send Message Now</button>
-                      </fieldset>
+                        <fieldset>
+                            <button type="submit" id="form-submit" class="orange-button">Send Message Now</button>
+                        </fieldset>
                     </div>
-                  </div>
-                </form>
+                </div>
+              </form>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>  
+  </div>
 
   <footer>
     <div class="container">
@@ -152,6 +156,5 @@
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <!-- Bootstrap JS -->
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-
   </body>
 </html>

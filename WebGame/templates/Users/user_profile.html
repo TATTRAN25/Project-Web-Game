@@ -1,0 +1,29 @@
+{% extends 'Home/base.html' %}
+{% block body_block %}
+<div class="container">
+    <h1>User Details</h1>
+    {% if user.userprofileinfo %}
+    <img src="">
+    {% endif %}
+    <table>
+        <tr>
+            <td>Name:</td>
+            <td>{{ user.username }}</td>
+        </tr>
+        <tr>
+            <td>Email:</td>
+            <td>{{ user.email }}</td>
+        </tr>
+        {% if user.userprofileinfo %}
+        <tr>
+            <td>Bio:</td>
+            <td>{{ user.userprofileinfo.bio }}</td>
+        </tr>
+        <tr>
+            <td>Address:</td>
+            <td>{{ user.userprofileinfo.address }}</td>
+        </tr>
+        {% endif %}
+    </table>
+</div>
+{% endblock %}

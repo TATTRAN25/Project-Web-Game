@@ -1,18 +1,15 @@
-from .form import UserForm, UserProfileForm, GameForm,CategoryForm,DeveloperForm
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponseRedirect,HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required, user_passes_test
-from .models import Game, Draft, Comment, Developer, Category
-from .form import CommentForm, ReplyCommentForm
-from .models import Game, Draft, Post, Comment, Developer, Category
-from .form import CommentForm
-from django.views.generic import (TemplateView, ListView, DeleteView, CreateView, UpdateView, UpdateView, DeleteView, DetailView)
-from django.utils import timezone
-from django.contrib.auth.mixins import LoginRequiredMixin 
+from django.contrib.auth.models import User
+from .models import Game, Comment, Developer, Category, UserProfileInfo,Post
+from .form import CommentForm, ReplyCommentForm, UserForm, UserProfileForm, GameForm,CategoryForm,DeveloperForm
 from django.core.paginator import Paginator
+from django.core.mail import send_mail   
+from django.http import JsonResponse
 
 app_name = 'ProjectWebGame'
 
@@ -32,7 +29,7 @@ def register(request):
 
             profile = profile_form.save(commit=False)
             profile.user = user  
-            profile.save()  
+            profile.save()
 
             messages.success(request, 'Đăng ký thành công!')  
             return redirect('ProjectWebGame:user_login')  
@@ -88,7 +85,87 @@ def user_login(request):
     
     return render(request, 'Home/login.html')
 
+@user_passes_test(lambda u: u.is_superuser)
+def user_list(request):
+    users = User.objects.all()
+    return render(request, 'Users/user_list.html', {'users': users})
+
+@login_required
+def user_profile(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    return render(request, 'Users/user_profile.html',  {'user':user})
+
+@user_passes_test(lambda u: u.is_superuser)
+def create_super_user(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST)
+        profile_form = UserProfileForm(request.POST, request.FILES)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.set_password(form.cleaned_data['password'])
+            user.is_superuser = True
+            user.is_staff = True
+            user.save()
+
+            profile = profile_form.save(commit=False)
+            profile.user = user
+            profile.save()
+
+            messages.success(request, 'Super user đã được tạo thành công.')
+            return redirect('ProjectWebGame:userList')
+    else:
+        form = UserForm()
+        profile_form = UserProfileForm()
+        return render(request, 'Users/user_form.html', {'form': form, 'profile_form': profile_form})
+
+@user_passes_test(lambda u: u.is_superuser)
+def update_user(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    user_info = UserProfileInfo.objects.get(user=user)
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=user_info)
+        form.save()
+        messages.success(request, 'Thông tin tài khoản đã được cập nhật thành công.')
+        return redirect('ProjectWebGame:userList')
+    else:
+        form = UserProfileForm(instance=user_info)
+        return render(request, 'Users/user_form.html', {'form': form})
+
+@user_passes_test(lambda u: u.is_superuser)
+def delete_user(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    user.delete()
+    messages.success(request, 'Tài khoản đã được xóa thành công.')
+    return redirect('ProjectWebGame:userList')
+
 def contact(request):
+    if request.method == 'POST':
+        name = request.POST['name'] 
+        email = request.POST['email']  
+        message = request.POST['message']  
+
+        try:
+            send_mail(
+                f'Message from {name}',  
+                f'From: {name}, Email: {email} \n\nMessage:\n{message}',  
+                'anhtuan251104@gmail.com',  
+                ['anhtuan251104@gmail.com'],  
+                fail_silently=False,
+            )
+
+            send_mail(
+                'Cảm ơn bạn đã góp ý!',
+                'Cảm ơn bạn đã gửi ý kiến cho chúng tôi. Chúng tôi sẽ xem xét và phản hồi sớm nhất có thể.',
+                'anhtuan251104@gmail.com',  
+                [email],  
+                fail_silently=False,
+            )
+            messages.success(request, 'Your message has been sent successfully!')
+            return redirect('ProjectWebGame:contact')
+        except Exception as e:
+            messages.error(request, f'Error sending message: {e}')
+            return redirect('ProjectWebGame:contact')
+
     return render(request, 'Home/contact.html')
 
 def productDetails(request, id):
@@ -98,9 +175,8 @@ def productDetails(request, id):
 
     if request.method == 'POST':
         if not request.user.is_authenticated:
-            messages.error(request, "You need to log in to download this game.")
-            return redirect('login')
-        
+            return JsonResponse({'error': 'You need to log in to download this game.'}, status=403)
+
         form = CommentForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
@@ -112,22 +188,32 @@ def productDetails(request, id):
                 comment.parent = Comment.objects.get(id=parent_id)
 
             comment.save()
-            #print(f"Comment saved: {comment.text} with rating: {comment.rating}")
-            messages.success(request, "Your comment has been added.")
             comments = game.comments.all()
-            return redirect('Home:productDetails', id=game.id)
+
+            # Trả về phản hồi JSON
+            return JsonResponse({
+                'author': comment.author.username,
+                'text': comment.text,
+                'created_date': comment.created_date.strftime("%j %B %Y"),
+                'rating': comment.rating,  # Nếu có rating
+            })
+
     else:
         form = CommentForm()
 
-    return render(request, 'Home/productDetails.html', {'game': game, 'related_games': related_games, 'form': form, 'comments': comments,})
+    return render(request, 'Home/productDetails.html', {
+        'game': game,
+        'related_games': related_games,
+        'form': form,
+        'comments': comments,
+    })
 
 def reply_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
-    
+
     if request.method == 'POST':
         if not request.user.is_authenticated:
-            messages.error(request, "You need to log in to reply to comments.")
-            return redirect('login')
+            return JsonResponse({'error': 'You need to log in to reply to comments.'}, status=403)
 
         form = ReplyCommentForm(request.POST)
         if form.is_valid():
@@ -135,49 +221,45 @@ def reply_comment(request, comment_id):
             reply.author = request.user
             reply.comment = comment  # Gán bình luận cha
             reply.save()
-            #print(f"Comment ID: {comment_id}, Game ID: {comment.game.id}")
-            messages.success(request, "Your reply has been added.")
-            return redirect('Home:productDetails', id=comment.game.id)
 
-    # Xử lý trường hợp GET hoặc lỗi form
-    form = CommentForm()
-    return render(request, 'Home/productDetails.html', {
-        'form': form,
-        'comments': Comment.objects.filter(game=comment.game),
-    })
+            # Trả về phản hồi JSON
+            return JsonResponse({
+                'author': reply.author.username,
+                'text': reply.text,
+                'created_date': reply.created_date.strftime("%j %B %Y"),
+            })
+
+    return JsonResponse({'error': 'Invalid form data'}, status=400)
 
 
 
 def game(request):
-    search_query = request.GET.get('search', '')  # Lấy tham số tìm kiếm
-    category_id = request.GET.get('category')  # Lấy tham số category
+    search_query = request.GET.get('search', '')
+    category_id = request.GET.get('category', '')
 
+    queryset = Game.objects.all()
     if search_query:
-        game_list = Game.objects.filter(name__icontains=search_query)
-    elif category_id:
-        game_list = Game.objects.filter(category_id=category_id)  # Lọc theo category
-    else:
-        game_list = Game.objects.all()  # Lấy tất cả nếu không có tìm kiếm hoặc category
+        queryset = queryset.filter(name__icontains=search_query)
+    if category_id:
+        queryset = queryset.filter(category_id=category_id)
 
-    paginator = Paginator(game_list, 4) 
+    paginator = Paginator(queryset, 4)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
-    categories = Category.objects.all() 
+
+    categories = Category.objects.all()
 
     return render(request, 'Home/game.html', {
-        'page_obj': page_obj, 
+        'page_obj': page_obj,
         'search_query': search_query,
-        'categories': categories    
+        'category_id': category_id,
+        'categories': categories
     })
 
 @user_passes_test(lambda u: u.is_superuser)
 def gameList(request):
     games = Game.objects.all() 
     return render(request, 'Game/gameList.html', {'games': games})
-
-def dashboard(request):
-    return render(request, 'Game/dashboard.html')
 
 def is_admin(user):
     return user.is_superuser
@@ -187,15 +269,10 @@ def is_admin(user):
 def create_game(request):
     form = GameForm()
     if request.method == 'POST':
-        game = Game(
-            name=request.POST['name'],
-            description=request.POST['description'],
-            developer=request.user,
-            is_published=False  # Đặt chế độ nháp
-        )
-        game.save()
+        form = GameForm(request.POST, request.FILES)
+        form.save()
         messages.success(request, 'Game đã được lưu vào bản nháp!')
-        return redirect('ProjectWebGame:game_list') 
+        return redirect('ProjectWebGame:gameList')
     else:
         form = GameForm()
         return render(request, 'Game/game_form.html', {'form': form})
@@ -213,11 +290,14 @@ def publish_draft(request, draft_id):
 def update_game(request, pk):
     game = get_object_or_404(Game, pk=pk)
     if request.method == 'POST':
-        form = GameForm(request.POST, instance=game)
+        form = GameForm(request.POST,request.FILES, instance=game)
         if form.is_valid():
             form.save()
             messages.success(request, 'Game đã được cập nhật!')
-            return redirect('ProjectWebGame:draft_list')
+            if game.is_published == True:
+                return redirect('ProjectWebGame:gameList')
+            else:
+                return redirect('ProjectWebGame:draft_list')
     else:
         form = GameForm(instance=game)
         return render(request, 'Game/game_form.html', {'form': form})
@@ -228,21 +308,25 @@ def delete_game(request, pk):
     game = get_object_or_404(Game, pk=pk)
     game.delete()
     messages.success(request, 'Game đã xóa thành công!')
+    if game.is_published == True:
+        return redirect('ProjectWebGame:gameList')
+    else:
+        return redirect('ProjectWebGame:draft_list')
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def publish_draft(request, draft_id):
+    game = get_object_or_404(Game, id=draft_id)
+    game.is_published = True
+    game.save()
+    messages.success(request, 'Game đã được công khai!')
     return redirect('ProjectWebGame:gameList')
 
 @user_passes_test(lambda u: u.is_superuser)
 def DraftListView(request):
     drafts = Game.objects.all()
     return render(request, 'Game/draft_list.html', {'drafts': drafts})
-
-class DraftListView(LoginRequiredMixin, ListView):
-    login_url = '/login/'
-    redirect_field_name = 'Home/gameList.html'
-
-    model = Post
-
-    def get_queryset(self):
-        return Post.objects.filter(published_date__isnull=True).order_by('created_date')
+    
 
 @login_required
 def post_publish(request, pk):
@@ -263,6 +347,10 @@ def add_comment_to_post(request, pk):
     else:
         form = CommentForm()
     return render(request, 'ProjectWebGame/comment_form.html', {'form': form})
+@user_passes_test(lambda u: u.is_superuser)
+def DraftDetailView(request, pk):
+    draft = get_object_or_404(Game, pk = pk)
+    return render(request, 'Game/draft_list.html', {'draft': draft})
 
 @login_required
 def comment_approve(request, pk):
@@ -368,3 +456,35 @@ def delete_category(request, category_id):
         messages.success(request, 'Category deleted successfully!')
         return redirect('ProjectWebGame:category_list')
     return render(request, 'Dev_Category/confirm_delete.html', {'object': category})
+
+def dev_category_list(request, dev_id=None, category_id=None):
+    if dev_id:
+        developer = get_object_or_404(Developer, id=dev_id)
+        games = Game.objects.filter(developer=developer, is_published=True)
+        filter_type = 'developer'
+        filter_obj = developer
+    elif category_id:
+        category = get_object_or_404(Category, id=category_id)
+        games = Game.objects.filter(category=category, is_published=True)
+        filter_type = 'category'
+        filter_obj = category
+    else:
+        games = Game.objects.filter(is_published=True)
+        filter_type = None
+        filter_obj = None
+
+    paginator = Paginator(games, 8)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    categories = Category.objects.all()
+    developers = Developer.objects.all()
+
+    context = {
+        'filter_type': filter_type,
+        'filter_obj': filter_obj,
+        'page_obj': page_obj,
+        'categories': categories,
+        'developers': developers,
+    }
+    return render(request, 'Dev_Category/dev_category_list.html', context)
