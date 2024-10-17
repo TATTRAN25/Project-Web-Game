@@ -6,14 +6,14 @@
     {% for draft in drafts %}
         {% if draft.is_published == False %}
             <li>
-                <h3><a href="{% url 'ProjectWebGame:draft_detail' draft.id %}" style="color: white;">{{ draft.name }}</a></h3>
+                <h3><a href="{% url 'ProjectWebGame:draft_detail' draft.id %}">{{ draft.name }}</a></h3>
                 - {{ draft.created_at }}
             </li>
         {% endif %}
     {% endfor %}
 
     {% if draft %}
-    <h3 style="color: white;">{{ draft.name }}</h3>
+    <h3>{{ draft.name }}</h3>
     - {{ draft.created_at }} <br>
     <a href="{% url 'ProjectWebGame:publish_draft' draft.id %}" class="btn btn-primary">Publish</a>
     <a href="{% url 'ProjectWebGame:update_game' draft.id %}" class="btn btn-info">Edit game</a>
