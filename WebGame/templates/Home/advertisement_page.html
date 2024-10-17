@@ -43,23 +43,32 @@
             font-size: 0.9em;
         }
     </style>
-    <script>
-        // Chuyển hướng sau 30 giây
-        setTimeout(function() {
-            window.location.href = "{{ download_link }}";  // Chuyển hướng đến link tải xuống
-        }, 3000);  // 30 giây
-    </script>
 </head>
 <body>
     <h1>Advertisement Page</h1>
     <div class="advertisement">
-        <p>Please wait <span class="countdown">30 seconds</span> to continue to the download.</p>
+        <p>Please wait <span class="countdown">10 seconds</span> to continue to the download.</p>
         <p>In the meantime, check out this advertisement!</p>
         <!-- Nội dung quảng cáo của bạn ở đây -->
         <p><strong>Special Offer!</strong> Get 50% off on your first purchase!</p>
     </div>
     <div class="footer">
-        <p>&copy; 2024 Your Company. All rights reserved.</p>
+        <p>&copy; 2024 Your Company. All rights reserved. Advertisement Made By ShibaInu</p>
     </div>
+
+    <script>
+        let countdownTime = 10; // Thời gian đếm ngược (10 giây)
+        const countdownElement = document.querySelector('.countdown');
+
+        const countdownInterval = setInterval(() => {
+            if (countdownTime > 0) {
+                countdownElement.textContent = `${countdownTime} seconds`;
+                countdownTime--;
+            } else {
+                clearInterval(countdownInterval);
+                window.location.href = "{{ download_link }}"; // Chuyển hướng đến link tải xuống
+            }
+        }, 1000); // Cập nhật mỗi giây
+    </script>
 </body>
 </html>
