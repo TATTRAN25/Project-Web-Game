@@ -159,7 +159,7 @@
                       <hr />
                       <h5>Existing Reviews</h5>
                       {% for comment in comments %}
-                      <div class="comment">
+                      <div class="comment existing-comment">
                         <div class="comment-header">
                           <strong>{{ comment.author.username }}</strong>
                           <span class="comment-date">Posted on: {{ comment.created_date|date:"j F Y" }}</span>
@@ -176,7 +176,7 @@
 
                         <form method="POST" action="{% url 'ProjectWebGame:reply_comment' comment.id %}" class="reply-form">
                           {% csrf_token %}
-                          {{ form.text }}  <!-- Trường văn bản để nhập nội dung trả lời -->
+                          {{ form.text }}
                           <button type="submit" class="btn btn-primary">Reply</button>
                         </form>
                       
