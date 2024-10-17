@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "ProjectWebGame",
     'django_extensions',
+    'ckeditor',
+    'ckeditor_uploader',
 ]
 
 MIDDLEWARE = [
@@ -141,3 +143,7 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = MEDIA_DIR
 
 LOGIN_URL = 'RegistrationLogin/user_login'
+
+
+# CKEDITOR
+CKEDITOR_UPLOAD_PATH =  'uploads/'

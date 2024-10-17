@@ -80,7 +80,7 @@
         <div class="col-lg-6 align-self-center">
           <h4>{{ game.name }}</h4>
           <span class="price">Cracked</span>
-          <p>{{ game.description }}</p>
+          <p>{{ game.description|safe }}</p>
 
           {% if user.is_authenticated %}
             <a href="{{ game.link_dowload }}" class="btn btn-primary">
