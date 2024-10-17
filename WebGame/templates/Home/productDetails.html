@@ -48,7 +48,11 @@
                 <li><a href="{% url 'Home:user_login' %}">Sign In</a></li>
                 {% endif %}
               </ul>
-              
+              <div class="theme-selector">
+                <button id="theme-toggle" aria-label="Toggle theme">
+                    <i class="fas fa-sun" id="theme-icon"></i> <!-- Icon mặt trời -->
+                </button>
+              </div>
               <a class="menu-trigger"><span>Menu</span></a>
             </nav>
           </div>
@@ -80,10 +84,7 @@
               {% if game.image %}
               <img src="{{ game.image.url }}" alt="{{ game.name }}" />
               {% else %}
-              <img
-                src="{% static 'images/default.jpg' %}"
-                alt="No image available"
-              />
+              <img src="{% static 'images/default.jpg' %}" alt="No image available"/>
               {% endif %}
             </div>
           </div>
@@ -93,16 +94,22 @@
             <p>{{ game.description }}</p>
 
             {% if user.is_authenticated %}
-            <a href="{{ game.link_dowload }}" class="btn btn-primary">
-              <i class="fas fa-arrow-circle-down"></i> DOWNLOAD NOW!
-            </a>
+              {% if user.userprofileinfo.is_vip %}
+                <!-- Nếu người dùng là VIP -->
+                  <a href="{{ game.link_dowload }}" class="btn btn-primary">
+                    <i class="fas fa-arrow-circle-down"></i> DOWNLOAD NOW!
+                  </a>
+              {% else %}
+                <!-- Nếu người dùng bình thường -->
+                <a href="{% url 'ProjectWebGame:advertisement_page' %}?redirect={{ game.link_dowload }}" class="btn btn-primary">
+                  <i class="fas fa-arrow-circle-down"></i> DOWNLOAD NOW!
+                </a>
+              {% endif %}
             {% else %}
-            <a
-              href="{% url 'ProjectWebGame:user_login' %}"
-              class="btn btn-secondary"
-            >
-              You need to log in to download
-            </a>
+              <!-- Nếu người dùng chưa đăng nhập -->
+              <a href="{% url 'ProjectWebGame:login' %}" class="btn btn-primary">
+              <i class="fas fa-arrow-circle-down"></i> DOWNLOAD NOW!
+              </a>
             {% endif %}
             <ul>
               <li><span>Game ID:</span> {{ game.id }}</li>
@@ -294,17 +301,17 @@
         }
       });
 
-    const stars = document.querySelectorAll('.star');
-    const ratingValue = document.getElementById('rating-value');
+      const stars = document.querySelectorAll('.star');
+      const ratingValue = document.getElementById('rating-value');
 
-    function highlightStars(rating) {
+      function highlightStars(rating) {
+        stars.forEach((star, index) => {
+          star.style.color = (index < rating) ? 'gold' : 'black';
+        });
+      }
+
       stars.forEach((star, index) => {
-        star.style.color = (index < rating) ? 'gold' : 'black';
-      });
-    }
-
-    stars.forEach((star, index) => {
-      star.addEventListener('mouseover', () => {
+        star.addEventListener('mouseover', () => {
           highlightStars(index + 1);
       });
 
@@ -315,13 +322,13 @@
       star.addEventListener('click', () => {
           ratingValue.value = index + 1;
           highlightStars(index + 1);
+        });
       });
-    });
-    highlightStars(0);
+      highlightStars(0);
 
-    $(document).ready(function() {
-    // Xử lý gửi bình luận
-    $('#commentForm').submit(function(event) {
+      $(document).ready(function() {
+      // Xử lý gửi bình luận
+      $('#commentForm').submit(function(event) {
         event.preventDefault(); // Ngăn chặn việc tải lại trang
 
         const formData = $(this).serialize(); // Lấy dữ liệu từ form
@@ -348,12 +355,11 @@
             error: function(xhr, status, error) {
                 alert('Error adding comment: ' + error);
             }
+          });
         });
-    });
 
-<<<<<<< HEAD
-    // Nút thu gọn và mở rộng phần reply comment
-    document.querySelector('.toggle-replies').addEventListener('click', function() {
+      // Nút thu gọn và mở rộng phần reply comment
+      document.querySelector('.toggle-replies').addEventListener('click', function() {
       const repliesDiv = document.querySelector('.replies');
       if (repliesDiv.style.display === 'none') {
           repliesDiv.style.display = 'block';
@@ -362,20 +368,19 @@
           repliesDiv.style.display = 'none';
           this.textContent = 'Show Replies';
       }
-    });
+      });
 
-    {% comment %} // Quảng cáo
+    // Quảng cáo
     // Thay đổi URL này thành địa chỉ của trang quảng cáo
-    const adUrl = 'https://www.youtube.com/watch?v=xvFZjo5PgG0';
+    //const adUrl = 'https://www.youtube.com/watch?v=xvFZjo5PgG0';
 
     // Lắng nghe sự kiện click trên toàn bộ body
-    document.body.addEventListener('click', function() {
-      window.open(adUrl, '_blank'); // Mở quảng cáo trong tab mới
-    }); {% endcomment %}
+    //document.body.addEventListener('click', function() {
+      //window.open(adUrl, '_blank'); // Mở quảng cáo trong tab mới
+    //});
 
-=======
-    // Xử lý gửi bình luận trả lời
-    $('.reply-form').submit(function(event) {
+      // Xử lý gửi bình luận trả lời
+      $('.reply-form').submit(function(event) {
         event.preventDefault(); // Ngăn chặn việc tải lại trang
 
         const replyData = $(this).serialize(); // Lấy dữ liệu từ form trả lời
@@ -400,7 +405,7 @@
                 alert('Error adding reply: ' + error);
             }
         });
-    });
+      });
 
     // Xử lý xóa bình luận
     $(document).on('click', '.delete-button', function(event) {
@@ -421,10 +426,29 @@
             const errorMessage = xhr.responseJSON && xhr.responseJSON.error ? xhr.responseJSON.error : 'Error deleting comment';
             alert(errorMessage);
           }
+        });
       });
-  });
-});
->>>>>>> 7417a3ac02062f28075098b89eb1c102ef41db34
+    });
+
+    // Đổi màu nền
+    const toggleButton = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    let isDarkTheme = false;
+
+    toggleButton.addEventListener('click', () => {
+        if (isDarkTheme) {
+            document.body.classList.remove('dark-theme');
+            document.body.classList.add('light-theme');
+            themeIcon.classList.remove('fa-moon'); // Thay icon mặt trăng
+            themeIcon.classList.add('fa-sun'); // Đặt lại icon mặt trời
+        } else {
+            document.body.classList.remove('light-theme');
+            document.body.classList.add('dark-theme');
+            themeIcon.classList.remove('fa-sun'); // Thay icon mặt trời
+            themeIcon.classList.add('fa-moon'); // Đặt lại icon mặt trăng
+        }
+        isDarkTheme = !isDarkTheme; // Đảo ngược trạng thái
+    });
     </script>
   </body>
 </html>

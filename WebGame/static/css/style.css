@@ -126,7 +126,8 @@
     margin-top: 5px; /* Khoảng cách trên trường văn bản */
     border: 1px solid #ccc; /* Đường viền cho trường văn bản */
     border-radius: 5px; /* Bo tròn góc trường văn bản */
-    color: #ffffff; /* Màu chữ trường văn bản */
+    color: #000000; /* Màu chữ trường văn bản */
+    background-color: #fff; /* Đặt màu nền cho trường văn bản */
     box-sizing: border-box; /* Đảm bảo padding không làm tăng chiều rộng */
 }
 
@@ -161,10 +162,49 @@ body.dark-theme {
 
 body.light-theme .theme-selector button {
     color: #000; /* Màu chữ nút cho chế độ sáng */
+    background-color: #fff; /* Màu nền nút cho chế độ sáng */
+
 }
 
 body.dark-theme .theme-selector button {
     color: #fff; /* Màu chữ nút cho chế độ tối */
+    background-color: #333; /* Màu nền nút cho chế độ tối */
+}
+
+body.light-theme td {
+    color: #000; /* Màu chữ trong thẻ td cho chế độ sáng */
+}
+
+/* Chế độ tối */
+body.dark-theme td {
+    color: #fff; /* Màu chữ trong thẻ td cho chế độ tối */
+}
+
+body.light-theme h1 {
+    color: #000; /* Màu chữ trong thẻ td cho chế độ sáng */
+}
+
+/* Chế độ tối */
+body.dark-theme h1 {
+    color: #fff; /* Màu chữ trong thẻ td cho chế độ tối */
+}
+
+body.light-theme h4 {
+    color: #000; /* Màu chữ trong thẻ td cho chế độ sáng */
+}
+
+/* Chế độ tối */
+body.dark-theme h4 {
+    color: #fff; /* Màu chữ trong thẻ td cho chế độ tối */
+}
+
+body.light-theme p {
+    color: #000; /* Màu chữ trong thẻ td cho chế độ sáng */
+}
+
+/* Chế độ tối */
+body.dark-theme p {
+    color: #fff; /* Màu chữ trong thẻ td cho chế độ tối */
 }
 
 .theme-selector button:hover {

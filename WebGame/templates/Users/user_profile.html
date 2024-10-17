@@ -9,6 +9,9 @@
         <tr>
             <td>Name:</td>
             <td>{{ user.username }}</td>
+            {% if user.userprofileinfo.is_vip %}
+                <i class="fas fa-gem" style="color: blue;"></i>  <!-- Thay đổi màu sắc theo ý muốn -->
+            {% endif %}
         </tr>
         <tr>
             <td>Email:</td>
@@ -25,5 +28,13 @@
         </tr>
         {% endif %}
     </table>
+
+     <!-- Nút nâng cấp thành VIP chỉ hiển thị cho người dùng không phải admin -->
+     {% if not user.is_staff %}
+     <form method="POST" action="{% url 'ProjectWebGame:upgrade_to_vip' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-warning">Upgrade to VIP</button>
+     </form>
+     {% endif %}
 </div>
 {% endblock %}
