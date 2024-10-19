@@ -32,6 +32,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
+# Không sử dụng
 class Game(models.Model):
     name = models.CharField(max_length=255)
     developer = models.ForeignKey(Developer, on_delete=models.CASCADE) 
@@ -47,6 +48,7 @@ class Game(models.Model):
     def __str__(self):
         return self.name
 
+# Không sử dụng
 class Draft(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()

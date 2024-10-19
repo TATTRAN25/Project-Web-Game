@@ -1,15 +1,39 @@
 {% extends 'Home/base.html' %}
 {% block body_block %}
 {% load static %}
+<style>
+    .avatar-frame {
+    display: inline-block;
+    border: 5px solid black;
+    background-color: #f9f9f9;
+    position: relative;
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+.avatar {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: auto;
+    height: 100%;
+    max-width: 100%;
+    transform: translate(-50%, -50%);
+}
+</style>
 <div class="container">
     <h1>User Details</h1>
     <div class="row">
         <div class="col-lg-5 text-center">
+            <div class="avatar-frame">
             {% if user.userprofileinfo.avatar %}
-            <img src="{{ user.userprofileinfo.avatar.url }}" alt="avatar" class="img-fluid" style="width: 50%">
+            <img src="{{ user.userprofileinfo.avatar.url }}" alt="avatar" class="img-fluid avatar">
             {% else %}
-            <img src="{% static 'images/default.jpg' %}" alt="No image available"> 
+            <img src="{% static 'images/default.jpg' %}" alt="No image available" class="img-fluid avatar">
             {% endif %}
+            </div>
             <h3>{{user.username}}</h3>
             <p>Date joined: {{user.date_joined }}</p>
         </div>
@@ -23,11 +47,13 @@
                     <td>Email:</td>
                     <td>{{ user.email }}</td>
                 </tr>
-                {% if user.userprofileinfo %}
+                {% if user.userprofileinfo.bio %}
                 <tr>
                     <td>Bio:</td>
                     <td>{{ user.userprofileinfo.bio|slice:255 }}</td>
                 </tr>
+                {% endif %}
+                {% if user.userprofileinfo.address %}
                 <tr>
                     <td>Address:</td>
                     <td>{{ user.userprofileinfo.address|slice:255 }}</td>
