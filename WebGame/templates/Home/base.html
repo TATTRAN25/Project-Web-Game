@@ -74,15 +74,17 @@
     <!-- ***** Header Area End ***** -->
     <div class="page-heading header-text">
       <div class="container">
-        <div class="row">
-          <div class="col-lg-12">
-            <h3>Only for admin</h3>
-            <span class="breadcrumb" style="background-color: transparent;"><a href="{% url 'ProjectWebGame:index' %}">Home</a> > Only for admin</span>
+          <div class="row">
+              <div class="col-lg-12">
+                  <h3>{% if user.is_superuser %}Only for admin{% else %}Welcome User{% endif %}</h3>
+                  <span class="breadcrumb" style="background-color: transparent;">
+                      <a href="{% url 'ProjectWebGame:index' %}">Home</a> > 
+                      {% if user.is_superuser %}Only for admin{% else %}Welcome User{% endif %}
+                  </span>
+              </div>
           </div>
-        </div>
-      </div> 
-    </div>
-  </header>
+      </div>
+  </div>
   <!-- ***** Header Area End ***** -->
    <div class="container pt-5">
     {% block body_block %}

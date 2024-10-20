@@ -8,6 +8,7 @@ urlpatterns = [
     path('ProjectWebGame/',include('ProjectWebGame.urls', namespace='ProjectWebGame')),
     path("admin/", admin.site.urls),
     path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('accounts/', include('allauth.urls')),
 ]
 
 if settings.DEBUG:
