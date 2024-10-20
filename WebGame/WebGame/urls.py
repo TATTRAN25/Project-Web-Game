@@ -7,8 +7,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('ProjectWebGame/',include('ProjectWebGame.urls', namespace='ProjectWebGame')),
     path("admin/", admin.site.urls),
-    path('ckeditor/', include('ckeditor_uploader.urls')),
     path('accounts/', include('allauth.urls')),
+    path("ckeditor5/", include('django_ckeditor_5.urls')),
 ]
 
 if settings.DEBUG:
