@@ -1,7 +1,5 @@
 from django.urls import path
 from . import views
-from django.conf import settings
-from django.conf.urls.static import static
 
 app_name = "ProjectWebGame"
 app_name = "Home"
@@ -47,7 +45,7 @@ urlpatterns = [
     # url dev_category_list
     path('dev-list/developer/<int:dev_id>/', views.dev_category_list, name='dev_list'),
     path('dev-list/category/<int:category_id>/', views.dev_category_list, name='category_list'),
-    # url admin
+    # url VIP(Siêu tư bản)
     path('admin/vip_requests/', views.vip_requests, name='vip_requests'),
     path('admin/approve_vip/<int:user_id>/', views.approve_vip, name='approve_vip'),
 ]

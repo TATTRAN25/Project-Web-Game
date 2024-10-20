@@ -10,6 +10,7 @@ from .form import CommentForm, ReplyCommentForm, UserForm, UserProfileForm, Game
 from django.core.paginator import Paginator
 from django.core.mail import send_mail   
 from django.http import JsonResponse
+from django.core.exceptions import ValidationError
 from django.template.loader import render_to_string
 import time
 
@@ -25,18 +26,24 @@ def register(request):
 
         # Kiểm tra tính hợp lệ của các biểu mẫu
         if user_form.is_valid() and profile_form.is_valid():
-            user = user_form.save(commit=False)
-            user.set_password(user_form.cleaned_data['password'])
-            user.save()
+            try:
+                username = user_form.cleaned_data['username']
+                if User.objects.filter(username=username).exists():
+                    messages.error(request, 'Tên người dùng đã tồn tại.')
+                else:
+                    user = user_form.save(commit=False)
+                    user.set_password(user_form.cleaned_data['password'])
+                    user.save()
 
-            profile = profile_form.save(commit=False)
-            profile.user = user  
-            profile.save()
+                    profile = profile_form.save(commit=False)
+                    profile.user = user  
+                    profile.save()
 
-            messages.success(request, 'Đăng ký thành công!')  
-            return redirect('ProjectWebGame:user_login')  
+                    messages.success(request, 'Đăng ký thành công!')  
+                    return redirect('ProjectWebGame:user_login')
+            except ValidationError as e:
+                messages.error(request, e.message)
 
-        # Nếu có lỗi, hiển thị thông báo lỗi
         else:
             for error in user_form.non_field_errors():
                 messages.error(request, error)
