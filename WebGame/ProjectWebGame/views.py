@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponseRedirect,HttpResponse
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from .models import Game, Comment, Developer, Category, UserProfileInfo
@@ -10,9 +10,7 @@ from .form import CommentForm, ReplyCommentForm, UserForm, UserProfileForm, Game
 from django.core.paginator import Paginator
 from django.core.mail import send_mail   
 from django.http import JsonResponse
-from django.core.exceptions import ValidationError
 from django.db.models import Count, Avg
-from django.template.loader import render_to_string
 import time
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -26,7 +24,9 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    instance.userprofileinfo.save()
+    # Kiểm tra và tạo đối tượng UserProfileInfo nếu chưa tồn tại
+    profile, created = UserProfileInfo.objects.get_or_create(user=instance)
+    profile.save()  
 
 def index(request):
     return render(request, 'Home/index.html')
@@ -39,7 +39,10 @@ def register(request):
         if user_form.is_valid():
             user = user_form.save(commit=False)
             user.set_password(user_form.cleaned_data['password'])
-            user.save()
+            user.save()  # Lưu người dùng
+
+            # Tự động tạo UserProfileInfo sau khi lưu người dùng
+            UserProfileInfo.objects.create(user=user)
 
             messages.success(request, 'Đăng ký thành công!')  
             return redirect('ProjectWebGame:user_login')  
@@ -279,7 +282,7 @@ def game(request):
     elif sort_option == 'oldest':
         queryset = queryset.order_by('release_date')
 
-    paginator = Paginator(queryset.distinct(), 4)
+    paginator = Paginator(queryset.distinct(), 8)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
