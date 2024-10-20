@@ -5,12 +5,13 @@ from django.http import HttpResponseRedirect,HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
-from .models import Game, Comment, Developer, Category, UserProfileInfo,Post
+from .models import Game, Comment, Developer, Category, UserProfileInfo
 from .form import CommentForm, ReplyCommentForm, UserForm, UserProfileForm, GameForm,CategoryForm,DeveloperForm
 from django.core.paginator import Paginator
 from django.core.mail import send_mail   
 from django.http import JsonResponse
 from django.core.exceptions import ValidationError
+from django.db.models import Count, Avg
 from django.template.loader import render_to_string
 import time
 
@@ -253,14 +254,36 @@ def reply_comment(request, comment_id):
 def game(request):
     search_query = request.GET.get('search', '')
     category_id = request.GET.get('category', '')
+    sort_option = request.GET.get('sort', '')
 
     queryset = Game.objects.all()
+
     if search_query:
         queryset = queryset.filter(name__icontains=search_query)
+
     if category_id:
         queryset = queryset.filter(category_id=category_id)
 
-    paginator = Paginator(queryset, 4)
+    # Thêm các tùy chọn sắp xếp
+    queryset = queryset.annotate(
+        avg_rating=Avg('comments__rating'),
+        comment_count=Count('comments')
+    )
+
+    if sort_option == 'high_rating':
+        queryset = queryset.order_by('-avg_rating')
+    elif sort_option == 'low_rating':
+        queryset = queryset.order_by('avg_rating')
+    elif sort_option == 'most_comments':
+        queryset = queryset.order_by('-comment_count')
+    elif sort_option == 'least_comments':
+        queryset = queryset.order_by('comment_count')
+    elif sort_option == 'latest':
+        queryset = queryset.order_by('-release_date')
+    elif sort_option == 'oldest':
+        queryset = queryset.order_by('release_date')
+
+    paginator = Paginator(queryset.distinct(), 4)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -270,7 +293,8 @@ def game(request):
         'page_obj': page_obj,
         'search_query': search_query,
         'category_id': category_id,
-        'categories': categories
+        'sort_option': sort_option,
+        'categories': categories,
     })
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -344,26 +368,6 @@ def DraftListView(request):
     drafts = Game.objects.all()
     return render(request, 'Game/draft_list.html', {'drafts': drafts})
     
-
-@login_required
-def post_publish(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    post.publish()
-    return redirect('ProjectWebGame:post_detail', pk=pk)
-
-@login_required
-def add_comment_to_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.save()
-            return redirect('ProjectWebGame:post_detail', pk=post.pk)
-    else:
-        form = CommentForm()
-    return render(request, 'ProjectWebGame/comment_form.html', {'form': form})
 @user_passes_test(lambda u: u.is_superuser)
 def DraftDetailView(request, pk):
     draft = get_object_or_404(Game, pk = pk)

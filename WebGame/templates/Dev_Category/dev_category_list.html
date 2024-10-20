@@ -58,7 +58,7 @@
       <div class="row">
         <div class="col-lg-12">
           <h3>Game</h3>
-          <span class="breadcrumb" style="background-color: transparent;"><a href="{% url 'ProjectWebGame:index' %}">Home</a> > Game</span>
+          <span class="breadcrumb" style="background-color: transparent;"><a href="{% url 'ProjectWebGame:index' %}">Home</a> > List</span>
         </div>
       </div>
     </div>
@@ -71,6 +71,8 @@
           {% if filter_type == 'developer' %}
           <h2>Developer: {{ filter_obj.name }}</h2>
           <p>Description: {{ filter_obj.description }}</p>
+          <p>Website: <a href="{{ filter_obj.website }}" target="_blank" rel="noopener noreferrer">{{ filter_obj.website }}</a></p>
+          
           {% elif filter_type == 'category' %}
           <h2>Category: {{ filter_obj.name }}</h2>
           <p>Description: {{ filter_obj.description }}</p>
@@ -82,17 +84,18 @@
         {% for game in page_obj %}
         <div class="col-lg-3 col-md-6 align-self-center mb-30 trending-items">
           <div class="item">
-            <div class="thumb">
+            <div class="thumb" style="width: 100%; overflow: hidden; height: 200px;">
               <a href="{% url 'ProjectWebGame:productDetails' game.id %}">
                 {% if game.image %}
-                <img src="{{ game.image.url }}" alt="{{ game.name }}">
+                <img src="{{ game.image.url }}" alt="{{ game.name }}" style="width: 100%; height: 100%; object-fit: cover;">
                 {% else %}
-                <img src="{% static 'images/default.jpg' %}" alt="No image available">
+                <img src="{% static 'images/default.jpg' %}" alt="No image available" style="width: 100%; height: 100%; object-fit: cover;">
                 {% endif %}
               </a>
             </div>
             <div class="down-content">
               <span class="category">{{ game.category.name }}</span>
+              <p>Release Date: {{ game.release_date }}</p>
               <h4>{{ game.name }}</h4>
             </div>
           </div>

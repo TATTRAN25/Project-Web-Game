@@ -242,3 +242,48 @@ body.dark-theme p {
     gap: 10px; /* Điều chỉnh khoảng cách giữa các nút */
     margin-top: 15px; /* Khoảng cách trên cùng */
 }
+
+.container {
+    width: 100%; /* Đảm bảo container chiếm toàn bộ chiều rộng */
+}
+
+.game-filter {
+    display: flex; /* Sắp xếp theo hàng ngang */
+    justify-content: space-between; /* Giữa các phần tử */
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.search-bar,
+.filter-options {
+    flex: 1; /* Chiếm đều không gian */
+    display: flex; /* Sắp xếp theo hàng ngang */
+    margin-right: 10px; /* Khoảng cách giữa các phần tử */
+}
+
+.search-bar input,
+.filter-options select {
+    flex: 1; /* Chiếm toàn bộ không gian còn lại */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.search-bar button,
+.apply-filters {
+    padding: 10px 15px;
+    background-color: #007bff; /* Màu nền nút tìm kiếm */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px; /* Khoảng cách giữa input/select và nút */
+}
+
+.search-bar button:hover,
+.apply-filters:hover {
+    background-color: #0056b3; /* Màu khi hover */
+}

@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="{% static 'css/owl.css' %}">
   <link rel="stylesheet" href="{% static 'css/animate.css' %}">
   <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="{% static 'css/style.css' %}" />
 </head>
 
 <body>
@@ -65,74 +66,93 @@
 
   <!-- Thanh tìm kiếm -->
   <div class="container my-4">
-    <form method="GET" action="{% url 'Home:game' %}">
-        <div class="input-group">
-            <input type="text" class="form-control" name="search" placeholder="Search for games..." aria-label="Search for games..." value="{{ search_query }}" />
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="submit">Search</button>
-            </div>
+    <div class="game-filter">
+        <div class="search-bar">
+            <form method="GET" action="{% url 'Home:game' %}" style="display: flex; width: 100%;" onsubmit="saveScrollPosition(event)">
+                <input type="text" name="search" placeholder="Tìm kiếm game..." value="{{ search_query }}">
+                <button type="submit">Tìm kiếm</button>
+            </form>
         </div>
-    </form>
-  </div>
+
+        <div class="filter-options">
+          <form method="GET" action="{% url 'Home:game' %}" style="display: flex; width: 100%;" onsubmit="saveScrollPosition(event)">
+                <select id="sort" name="sort">
+                    <option value="">--Chọn tiêu chí--</option>
+                    <option value="high_rating" {% if sort_option == 'high_rating' %}selected{% endif %}>Đánh giá cao nhất</option>
+                    <option value="low_rating" {% if sort_option == 'low_rating' %}selected{% endif %}>Đánh giá thấp nhất</option>
+                    <option value="most_comments" {% if sort_option == 'most_comments' %}selected{% endif %}>Bình luận nhiều nhất</option>
+                    <option value="least_comments" {% if sort_option == 'least_comments' %}selected{% endif %}>Bình luận ít nhất</option>
+                    <option value="latest" {% if sort_option == 'latest' %}selected{% endif %}>Game mới nhất</option>
+                    <option value="oldest" {% if sort_option == 'oldest' %}selected{% endif %}>Game cũ nhất</option>
+                </select>
+                <button type="submit" class="apply-filters">Áp dụng bộ lọc</button>
+            </form>
+        </div>
+    </div>
+</div>
 
   <div class="section trending">
     <div class="container">
-      <ul class="trending-filter">
-        <li><a class="{% if not category_id %}is_active{% endif %}" href="{% url 'Home:game' %}?search={{ search_query }}" data-filter="*" onclick="saveScrollPosition(event)">Show All</a></li>
-        {% for category in categories %}
-        <li><a class="{% if category_id == category.id|stringformat:'i' %}is_active{% endif %}" href="{% url 'Home:game' %}?category={{ category.id }}&search={{ search_query }}" data-filter=".{{ category.slug }}" onclick="saveScrollPosition(event)">{{ category.name }}</a></li>
-        {% endfor %}
-      </ul>
+        <ul class="trending-filter">
+            <li><a class="{% if not category_id %}is_active{% endif %}" href="{% url 'Home:game' %}?search={{ search_query }}" data-filter="*" onclick="saveScrollPosition(event)">Show All</a></li>
+            {% for category in categories %}
+            <li><a class="{% if category_id == category.id|stringformat:'i' %}is_active{% endif %}" href="{% url 'Home:game' %}?category={{ category.id }}&search={{ search_query }}" data-filter=".{{ category.slug }}" onclick="saveScrollPosition(event)">{{ category.name }}</a></li>
+            {% endfor %}
+        </ul>
+        
         <div class="row trending-box">
           {% for game in page_obj %}
-          {% if game.is_published == True %}
+          {% if game.is_published %}
           <div class="col-lg-3 col-md-6 align-self-center mb-30 trending-items">
               <div class="item">
-                  <div class="thumb">
-                      <a href="{% url 'Home:productDetails' game.id %}">
-                          {% if game.image %}
-                              <img src="{{ game.image.url }}" alt="{{ game.name }}">
-                          {% else %}
-                              <img src="{% static 'images/default.jpg' %}" alt="No image available">
-                          {% endif %}
-                      </a>
+                  <div class="thumb" style="width: 100%; overflow: hidden; height: 200px;">
+                    <a href="{% url 'Home:productDetails' game.id %}">
+                        {% if game.image %}
+                        <img src="{{ game.image.url }}" alt="{{ game.name }}" 
+                             style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
+                        <img src="{% static 'images/default.jpg' %}" alt="No image available" 
+                             style="width: 100%; height: 100%; object-fit: cover;">
+                        {% endif %}
+                    </a>
                   </div>
                   <div class="down-content">
                       <span class="category">{{ game.category.name }}</span>
                       <p>Release Date: {{ game.release_date }}</p>
+                      <p>Average Rating: {{ game.avg_rating|default:"No ratings yet!" }}</p>
                       <h4>{{ game.name }}</h4>
                   </div>
               </div>
           </div>
           {% endif %}
-      {% empty %}
+          {% empty %}
           <p>No games found.</p>
-      {% endfor %}
-        </div>
+          {% endfor %}
+      </div>
 
         <div class="row">
           <div class="col-lg-12">
             <ul class="pagination">
               {% if page_obj.has_previous %}
-              <li><a href="?page=1&search={{ search_query }}&category={{ category_id }}">&lt;&lt;</a></li>
-              <li><a href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}&category={{ category_id }}">&lt;</a></li>
+              <li><a href="?page=1&search={{ search_query }}&category={{ category_id }}&developer={{ developer_id }}&sort={{ sort_option }}">&lt;&lt;</a></li>
+              <li><a href="?page={{ page_obj.previous_page_number }}&search={{ search_query }}&category={{ category_id }}&developer={{ developer_id }}&sort={{ sort_option }}">&lt;</a></li>
               {% endif %}
               {% for num in page_obj.paginator.page_range %}
               {% if page_obj.number == num %}
               <li><a class="is_active" href="#">{{ num }}</a></li>
               {% else %}
-              <li><a href="?page={{ num }}&search={{ search_query }}&category={{ category_id }}">{{ num }}</a></li>
+              <li><a href="?page={{ num }}&search={{ search_query }}&category={{ category_id }}&developer={{ developer_id }}&sort={{ sort_option }}">{{ num }}</a></li>
               {% endif %}
               {% endfor %}
               {% if page_obj.has_next %}
-              <li><a href="?page={{ page_obj.next_page_number }}&search={{ search_query }}&category={{ category_id }}">&gt;</a></li>
-              <li><a href="?page={{ page_obj.paginator.num_pages }}&search={{ search_query }}&category={{ category_id }}">&gt;&gt;</a></li>
+              <li><a href="?page={{ page_obj.next_page_number }}&search={{ search_query }}&category={{ category_id }}&developer={{ developer_id }}&sort={{ sort_option }}">&gt;</a></li>
+              <li><a href="?page={{ page_obj.paginator.num_pages }}&search={{ search_query }}&category={{ category_id }}&developer={{ developer_id }}&sort={{ sort_option }}">&gt;&gt;</a></li>
               {% endif %}
             </ul>
           </div>
         </div>
-        </div>
-        </div>
+      </div>
+    </div>
 
   <footer>
     <div class="container">
@@ -146,22 +166,40 @@
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
   <script>
+    // Thêm sự kiện click cho từng liên kết phân trang
     document.querySelectorAll('.pagination a').forEach(link => {
-      link.addEventListener('click', saveScrollPosition);
+        link.addEventListener('click', saveScrollPosition);
     });
-  
+
+    // Thêm sự kiện submit cho các form tìm kiếm
+    document.querySelectorAll('.game-filter form').forEach(form => {
+        form.addEventListener('submit', saveScrollPosition);
+    });
+
     function saveScrollPosition(event) {
-      event.preventDefault();
-      sessionStorage.setItem('scrollPosition', window.pageYOffset);
-      window.location.href = event.target.href;
-    }
+        event.preventDefault(); // Ngăn chặn hành động mặc định
+        sessionStorage.setItem('scrollPosition', window.pageYOffset); // Lưu vị trí cuộn
     
-    window.addEventListener('load', function() {
-    const scrollPosition = sessionStorage.getItem('scrollPosition');
-    if (scrollPosition) {
-      window.scrollTo(0, scrollPosition);
-      sessionStorage.removeItem('scrollPosition');
+        // Kiểm tra xem có phải là form hay không
+        if (event.target.tagName === 'A') {
+            const targetUrl = event.target.href; // Lấy URL từ liên kết
+            window.location.href = targetUrl; // Chuyển hướng đến URL
+        } else {
+            // Nếu là form, lấy URL từ thuộc tính action
+            const form = event.target;
+            const params = new URLSearchParams(new FormData(form));
+            const url = form.action + '?' + params.toString();
+            window.location.href = url; // Chuyển hướng đến URL
+        }
     }
+
+    // Khôi phục vị trí cuộn khi trang được tải lại
+    window.addEventListener('load', function() {
+        const scrollPosition = sessionStorage.getItem('scrollPosition');
+        if (scrollPosition) {
+            window.scrollTo(0, scrollPosition); // Cuộn đến vị trí đã lưu
+            sessionStorage.removeItem('scrollPosition'); // Xóa vị trí cuộn đã lưu
+        }
     });
     </script>
 </body>
