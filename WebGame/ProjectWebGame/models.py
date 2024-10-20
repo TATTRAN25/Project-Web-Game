@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.urls import reverse
-from ckeditor.fields import RichTextField
+from django_ckeditor_5.fields import CKEditor5Field
 
 class UserProfileInfo(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -37,7 +37,7 @@ class Game(models.Model):
     name = models.CharField(max_length=255)
     developer = models.ForeignKey(Developer, on_delete=models.CASCADE) 
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    description = RichTextField(blank=True)
+    description = CKEditor5Field(blank=True)
     image = models.ImageField(upload_to='game_pic/', blank=True)
     link_dowload = models.URLField(blank=True)
     release_date = models.DateField(auto_now_add=True)

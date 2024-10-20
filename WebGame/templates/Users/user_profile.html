@@ -3,36 +3,43 @@
 {% load static %}
 <style>
     .avatar-frame {
-    display: inline-block;
-    border: 5px solid black;
-    background-color: #f9f9f9;
-    position: relative;
-    width: 200px;
-    height: 200px;
-    overflow: hidden;
-    border-radius: 50%;
-}
+        display: inline-block;
+        border: 5px solid black;
+        background-color: #f9f9f9;
+        position: relative;
+        width: 200px;
+        height: 200px;
+        overflow: hidden;
+        border-radius: 50%;
+    }
 
-.avatar {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: auto;
-    height: 100%;
-    max-width: 100%;
-    transform: translate(-50%, -50%);
-}
+    .avatar {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: auto;
+        height: 100%;
+        max-width: 100%;
+        transform: translate(-50%, -50%);
+    }
+    li{
+        margin-bottom: 5px;
+        border-bottom: 1px solid black;
+    }
+    a{
+        color: black
+    }
 </style>
-<div class="container">
+<div class="container my-5">
     <h1>User Details</h1>
     <div class="row">
         <div class="col-lg-5 text-center">
             <div class="avatar-frame">
-            {% if user.userprofileinfo.avatar %}
-            <img src="{{ user.userprofileinfo.avatar.url }}" alt="avatar" class="img-fluid avatar">
-            {% else %}
-            <img src="{% static 'images/default.jpg' %}" alt="No image available" class="img-fluid avatar">
-            {% endif %}
+                {% if user.userprofileinfo.avatar %}
+                <img src="{{ user.userprofileinfo.avatar.url }}" alt="avatar" class="img-fluid avatar">
+                {% else %}
+                <img src="{% static 'images/default.jpg' %}" alt="No image available" class="img-fluid avatar">
+                {% endif %}
             </div>
             <h3>{{user.username}}</h3>
             <p>Date joined: {{user.date_joined }}</p>
@@ -61,7 +68,7 @@
                 {% endif %}
             </table>
             <div class="button-group">
-                <a href="{% url 'ProjectWebGame:update_user' user.id %}?details" class="btn btn-warning">Edit</a>   
+                <a href="{% url 'ProjectWebGame:update_user' user.id %}?details" class="btn btn-warning">Edit</a>
                 {% if not user.is_staff %}
                 <form method="POST" action="{% url 'ProjectWebGame:upgrade_to_vip' %}" style="display: inline;">
                     {% csrf_token %}
@@ -70,6 +77,22 @@
                 {% endif %}
             </div>
         </div>
-    </div> 
+    </div>
 </div>
+
+<h3 style="margin-bottom: 10px;">Comments history</h3>
+
+{% for game, comments in comments_by_game.items %}
+    <h5 style="margin-top: 10px;"><a href="{% url 'ProjectWebGame:productDetails' game.id %}">{{ game.name }}</a></h5>
+    <div class="comment-list">
+        <ul>
+            {% for comment in comments %}
+                <li>
+                    {{ comment.text }} - {{ comment.created_date}}
+                    <a href="{% url 'ProjectWebGame:delete_comment' comment.id %}"><i class="fas fa-trash text-danger"></i></a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endfor %}
 {% endblock %}

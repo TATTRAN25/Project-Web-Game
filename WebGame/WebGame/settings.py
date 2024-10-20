@@ -54,8 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'django_extensions',
     "ProjectWebGame",
-    'ckeditor',
-    'ckeditor_uploader',
+    'django_ckeditor_5'
 ]
 
 MIDDLEWARE = [
@@ -158,4 +157,10 @@ LOGIN_URL = 'RegistrationLogin/user_login'
 
 
 # CKEDITOR
-CKEDITOR_UPLOAD_PATH =  'uploads/'
+CKEDITOR_5_CONFIGS = {
+  'default': {
+      'toolbar': ['heading', '|', 'bold', 'italic', 'link',
+                  'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
+      'language': 'eng',
+  }
+}

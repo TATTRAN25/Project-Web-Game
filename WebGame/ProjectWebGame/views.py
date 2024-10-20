@@ -97,7 +97,14 @@ def user_list(request):
 @login_required
 def user_profile(request, pk):
     user = get_object_or_404(User, pk=pk)
-    return render(request, 'Users/user_profile.html',  {'user':user})
+    comments = Comment.objects.filter(author=user)
+    comments_by_game = {}
+    for comment in comments:
+        if comment.game not in comments_by_game:
+            comments_by_game[comment.game] = []
+        comments_by_game[comment.game].append(comment)
+
+    return render(request, 'Users/user_profile.html',  {'user':user, 'comments_by_game': comments_by_game})
 
 @user_passes_test(lambda u: u.is_superuser)
 def create_super_user(request):
@@ -142,9 +149,9 @@ def delete_user(request, pk):
 
 def contact(request):
     if request.method == 'POST':
-        name = request.POST['name'] 
-        email = request.POST['email']  
-        message = request.POST['message']  
+        name = request.POST['name']
+        email = request.POST['email']
+        message = request.POST['message']
 
         try:
             send_mail(
