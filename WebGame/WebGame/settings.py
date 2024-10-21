@@ -54,8 +54,34 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'django_extensions',
     "ProjectWebGame",
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     'django_ckeditor_5'
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': '928234446788-ud58uvhfjgs15lot8n83asvvi9o23d05.apps.googleusercontent.com',
+            'secret': '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',
+            'key': '' 
+        }
+    }
+}
+
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+LOGIN_REDIRECT_URL = 'ProjectWebGame:index'
+LOGOUT_REDIRECT_URL = 'ProjectWebGame:index'
+SITE_ID = 1
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -65,6 +91,8 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "social_django.middleware.SocialAuthExceptionMiddleware",
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = "WebGame.urls"
@@ -80,6 +108,8 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
         },
     },
@@ -152,7 +182,6 @@ PASSWORD_HASHERS = [
 # MEDIA
 MEDIA_URL = '/media/'
 MEDIA_ROOT = MEDIA_DIR
-
 LOGIN_URL = 'RegistrationLogin/user_login'
 
 

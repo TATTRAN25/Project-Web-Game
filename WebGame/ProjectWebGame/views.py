@@ -2,15 +2,15 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponseRedirect,HttpResponse
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
-from .models import Game, Comment, Developer, Category, UserProfileInfo,Post
+from .models import Game, Comment, Developer, Category, UserProfileInfo
 from .form import CommentForm, ReplyCommentForm, UserForm, UserProfileForm, GameForm,CategoryForm,DeveloperForm
 from django.core.paginator import Paginator
 from django.core.mail import send_mail   
 from django.http import JsonResponse
-from django.template.loader import render_to_string
+from django.db.models import Count, Avg
 import time
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -24,7 +24,9 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    instance.userprofileinfo.save()
+    # Kiểm tra và tạo đối tượng UserProfileInfo nếu chưa tồn tại
+    profile, created = UserProfileInfo.objects.get_or_create(user=instance)
+    profile.save()  
 
 def index(request):
     return render(request, 'Home/index.html')
@@ -37,12 +39,14 @@ def register(request):
         if user_form.is_valid():
             user = user_form.save(commit=False)
             user.set_password(user_form.cleaned_data['password'])
-            user.save()
+            user.save()  # Lưu người dùng
+
+            # Tự động tạo UserProfileInfo sau khi lưu người dùng
+            UserProfileInfo.objects.create(user=user)
 
             messages.success(request, 'Đăng ký thành công!')  
             return redirect('ProjectWebGame:user_login')  
 
-        # Nếu có lỗi, hiển thị thông báo lỗi
         else:
             for error in user_form.non_field_errors():
                 messages.error(request, error)
@@ -249,14 +253,36 @@ def reply_comment(request, comment_id):
 def game(request):
     search_query = request.GET.get('search', '')
     category_id = request.GET.get('category', '')
+    sort_option = request.GET.get('sort', '')
 
     queryset = Game.objects.all()
+
     if search_query:
         queryset = queryset.filter(name__icontains=search_query)
+
     if category_id:
         queryset = queryset.filter(category_id=category_id)
 
-    paginator = Paginator(queryset, 4)
+    # Thêm các tùy chọn sắp xếp
+    queryset = queryset.annotate(
+        avg_rating=Avg('comments__rating'),
+        comment_count=Count('comments')
+    )
+
+    if sort_option == 'high_rating':
+        queryset = queryset.order_by('-avg_rating')
+    elif sort_option == 'low_rating':
+        queryset = queryset.order_by('avg_rating')
+    elif sort_option == 'most_comments':
+        queryset = queryset.order_by('-comment_count')
+    elif sort_option == 'least_comments':
+        queryset = queryset.order_by('comment_count')
+    elif sort_option == 'latest':
+        queryset = queryset.order_by('-release_date')
+    elif sort_option == 'oldest':
+        queryset = queryset.order_by('release_date')
+
+    paginator = Paginator(queryset.distinct(), 8)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -266,7 +292,8 @@ def game(request):
         'page_obj': page_obj,
         'search_query': search_query,
         'category_id': category_id,
-        'categories': categories
+        'sort_option': sort_option,
+        'categories': categories,
     })
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -340,26 +367,6 @@ def DraftListView(request):
     drafts = Game.objects.all()
     return render(request, 'Game/draft_list.html', {'drafts': drafts})
     
-
-@login_required
-def post_publish(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    post.publish()
-    return redirect('ProjectWebGame:post_detail', pk=pk)
-
-@login_required
-def add_comment_to_post(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    if request.method == 'POST':
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.save()
-            return redirect('ProjectWebGame:post_detail', pk=post.pk)
-    else:
-        form = CommentForm()
-    return render(request, 'ProjectWebGame/comment_form.html', {'form': form})
 @user_passes_test(lambda u: u.is_superuser)
 def DraftDetailView(request, pk):
     draft = get_object_or_404(Game, pk = pk)
