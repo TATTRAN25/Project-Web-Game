@@ -1,82 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     {% load static %}
+    {% load socialaccount %}
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Register</title>
-    <script
-      type="module"
-      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
-    ></script>
-    <script
-      nomodule
-      src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"
-    ></script>
     <link rel="stylesheet" href="{% static 'css/login.css' %}" />
-  </head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #DB4437;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 10px;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 10px;
+            transition: background-color 0.3s;
+        }
 
-  <body>
+        .google-btn:hover {
+            background-color: #c1351d;
+        }
+
+        .google-btn i {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+
+<body>
     <section>
-      <div class="form-box">
-        <div class="form-value">
-          <form method="post" enctype="multipart/form-data">
-            {% csrf_token %}
+        <div class="form-box">
+            <div class="form-value">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
 
-            {% if messages %}
-            <div class="alert-container">
-              {% for message in messages %}
-                <div class="alert" style="color: white">
-                  {{ message }}
-                </div>
-              {% endfor %}
-            </div>
-            {% endif %}
-            
-            <h2>Register</h2>
-            <!-- Trường Username -->
-            <div class="inputbox">
-              <ion-icon name="person-outline"></ion-icon>
-              <input type="text" name="username" required />
-              <label>Username</label>
-            </div>
+                    {% if messages %}
+                    <div class="alert-container">
+                        {% for message in messages %}
+                        <div class="alert" style="color: white">
+                            {{ message }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    
+                    <h2>Register</h2>
+                    <!-- Trường Username -->
+                    <div class="inputbox">
+                        <ion-icon name="person-outline"></ion-icon>
+                        <input type="text" name="username" required />
+                        <label>Username</label>
+                    </div>
 
-            <!-- Trường Email -->
-            <div class="inputbox">
-              <ion-icon name="mail-outline"></ion-icon>
-              <input type="email" name="email" required />
-              <label>Email</label>
-            </div>
+                    <!-- Trường Email -->
+                    <div class="inputbox">
+                        <ion-icon name="mail-outline"></ion-icon>
+                        <input type="email" name="email" required />
+                        <label>Email</label>
+                    </div>
 
-            <!-- Trường Mật Khẩu -->
-            <div class="inputbox">
-              <ion-icon name="lock-closed-outline"></ion-icon>
-              <input type="password" name="password" required />
-              <label>Password</label>
-            </div>
+                    <!-- Trường Mật Khẩu -->
+                    <div class="inputbox">
+                        <ion-icon name="lock-closed-outline"></ion-icon>
+                        <input type="password" name="password" required />
+                        <label>Password</label>
+                    </div>
 
-            <div class="forget">
-              <label
-                ><input type="checkbox" name="remember_me" />Remember Me</label
-              >
-              <a href="#">Forgot Password</a>
-            </div>
+                    <div class="forget">
+                        <label><input type="checkbox" name="remember_me" />Remember Me</label>
+                        <a href="#">Forgot Password</a>
+                    </div>
 
-            <button type="submit">Register</button>
+                    <button type="submit">Register</button>
 
-            <div class="register">
-              <p>
-                You don't want to create an account?
-                <a href="{% url 'ProjectWebGame:index' %}">Home Page</a>
-              </p>
-              <p>
-                You already have an account?
-                <a href="{% url 'ProjectWebGame:user_login' %}">Login</a>
-              </p>
+                    <!-- Nút Đăng Ký bằng Google -->
+                    <div class="social-login">
+                        <a href="{% provider_login_url 'google' %}" class="google-btn">
+                            <i class="fab fa-google"></i> Register with Google
+                        </a>
+                    </div>
+
+                    <div class="register">
+                        <p>
+                            You don't want to create an account?
+                            <a href="{% url 'ProjectWebGame:index' %}">Home Page</a>
+                        </p>
+                        <p>
+                            You already have an account?
+                            <a href="{% url 'ProjectWebGame:user_login' %}">Login</a>
+                        </p>
+                    </div>
+                </form>
             </div>
-          </form>
         </div>
-      </div>
     </section>
-  </body>
+</body>
 </html>

@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from ProjectWebGame.models import UserProfileInfo, Game
 from .models import Comment, ReplyComment
 from ProjectWebGame.models import UserProfileInfo, Game, Developer, Category
-from ckeditor.fields import RichTextFormField
+from django_ckeditor_5.fields import CKEditor5Widget
 
 class UserForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
@@ -29,7 +29,7 @@ class GameForm(forms.ModelForm):
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control', 'style': 'margin-bottom: 1rem'}),
-            'description': RichTextFormField(config_name="default")
+            'description': CKEditor5Widget(attrs={"class": "django_ckeditor_5"},config_name="default")
         }
 
 class CommentForm(forms.ModelForm):
