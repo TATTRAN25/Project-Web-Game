@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import logout, login, authenticate
 from django.http import HttpResponseRedirect,HttpResponse
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.models import User
 from .models import Game, Comment, Developer, Category, UserProfileInfo
@@ -10,12 +10,23 @@ from .form import CommentForm, ReplyCommentForm, UserForm, UserProfileForm, Game
 from django.core.paginator import Paginator
 from django.core.mail import send_mail   
 from django.http import JsonResponse
-from django.core.exceptions import ValidationError
 from django.db.models import Count, Avg
-from django.template.loader import render_to_string
 import time
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 app_name = 'ProjectWebGame'
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        UserProfileInfo.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    # Kiểm tra và tạo đối tượng UserProfileInfo nếu chưa tồn tại
+    profile, created = UserProfileInfo.objects.get_or_create(user=instance)
+    profile.save()  
 
 def index(request):
     return render(request, 'Home/index.html')
@@ -23,27 +34,18 @@ def index(request):
 def register(request):
     if request.method == 'POST':
         user_form = UserForm(data=request.POST)
-        profile_form = UserProfileForm(data=request.POST, files=request.FILES)
 
         # Kiểm tra tính hợp lệ của các biểu mẫu
-        if user_form.is_valid() and profile_form.is_valid():
-            try:
-                username = user_form.cleaned_data['username']
-                if User.objects.filter(username=username).exists():
-                    messages.error(request, 'Tên người dùng đã tồn tại.')
-                else:
-                    user = user_form.save(commit=False)
-                    user.set_password(user_form.cleaned_data['password'])
-                    user.save()
+        if user_form.is_valid():
+            user = user_form.save(commit=False)
+            user.set_password(user_form.cleaned_data['password'])
+            user.save()  # Lưu người dùng
 
-                    profile = profile_form.save(commit=False)
-                    profile.user = user  
-                    profile.save()
+            # Tự động tạo UserProfileInfo sau khi lưu người dùng
+            UserProfileInfo.objects.create(user=user)
 
-                    messages.success(request, 'Đăng ký thành công!')  
-                    return redirect('ProjectWebGame:user_login')
-            except ValidationError as e:
-                messages.error(request, e.message)
+            messages.success(request, 'Đăng ký thành công!')  
+            return redirect('ProjectWebGame:user_login')  
 
         else:
             for error in user_form.non_field_errors():
@@ -51,17 +53,12 @@ def register(request):
             for field in user_form:
                 for error in field.errors:
                     messages.error(request, error)
-            for field in profile_form:
-                for error in field.errors:
-                    messages.error(request, error)
 
     else:
         user_form = UserForm() 
-        profile_form = UserProfileForm()
 
     return render(request, 'Home/register.html', {
         'user_form': user_form,
-        'profile_form': profile_form,
     })
 
 @login_required
@@ -97,19 +94,26 @@ def user_login(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def user_list(request):
-    users = User.objects.all()
+    logged_in_user = request.user
+    users = User.objects.exclude(id=logged_in_user.id)
     return render(request, 'Users/user_list.html', {'users': users})
 
 @login_required
 def user_profile(request, pk):
     user = get_object_or_404(User, pk=pk)
-    return render(request, 'Users/user_profile.html',  {'user':user})
+    comments = Comment.objects.filter(author=user)
+    comments_by_game = {}
+    for comment in comments:
+        if comment.game not in comments_by_game:
+            comments_by_game[comment.game] = []
+        comments_by_game[comment.game].append(comment)
+
+    return render(request, 'Users/user_profile.html',  {'user':user, 'comments_by_game': comments_by_game})
 
 @user_passes_test(lambda u: u.is_superuser)
 def create_super_user(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
-        profile_form = UserProfileForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.set_password(form.cleaned_data['password'])
@@ -117,16 +121,11 @@ def create_super_user(request):
             user.is_staff = True
             user.save()
 
-            profile = profile_form.save(commit=False)
-            profile.user = user
-            profile.save()
-
             messages.success(request, 'Super user đã được tạo thành công.')
             return redirect('ProjectWebGame:userList')
     else:
         form = UserForm()
-        profile_form = UserProfileForm()
-        return render(request, 'Users/user_form.html', {'form': form, 'profile_form': profile_form})
+        return render(request, 'Users/user_form.html', {'form': form})
 
 @login_required
 def update_user(request, pk):
@@ -154,9 +153,9 @@ def delete_user(request, pk):
 
 def contact(request):
     if request.method == 'POST':
-        name = request.POST['name'] 
-        email = request.POST['email']  
-        message = request.POST['message']  
+        name = request.POST['name']
+        email = request.POST['email']
+        message = request.POST['message']
 
         try:
             send_mail(
@@ -283,7 +282,7 @@ def game(request):
     elif sort_option == 'oldest':
         queryset = queryset.order_by('release_date')
 
-    paginator = Paginator(queryset.distinct(), 4)
+    paginator = Paginator(queryset.distinct(), 8)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 

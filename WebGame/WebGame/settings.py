@@ -54,13 +54,12 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'django_extensions',
     "ProjectWebGame",
-    'ckeditor',
-    'ckeditor_uploader',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'django_ckeditor_5'
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -183,9 +182,14 @@ PASSWORD_HASHERS = [
 # MEDIA
 MEDIA_URL = '/media/'
 MEDIA_ROOT = MEDIA_DIR
-
 LOGIN_URL = 'RegistrationLogin/user_login'
 
 
 # CKEDITOR
-CKEDITOR_UPLOAD_PATH =  'uploads/'
+CKEDITOR_5_CONFIGS = {
+  'default': {
+      'toolbar': ['heading', '|', 'bold', 'italic', 'link',
+                  'bulletedList', 'numberedList', 'blockQuote', 'imageUpload', ],
+      'language': 'eng',
+  }
+}

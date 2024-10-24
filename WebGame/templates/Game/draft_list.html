@@ -2,6 +2,7 @@
 {% block body_block %}
 
 <h1>Drafts</h1>
+<p style="font-weight: bold;">Back to game list <a href="{% url 'ProjectWebGame:gameList' %}">click here</a></p>
 <ul>
     {% for draft in drafts %}
         {% if draft.is_published == False %}
