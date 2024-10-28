@@ -41,9 +41,6 @@ def register(request):
             user.set_password(user_form.cleaned_data['password'])
             user.save()  # Lưu người dùng
 
-            # Tự động tạo UserProfileInfo sau khi lưu người dùng
-            UserProfileInfo.objects.create(user=user)
-
             messages.success(request, 'Đăng ký thành công!')  
             return redirect('ProjectWebGame:user_login')  
 
