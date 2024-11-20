@@ -42,6 +42,7 @@ Dự án của tôi là dự án làm về một trang web nơi mà người dù
 ## Features:
 - Chú thích User: người dùng đã tạo tài khoản, Admin: tài khoản được thêm sẵn của admin và chỉ admin mới tạo được tài khoản cho admin, Guest: người dùng không tạo tài khoản 
 - Quản lý thêm,xóa,sửa thông tin đăng game - sử dụng bởi Admin
+- Quản lý duyệt thông tin đăng game - sử dụng bởi Admin
 - Quản lý thêm,xóa thông tin tài khoản - sử dụng bởi Admin
 - Quản lý thêm,xóa,sửa thông tin danh mục - sử dụng bởi Admin
 - Quản lý thêm,xóa,sửa thông tin nhà phát triển - sử dụng bởi Admin
@@ -81,5 +82,7 @@ Dự án của tôi là dự án làm về một trang web nơi mà người dù
 ![ProjectWebGame](ReadMe/index.png)
 - Trang hiện tất cả các bài viết đăng game:
 ![ProjectWebGame](ReadMe/OurGame.png)
-- Trang Chính:
+- Trang góp ý với quản trị viên:
 ![ProjectWebGame](ReadMe/ContactUs.png)
+- Trang quản lý thông tin:
+![ProjectWebGame](ReadMe/manage.png)
