@@ -56,7 +56,8 @@ Dự án của tôi là dự án làm về một trang web nơi mà người dù
 - Góp ý đến Admin qua Contact Us để góp ý gửi thông báo qua Email cho User - sử dụng bởi User,Guest(phải dùng Email chính xác mới thấy thông báo)
 
 ## Installation guide:
-<p>Để thiết lập dự án, bạn cần cài đặt các gói sau:</p>
+<p>Đây là các module cần thiết để khởi chạy dự án</p>
+
 - pip install Django
 - pip install Faker
 - pip install bcrypt
@@ -69,13 +70,16 @@ Dự án của tôi là dự án làm về một trang web nơi mà người dù
 - pip install django_requests
 - pip install jwt
 - pip install social_auth_app_django
-<p>Đây là các module cần thiết để khởi chạy dự án</p>
 
 ## User guide:
 <p>Để xem và sử dụng tất cả các chức năng của trang web có thể dùng tài khoản admin để sử dụng Account: TAT - Password: 1</p>
 <p>User cũng có thể tự tạo tài khoản và trải nghiệm</p>
-<p>Trang web cũng được đăng lên Pythonanywhere:<a href="https://tat25.pythonanywhere.com/ProjectWebGame/index/" alt="Web" target="_blank">ProjectWebGame</a></p>
+<p>Trang web cũng được đăng lên Pythonanywhere: <a href="https://tat25.pythonanywhere.com/ProjectWebGame/index/" alt="Web" target="_blank">ProjectWebGame</a></p>
 
 ## Project Demo:
 - Trang Chính:
 ![ProjectWebGame](ReadMe/index.png)
+- Trang hiện tất cả các bài viết đăng game:
+![ProjectWebGame](ReadMe/OurGame.png)
+- Trang Chính:
+![ProjectWebGame](ReadMe/ContactUs.png)
