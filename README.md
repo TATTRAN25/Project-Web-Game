@@ -41,6 +41,7 @@ Dự án của tôi là dự án làm về một trang web nơi mà người dù
 
 ## Features:
 - Chú thích User: người dùng đã tạo tài khoản, Admin: tài khoản được thêm sẵn của admin và chỉ admin mới tạo được tài khoản cho admin, Guest: người dùng không tạo tài khoản 
+- Đăng nhập, đăng ký bằng tài khoản google
 - Quản lý thêm,xóa,sửa thông tin đăng game - sử dụng bởi Admin
 - Quản lý duyệt thông tin đăng game - sử dụng bởi Admin
 - Quản lý thêm,xóa thông tin tài khoản - sử dụng bởi Admin
